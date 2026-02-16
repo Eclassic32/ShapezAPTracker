@@ -10,6 +10,8 @@ const gridConfig = ref<GridConfig>({
   tileSize: 48,
   width: 30,
   height: 20,
+  offsetX: 0,
+  offsetY: 0,
 });
 
 // Tile maps

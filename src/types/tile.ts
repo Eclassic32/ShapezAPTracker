@@ -44,4 +44,6 @@ export interface GridConfig {
   tileSize: number;
   width: number; // grid width in tiles
   height: number; // grid height in tiles
+  offsetX?: number; // camera offset X in pixels
+  offsetY?: number; // camera offset Y in pixels
 }

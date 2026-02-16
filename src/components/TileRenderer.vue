@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import type { Building, Wire, Entity, GridConfig, Rotation } from '../types/tile';
+import { isBuildingAvailable } from '../utils/helper';
 
 const props = defineProps<{
   buildings: Map<string, Building>;
@@ -63,24 +64,30 @@ const getBuildingDimensions = (size: string, rotation: Rotation): { width: numbe
 const drawGrid = () => {
   if (!ctx.value || !props.showGrid) return;
 
-  const { tileSize, width, height } = props.gridConfig;
+  const { tileSize, width, height, offsetX = 0, offsetY = 0 } = props.gridConfig;
   
   ctx.value.strokeStyle = '#333';
   ctx.value.lineWidth = 1;
 
+  // Calculate visible grid range based on offset
+  const startX = Math.floor(offsetX / tileSize);
+  const startY = Math.floor(offsetY / tileSize);
+  const endX = width + Math.ceil(offsetX / tileSize);
+  const endY = height + Math.ceil(offsetY / tileSize);
+
   // Vertical lines
-  for (let x = 0; x <= width; x++) {
+  for (let x = startX; x <= endX; x++) {
     ctx.value.beginPath();
-    ctx.value.moveTo(x * tileSize, 0);
-    ctx.value.lineTo(x * tileSize, height * tileSize);
+    ctx.value.moveTo(x * tileSize, startY * tileSize);
+    ctx.value.lineTo(x * tileSize, endY * tileSize);
     ctx.value.stroke();
   }
 
   // Horizontal lines
-  for (let y = 0; y <= height; y++) {
+  for (let y = startY; y <= endY; y++) {
     ctx.value.beginPath();
-    ctx.value.moveTo(0, y * tileSize);
-    ctx.value.lineTo(width * tileSize, y * tileSize);
+    ctx.value.moveTo(startX * tileSize, y * tileSize);
+    ctx.value.lineTo(endX * tileSize, y * tileSize);
     ctx.value.stroke();
   }
 };
@@ -118,7 +125,7 @@ const drawRotatedImage = (
 const render = async () => {
   if (!ctx.value || !canvas.value) return;
 
-  const { tileSize, width, height } = props.gridConfig;
+  const { tileSize, width, height, offsetX = 0, offsetY = 0 } = props.gridConfig;
   
   // Clear canvas
   ctx.value.clearRect(0, 0, width * tileSize, height * tileSize);
@@ -126,6 +133,10 @@ const render = async () => {
   // Draw background
   ctx.value.fillStyle = '#1a1a1a';
   ctx.value.fillRect(0, 0, width * tileSize, height * tileSize);
+  
+  // Save context and apply camera offset
+  ctx.value.save();
+  ctx.value.translate(-offsetX, -offsetY);
   
   // Draw grid
   drawGrid();
@@ -149,6 +160,17 @@ const render = async () => {
       const y = building.position.y * tileSize;
       
       drawRotatedImage(img, x, y, originalWidth, originalHeight, boundingWidth, boundingHeight, building.rotation);
+      
+      // Draw red overlay if building is unavailable
+      if (!isBuildingAvailable(building.type)) {
+        ctx.value.fillStyle = 'rgba(255, 0, 0, 0.4)';
+        ctx.value.fillRect(
+          x,
+          y,
+          boundingWidth,
+          boundingHeight
+        );
+      }
     } catch (error) {
       // Fallback: draw a colored rectangle
       const dims = getBuildingDimensions(building.size, building.rotation);
@@ -186,8 +208,13 @@ const render = async () => {
   
   // Draw semi-transparent green background layer
   if (props.showWireLayer) {
+    const offsetX = props.gridConfig.offsetX || 0;
+    const offsetY = props.gridConfig.offsetY || 0;
+    const startX = Math.floor(offsetX / tileSize) * tileSize;
+    const startY = Math.floor(offsetY / tileSize) * tileSize;
+    
     ctx.value.fillStyle = 'rgba(0, 255, 0, 0.1)';
-    ctx.value.fillRect(0, 0, width * tileSize, height * tileSize);
+    ctx.value.fillRect(startX, startY, (width + 2) * tileSize, (height + 2) * tileSize);
   }
   
   // Draw wires layer (top) - only if enabled
@@ -210,6 +237,9 @@ const render = async () => {
       }
     }
   }
+  
+  // Restore context (remove camera offset)
+  ctx.value.restore();
 };
 
 defineExpose({ render });

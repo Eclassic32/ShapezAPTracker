@@ -11,6 +11,8 @@ const gridConfig = ref<GridConfig>({
   tileSize: 48,
   width: 30,
   height: 20,
+  offsetX: 0,
+  offsetY: 0,
 });
 
 // Tile maps
@@ -19,7 +21,7 @@ const wires = reactive(new Map<string, Wire>());
 const entities = reactive(new Map<string, Entity>());
 
 // Editor state
-const selectedTool = ref<'building' | 'wire' | 'entity' | 'erase'>('building');
+const selectedTool = ref<'building' | 'wire' | 'entity' | 'erase' | 'none'>('building');
 const selectedBuilding = ref<string>('Belt_top');
 const selectedBuildingSize = ref<BuildingSize>('1x1');
 const selectedWire = ref<string>('Analyzer');
@@ -29,6 +31,10 @@ const mapName = ref('Untitled Map');
 const savedMaps = ref<SavedTileMap[]>([]);
 const showLoadDialog = ref(false);
 const importInput = ref<HTMLInputElement | null>(null);
+
+// Panning state
+const isPanning = ref(false);
+const panStart = ref<{ x: number; y: number } | null>(null);
 
 // Auto-enable wire layer when Wire tool is selected
 const showWireLayer = computed(() => selectedTool.value === 'wire');
@@ -54,8 +60,10 @@ const generateEntity = (position: Position): Entity => {
 const getTilePosition = (event: MouseEvent): Position => {
   const canvas = event.target as HTMLCanvasElement;
   const rect = canvas.getBoundingClientRect();
-  const x = Math.floor((event.clientX - rect.left) / gridConfig.value.tileSize);
-  const y = Math.floor((event.clientY - rect.top) / gridConfig.value.tileSize);
+  const offsetX = gridConfig.value.offsetX || 0;
+  const offsetY = gridConfig.value.offsetY || 0;
+  const x = Math.floor((event.clientX - rect.left + offsetX) / gridConfig.value.tileSize);
+  const y = Math.floor((event.clientY - rect.top + offsetY) / gridConfig.value.tileSize);
   return { x, y };
 };
 
@@ -104,8 +112,8 @@ const getBuildingAtPosition = (position: Position): Building | null => {
   return null;
 };
 
-// Handle canvas click
-const handleCanvasClick = (event: MouseEvent) => {
+// Handle canvas click/drag
+const handleCanvasMouseDown = (event: MouseEvent) => {
   // Right click always erases
   if (event.button === 2) {
     const position = getTilePosition(event);
@@ -113,8 +121,16 @@ const handleCanvasClick = (event: MouseEvent) => {
     return;
   }
   
-  // Left click uses selected tool
+  // Left click - either pan or use tool
   if (event.button === 0) {
+    // Start panning if None tool is selected or if middle mouse
+    if (selectedTool.value === 'none') {
+      isPanning.value = true;
+      panStart.value = { x: event.clientX, y: event.clientY };
+      return;
+    }
+    
+    // Otherwise use the selected tool
     const position = getTilePosition(event);
     
     if (selectedTool.value === 'erase') {
@@ -127,6 +143,25 @@ const handleCanvasClick = (event: MouseEvent) => {
       placeEntity(position);
     }
   }
+};
+
+// Handle mouse move for panning
+const handleCanvasMouseMove = (event: MouseEvent) => {
+  if (!isPanning.value || !panStart.value) return;
+  
+  const dx = event.clientX - panStart.value.x;
+  const dy = event.clientY - panStart.value.y;
+  
+  gridConfig.value.offsetX = Math.max(0, (gridConfig.value.offsetX || 0) - dx);
+  gridConfig.value.offsetY = Math.max(0, (gridConfig.value.offsetY || 0) - dy);
+  
+  panStart.value = { x: event.clientX, y: event.clientY };
+};
+
+// Handle mouse up to stop panning
+const handleCanvasMouseUp = () => {
+  isPanning.value = false;
+  panStart.value = null;
 };
 
 // Place a building
@@ -159,6 +194,9 @@ const placeBuilding = (position: Position) => {
   };
   
   buildings.set(buildingId, building);
+  
+  // Expand grid if needed
+  expandGridIfNeeded();
 };
 
 // Place a wire
@@ -189,12 +227,18 @@ const placeWire = (position: Position) => {
   if (building) {
     building.wireAttached = true;
   }
+  
+  // Expand grid if needed
+  expandGridIfNeeded();
 };
 
 // Place an entity
 const placeEntity = (position: Position) => {
   const entity = generateEntity(position);
   entities.set(entity.id, entity);
+  
+  // Expand grid if needed
+  expandGridIfNeeded();
 };
 
 // Erase at position
@@ -258,6 +302,45 @@ const selectBuilding = (building: typeof availableBuildings[0]) => {
 const selectWire = (wire: typeof availableWires[0]) => {
   selectedWire.value = wire.name;
   selectedTool.value = 'wire';
+};
+
+// Expand grid if items are within 5 cells of edge
+const expandGridIfNeeded = () => {
+  const MARGIN = 5;
+  let maxX = 0;
+  let maxY = 0;
+  
+  // Check all buildings
+  for (const building of buildings.values()) {
+    const [h = 1, w = 1] = building.size.split('x').map(Number);
+    const dims = building.rotation === 90 || building.rotation === 270 
+      ? { width: h, height: w } 
+      : { width: w, height: h };
+    
+    maxX = Math.max(maxX, building.position.x + dims.width);
+    maxY = Math.max(maxY, building.position.y + dims.height);
+  }
+  
+  // Check all wires
+  for (const wire of wires.values()) {
+    maxX = Math.max(maxX, wire.position.x + 1);
+    maxY = Math.max(maxY, wire.position.y + 1);
+  }
+  
+  // Check all entities
+  for (const entity of entities.values()) {
+    maxX = Math.max(maxX, entity.position.x + 1);
+    maxY = Math.max(maxY, entity.position.y + 1);
+  }
+  
+  // Expand if within margin
+  if (maxX >= gridConfig.value.width - MARGIN) {
+    gridConfig.value.width = maxX + MARGIN + 10;
+  }
+  
+  if (maxY >= gridConfig.value.height - MARGIN) {
+    gridConfig.value.height = maxY + MARGIN + 10;
+  }
 };
 
 // Clear all
@@ -401,6 +484,12 @@ refreshSavedMaps();
         >
           Erase
         </button>
+        <button 
+          :class="{ active: selectedTool === 'none' }" 
+          @click="selectedTool = 'none'"
+        >
+          None (Pan)
+        </button>
       </div>
       
       <div class="tool-section" v-if="selectedTool === 'building'">
@@ -472,7 +561,7 @@ refreshSavedMaps();
       </div>
     </div>
     
-    <div class="canvas-container">
+    <div class="canvas-container" :class="{ 'cursor-grab': selectedTool === 'none' && !isPanning, 'cursor-grabbing': isPanning }">
       <TileRenderer
         :buildings="buildings"
         :entities="entities"
@@ -480,7 +569,10 @@ refreshSavedMaps();
         :grid-config="gridConfig"
         :show-grid="showGrid"
         :show-wire-layer="showWireLayer"
-        @mousedown="handleCanvasClick"
+        @mousedown="handleCanvasMouseDown"
+        @mousemove="handleCanvasMouseMove"
+        @mouseup="handleCanvasMouseUp"
+        @mouseleave="handleCanvasMouseUp"
         @contextmenu.prevent
       />
     </div>
@@ -669,6 +761,22 @@ input[type="checkbox"] {
   display: flex;
   align-items: flex-start;
   justify-content: center;
+}
+
+.canvas-container.cursor-grab {
+  cursor: grab;
+}
+
+.canvas-container.cursor-grab canvas {
+  cursor: grab;
+}
+
+.canvas-container.cursor-grabbing {
+  cursor: grabbing;
+}
+
+.canvas-container.cursor-grabbing canvas {
+  cursor: grabbing;
 }
 
 .dialog-overlay {
