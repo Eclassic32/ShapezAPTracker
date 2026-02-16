@@ -63,6 +63,16 @@ export const entityShapeConfigs = [
 ];
 
 export const wireConfigs = [
+  { name: 'Green_wire_top', sprite: 'Green_wire_top.webp' },
+  { name: 'Green_wire_corner', sprite: 'Green_wire_corner.webp' },
+  { name: 'Green_wire_cross', sprite: 'Green_wire_cross.webp' },
+  { name: 'Green_wire_T', sprite: 'Green_wire_T.webp' },
+  { name: 'Blue_wire_top', sprite: 'Blue_wire_top.webp' },
+  { name: 'Blue_wire_corner', sprite: 'Blue_wire_corner.webp' },
+  { name: 'Blue_wire_cross', sprite: 'Blue_wire_cross.webp' },
+  { name: 'Blue_wire_T', sprite: 'Blue_wire_T.webp' },
+  { name: 'Wire_tunnel', sprite: 'Wire_tunnel.webp' },
+  { name: 'Constant', sprite: 'Constant.webp' },
   { name: 'Analyzer', sprite: 'Analyzer.webp' },
   { name: 'Comparator', sprite: 'Comparator.webp' },
   { name: 'Logic_gate-and', sprite: 'Logic_gate-and.webp' },
@@ -75,5 +85,6 @@ export const wireConfigs = [
   { name: 'Virtual_processor-rotater', sprite: 'Virtual_processor-rotater.webp' },
   { name: 'Virtual_processor-stacker', sprite: 'Virtual_processor-stacker.webp' },
   { name: 'Virtual_processor-unstacker', sprite: 'Virtual_processor-unstacker.webp' },
-  { name: 'Wire_tunnel', sprite: 'Wire_tunnel.webp' },
+  { name: 'Signal_output', sprite: 'Signal_output.webp' },
+  { name: 'Signal_input', sprite: 'Signal_input.webp' },
 ];
