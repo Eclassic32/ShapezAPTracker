@@ -1,0 +1,754 @@
+<script setup lang="ts">
+import { ref, reactive, computed } from 'vue';
+import TileRenderer from './TileRenderer.vue';
+import type { Building, Wire, Entity, GridConfig, Position, Rotation, BuildingSize } from '../types/tile';
+import { saveTileMap, loadTileMap, getAllSavedMaps, deleteTileMap, exportTileMap, importTileMap } from '../utils/storage';
+import type { SavedTileMap } from '../utils/storage';
+import { buildingConfigs, wireConfigs } from '../config/buildings';
+
+// Grid configuration
+const gridConfig = ref<GridConfig>({
+  tileSize: 48,
+  width: 30,
+  height: 20,
+});
+
+// Tile maps
+const buildings = reactive(new Map<string, Building>());
+const wires = reactive(new Map<string, Wire>());
+const entities = reactive(new Map<string, Entity>());
+
+// Editor state
+const selectedTool = ref<'building' | 'wire' | 'entity' | 'erase'>('building');
+const selectedBuilding = ref<string>('Belt_top');
+const selectedBuildingSize = ref<BuildingSize>('1x1');
+const selectedWire = ref<string>('Analyzer');
+const selectedRotation = ref<Rotation>(0);
+const showGrid = ref(true);
+const mapName = ref('Untitled Map');
+const savedMaps = ref<SavedTileMap[]>([]);
+const showLoadDialog = ref(false);
+const importInput = ref<HTMLInputElement | null>(null);
+
+// Auto-enable wire layer when Wire tool is selected
+const showWireLayer = computed(() => selectedTool.value === 'wire');
+
+// Available buildings and wires from config
+const availableBuildings = buildingConfigs;
+const availableWires = wireConfigs;
+
+// Placeholder entity generator
+const generateEntity = (position: Position): Entity => {
+  return {
+    id: `entity-${Date.now()}-${Math.random()}`,
+    type: 'shape',
+    position,
+    sprite: '/src/assets/entities/blue.png',
+    data: {
+      shape: 'CuCuCuCu', // Example shape code
+    }
+  };
+};
+
+// Get tile position from mouse event
+const getTilePosition = (event: MouseEvent): Position => {
+  const canvas = event.target as HTMLCanvasElement;
+  const rect = canvas.getBoundingClientRect();
+  const x = Math.floor((event.clientX - rect.left) / gridConfig.value.tileSize);
+  const y = Math.floor((event.clientY - rect.top) / gridConfig.value.tileSize);
+  return { x, y };
+};
+
+// Check if tile is occupied by a building
+const isTileOccupied = (position: Position, excludeId?: string): boolean => {
+  // Check buildings
+  for (const building of buildings.values()) {
+    if (excludeId && building.id === excludeId) continue;
+    
+    // Size format is HxW (height x width)
+    const [h = 1, w = 1] = building.size.split('x').map(Number);
+    const dims = building.rotation === 90 || building.rotation === 270 
+      ? { width: h, height: w } 
+      : { width: w, height: h };
+    
+    if (
+      position.x >= building.position.x &&
+      position.x < building.position.x + dims.width &&
+      position.y >= building.position.y &&
+      position.y < building.position.y + dims.height
+    ) {
+      return true;
+    }
+  }
+  return false;
+};
+
+// Get building at position
+const getBuildingAtPosition = (position: Position): Building | null => {
+  for (const building of buildings.values()) {
+    // Size format is HxW (height x width)
+    const [h = 1, w = 1] = building.size.split('x').map(Number);
+    const dims = building.rotation === 90 || building.rotation === 270 
+      ? { width: h, height: w } 
+      : { width: w, height: h };
+    
+    if (
+      position.x >= building.position.x &&
+      position.x < building.position.x + dims.width &&
+      position.y >= building.position.y &&
+      position.y < building.position.y + dims.height
+    ) {
+      return building;
+    }
+  }
+  return null;
+};
+
+// Handle canvas click
+const handleCanvasClick = (event: MouseEvent) => {
+  // Right click always erases
+  if (event.button === 2) {
+    const position = getTilePosition(event);
+    handleErase(position);
+    return;
+  }
+  
+  // Left click uses selected tool
+  if (event.button === 0) {
+    const position = getTilePosition(event);
+    
+    if (selectedTool.value === 'erase') {
+      handleErase(position);
+    } else if (selectedTool.value === 'building') {
+      placeBuilding(position);
+    } else if (selectedTool.value === 'wire') {
+      placeWire(position);
+    } else if (selectedTool.value === 'entity') {
+      placeEntity(position);
+    }
+  }
+};
+
+// Place a building
+const placeBuilding = (position: Position) => {
+  // Size format is HxW (height x width)
+  const [h = 1, w = 1] = selectedBuildingSize.value.split('x').map(Number);
+  const dims = selectedRotation.value === 90 || selectedRotation.value === 270 
+    ? { width: h, height: w } 
+    : { width: w, height: h };
+  
+  // Check if all tiles are free
+  for (let x = 0; x < dims.width; x++) {
+    for (let y = 0; y < dims.height; y++) {
+      if (isTileOccupied({ x: position.x + x, y: position.y + y })) {
+        console.log('Cannot place building: tiles occupied');
+        return;
+      }
+    }
+  }
+  
+  const buildingId = `building-${Date.now()}-${Math.random()}`;
+  const buildingConfig = availableBuildings.find(b => b.name === selectedBuilding.value);
+  const building: Building = {
+    id: buildingId,
+    type: selectedBuilding.value,
+    position,
+    size: selectedBuildingSize.value,
+    rotation: selectedRotation.value,
+    sprite: `/src/assets/buildings/${buildingConfig?.sprite || selectedBuilding.value + '.webp'}`,
+  };
+  
+  buildings.set(buildingId, building);
+};
+
+// Place a wire
+const placeWire = (position: Position) => {
+  // Check if wire already exists
+  for (const wire of wires.values()) {
+    if (wire.position.x === position.x && wire.position.y === position.y) {
+      console.log('Wire already exists at this position');
+      return;
+    }
+  }
+  
+  // Check if there's a building at this position
+  const building = getBuildingAtPosition(position);
+  
+  const wireConfig = availableWires.find(w => w.name === selectedWire.value);
+  const wireId = `wire-${Date.now()}-${Math.random()}`;
+  const wire: Wire = {
+    id: wireId,
+    position,
+    sprite: `/src/assets/wires/${wireConfig?.sprite || 'Analyzer.webp'}`,
+    connectedToBuildingId: building?.id,
+  };
+  
+  wires.set(wireId, wire);
+  
+  // Mark building as having wire attached
+  if (building) {
+    building.wireAttached = true;
+  }
+};
+
+// Place an entity
+const placeEntity = (position: Position) => {
+  const entity = generateEntity(position);
+  entities.set(entity.id, entity);
+};
+
+// Erase at position
+const handleErase = (position: Position) => {
+  // Erase building
+  const building = getBuildingAtPosition(position);
+  if (building) {
+    buildings.delete(building.id);
+    
+    // Remove associated wires
+    for (const [id, wire] of wires.entries()) {
+      if (wire.connectedToBuildingId === building.id) {
+        wires.delete(id);
+      }
+    }
+    return;
+  }
+  
+  // Erase wire (only if not connected to building)
+  for (const [id, wire] of wires.entries()) {
+    if (wire.position.x === position.x && wire.position.y === position.y) {
+      if (!wire.connectedToBuildingId) {
+        wires.delete(id);
+      } else {
+        console.log('Cannot erase wire attached to building');
+      }
+      return;
+    }
+  }
+  
+  // Erase entity
+  for (const [id, entity] of entities.entries()) {
+    if (entity.position.x === position.x && entity.position.y === position.y) {
+      entities.delete(id);
+      return;
+    }
+  }
+};
+
+// Rotate selected rotation
+const rotateClockwise = () => {
+  const rotations: Rotation[] = [0, 90, 180, 270];
+  const currentIndex = rotations.indexOf(selectedRotation.value);
+  selectedRotation.value = rotations[(currentIndex + 1) % 4] as Rotation;
+};
+
+const rotateCounterClockwise = () => {
+  const rotations: Rotation[] = [0, 90, 180, 270];
+  const currentIndex = rotations.indexOf(selectedRotation.value);
+  selectedRotation.value = rotations[(currentIndex + 3) % 4] as Rotation;
+};
+
+// Select building
+const selectBuilding = (building: typeof availableBuildings[0]) => {
+  selectedBuilding.value = building.name;
+  selectedBuildingSize.value = building.size;
+  selectedTool.value = 'building';
+};
+
+// Select wire
+const selectWire = (wire: typeof availableWires[0]) => {
+  selectedWire.value = wire.name;
+  selectedTool.value = 'wire';
+};
+
+// Clear all
+const clearAll = () => {
+  buildings.clear();
+  wires.clear();
+  entities.clear();
+};
+
+// Save current map to local storage
+const saveMap = () => {
+  if (!mapName.value.trim()) {
+    alert('Please enter a map name');
+    return;
+  }
+  
+  saveTileMap(mapName.value, { buildings, entities, wires });
+  alert(`Map "${mapName.value}" saved successfully!`);
+  refreshSavedMaps();
+};
+
+// Load map from local storage
+const loadMap = (name: string) => {
+  const saved = loadTileMap(name);
+  if (!saved) {
+    alert('Map not found');
+    return;
+  }
+  
+  // Clear current maps
+  clearAll();
+  
+  // Load buildings
+  saved.buildings.forEach(building => {
+    buildings.set(building.id, building);
+  });
+  
+  // Load entities
+  saved.entities.forEach(entity => {
+    entities.set(entity.id, entity);
+  });
+  
+  // Load wires
+  saved.wires.forEach(wire => {
+    wires.set(wire.id, wire);
+  });
+  
+  mapName.value = saved.name;
+  showLoadDialog.value = false;
+};
+
+// Delete map from local storage
+const deleteMap = (name: string) => {
+  if (confirm(`Delete map "${name}"?`)) {
+    deleteTileMap(name);
+    refreshSavedMaps();
+  }
+};
+
+// Export current map as file
+const exportMap = () => {
+  if (!mapName.value.trim()) {
+    alert('Please enter a map name');
+    return;
+  }
+  
+  exportTileMap(mapName.value, { buildings, entities, wires });
+};
+
+// Import map from file
+const handleImport = async (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  
+  if (!file) return;
+  
+  try {
+    const imported = await importTileMap(file);
+    
+    // Clear current maps
+    clearAll();
+    
+    // Load imported data
+    imported.buildings.forEach(building => {
+      buildings.set(building.id, building);
+    });
+    
+    imported.entities.forEach(entity => {
+      entities.set(entity.id, entity);
+    });
+    
+    imported.wires.forEach(wire => {
+      wires.set(wire.id, wire);
+    });
+    
+    mapName.value = imported.name;
+    alert(`Map "${imported.name}" imported successfully!`);
+  } catch (error) {
+    alert('Failed to import map: ' + (error as Error).message);
+  }
+  
+  // Reset input
+  input.value = '';
+};
+
+// Refresh saved maps list
+const refreshSavedMaps = () => {
+  savedMaps.value = getAllSavedMaps();
+};
+
+// Initialize saved maps list
+refreshSavedMaps();
+</script>
+
+<template>
+  <div class="tile-editor">
+    <div class="toolbar">
+      <div class="tool-section">
+        <h3>Tools</h3>
+        <button 
+          :class="{ active: selectedTool === 'building' }" 
+          @click="selectedTool = 'building'"
+        >
+          Building
+        </button>
+        <button 
+          :class="{ active: selectedTool === 'wire' }" 
+          @click="selectedTool = 'wire'"
+        >
+          Wire
+        </button>
+        <button 
+          :class="{ active: selectedTool === 'entity' }" 
+          @click="selectedTool = 'entity'"
+        >
+          Entity
+        </button>
+        <button 
+          :class="{ active: selectedTool === 'erase' }" 
+          @click="selectedTool = 'erase'"
+        >
+          Erase
+        </button>
+      </div>
+      
+      <div class="tool-section" v-if="selectedTool === 'building'">
+        <h3>Buildings</h3>
+        <div class="building-list">
+          <button 
+            v-for="building in availableBuildings" 
+            :key="building.name"
+            :class="{ active: selectedBuilding === building.name }"
+            @click="selectBuilding(building)"
+            :title="`${building.name} (${building.size})`"
+          >
+            <img :src="`/src/assets/buildings/${building.sprite}`" :alt="building.name" />
+            <span>{{ building.size }}</span>
+          </button>
+        </div>
+        
+        <h3>Rotation</h3>
+        <div class="rotation-controls">
+          <button @click="rotateCounterClockwise">↶ CCW</button>
+          <span>{{ selectedRotation }}°</span>
+          <button @click="rotateClockwise">↷ CW</button>
+        </div>
+      </div>
+      
+      <div class="tool-section" v-if="selectedTool === 'wire'">
+        <h3>Wires</h3>
+        <div class="wire-list">
+          <button 
+            v-for="wire in availableWires" 
+            :key="wire.name"
+            :class="{ active: selectedWire === wire.name }"
+            @click="selectWire(wire)"
+            :title="wire.name"
+          >
+            <img :src="`/src/assets/wires/${wire.sprite}`" :alt="wire.name" />
+          </button>
+        </div>
+      </div>
+      
+      <div class="tool-section">
+        <h3>Options</h3>
+        <label>
+          <input type="checkbox" v-model="showGrid" />
+          Show Grid
+        </label>
+        <button @click="clearAll" class="danger">Clear All</button>
+      </div>
+      
+      <div class="tool-section">
+        <h3>Map</h3>
+        <input 
+          type="text" 
+          v-model="mapName" 
+          placeholder="Map name" 
+          class="map-name-input"
+        />
+        <button @click="saveMap">💾 Save</button>
+        <button @click="showLoadDialog = true">📂 Load</button>
+        <button @click="exportMap">📥 Export</button>
+        <button @click="importInput?.click()">📤 Import</button>
+        <input 
+          ref="importInput" 
+          type="file" 
+          accept=".json" 
+          @change="handleImport" 
+          style="display: none;"
+        />
+      </div>
+    </div>
+    
+    <div class="canvas-container">
+      <TileRenderer
+        :buildings="buildings"
+        :entities="entities"
+        :wires="wires"
+        :grid-config="gridConfig"
+        :show-grid="showGrid"
+        :show-wire-layer="showWireLayer"
+        @mousedown="handleCanvasClick"
+        @contextmenu.prevent
+      />
+    </div>
+    
+    <!-- Load Dialog -->
+    <div v-if="showLoadDialog" class="dialog-overlay" @click.self="showLoadDialog = false">
+      <div class="dialog">
+        <h2>Load Map</h2>
+        <div class="saved-maps-list">
+          <div 
+            v-for="map in savedMaps" 
+            :key="map.name" 
+            class="saved-map-item"
+          >
+            <div class="map-info">
+              <strong>{{ map.name }}</strong>
+              <small>{{ new Date(map.timestamp).toLocaleString() }}</small>
+            </div>
+            <div class="map-actions">
+              <button @click="loadMap(map.name)">Load</button>
+              <button @click="deleteMap(map.name)" class="danger">Delete</button>
+            </div>
+          </div>
+          <div v-if="savedMaps.length === 0" class="no-maps">
+            No saved maps
+          </div>
+        </div>
+        <button @click="showLoadDialog = false" class="close-dialog">Close</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.tile-editor {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  background: #0d0d0d;
+  min-height: 100vh;
+}
+
+.toolbar {
+  width: 250px;
+  background: #1a1a1a;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #333;
+  overflow-y: auto;
+  max-height: calc(100vh - 40px);
+}
+
+.tool-section {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #333;
+}
+
+.tool-section:last-child {
+  border-bottom: none;
+}
+
+h3 {
+  color: #fff;
+  font-size: 14px;
+  margin: 0 0 10px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+button {
+  background: #2a2a2a;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+
+button:hover {
+  background: #333;
+  border-color: #666;
+}
+
+button.active {
+  background: #0066cc;
+  border-color: #0088ff;
+}
+
+button.danger {
+  background: #cc0000;
+  border-color: #ff0000;
+}
+
+button.danger:hover {
+  background: #ff0000;
+}
+
+.tool-section > button {
+  display: block;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.building-list,
+.wire-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.building-list button,
+.wire-list button {
+  aspect-ratio: 1;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.building-list button img,
+.wire-list button img {
+  max-width: 100%;
+  max-height: 32px;
+  image-rendering: pixelated;
+}
+
+.building-list button span {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.rotation-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.rotation-controls button {
+  flex: 1;
+}
+
+.rotation-controls span {
+  color: #fff;
+  font-weight: bold;
+  min-width: 40px;
+  text-align: center;
+}
+
+label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.map-name-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  background: #2a2a2a;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.map-name-input:focus {
+  outline: none;
+  border-color: #0088ff;
+}
+
+.canvas-container {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.dialog {
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 20px;
+  min-width: 400px;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.dialog h2 {
+  margin: 0 0 15px 0;
+  color: #fff;
+}
+
+.saved-maps-list {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+}
+
+.saved-map-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: #2a2a2a;
+  border: 1px solid #333;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.map-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.map-info strong {
+  color: #fff;
+}
+
+.map-info small {
+  color: #888;
+  font-size: 12px;
+}
+
+.map-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.map-actions button {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.no-maps {
+  text-align: center;
+  color: #888;
+  padding: 20px;
+}
+
+.close-dialog {
+  width: 100%;
+}
+</style>
