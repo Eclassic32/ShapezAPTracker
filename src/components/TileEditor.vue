@@ -4,7 +4,8 @@ import TileRenderer from './TileRenderer.vue';
 import type { Building, Wire, Entity, GridConfig, Position, Rotation, BuildingSize } from '../types/tile';
 import { saveTileMap, loadTileMap, getAllSavedMaps, deleteTileMap, exportTileMap, importTileMap } from '../utils/storage';
 import type { SavedTileMap } from '../utils/storage';
-import { buildingConfigs, wireConfigs } from '../config/buildings';
+import { buildingConfigs, wireConfigs, entityShapeConfigs, entityColorConfigs } from '../config/buildings';
+import { renderShape } from '../utils/shape-generator';
 
 // Grid configuration
 const gridConfig = ref<GridConfig>({
@@ -25,12 +26,22 @@ const selectedTool = ref<'building' | 'wire' | 'entity' | 'erase' | 'none'>('bui
 const selectedBuilding = ref<string>('Belt_top');
 const selectedBuildingSize = ref<BuildingSize>('1x1');
 const selectedWire = ref<string>('Analyzer');
+const selectedEntityShape = ref<string>('CuCuCuCu'); // Circle
 const selectedRotation = ref<Rotation>(0);
 const showGrid = ref(true);
 const mapName = ref('Untitled Map');
 const savedMaps = ref<SavedTileMap[]>([]);
 const showLoadDialog = ref(false);
 const importInput = ref<HTMLInputElement | null>(null);
+
+// Custom entity shapes (generated shapes)
+const customEntityShapes = reactive<Array<{ name: string; shape: string; sprite: string }>>([
+  ...entityShapeConfigs.map(config => ({
+    name: config.name,
+    shape: config.shape,
+    sprite: '', // Will be generated
+  }))
+]);
 
 // Panning state
 const isPanning = ref(false);
@@ -43,15 +54,41 @@ const showWireLayer = computed(() => selectedTool.value === 'wire');
 const availableBuildings = buildingConfigs;
 const availableWires = wireConfigs;
 
-// Placeholder entity generator
+// Generate sprites for entity shapes
+for (const shape of customEntityShapes) {
+  try {
+    shape.sprite = renderShape(shape.shape, 48);
+  } catch (error) {
+    console.error('Failed to render shape:', shape.shape, error);
+  }
+}
+
+// Entity generator using selected shape
 const generateEntity = (position: Position): Entity => {
+  // Check if it's a color entity (from entityColorConfigs)
+  const colorEntity = entityColorConfigs.find(c => c.name === selectedEntityShape.value);
+  
+  if (colorEntity) {
+    // It's a pre-made colored entity
+    return {
+      id: `entity-${Date.now()}-${Math.random()}`,
+      type: 'color',
+      position,
+      sprite: `/src/assets/entities/${colorEntity.sprite}`,
+      data: {
+        color: colorEntity.name,
+      }
+    };
+  }
+  
+  // It's a custom shape entity
   return {
     id: `entity-${Date.now()}-${Math.random()}`,
     type: 'shape',
     position,
-    sprite: '/src/assets/entities/blue.png',
+    sprite: customEntityShapes.find(s => s.shape === selectedEntityShape.value)?.sprite || '',
     data: {
-      shape: 'CuCuCuCu', // Example shape code
+      shape: selectedEntityShape.value,
     }
   };
 };
@@ -304,6 +341,48 @@ const selectWire = (wire: typeof availableWires[0]) => {
   selectedTool.value = 'wire';
 };
 
+// Select entity shape
+const selectEntityShape = (shape: typeof customEntityShapes[0]) => {
+  selectedEntityShape.value = shape.shape;
+  selectedTool.value = 'entity';
+};
+
+// Generate shape from user input
+const generateNewShape = () => {
+  const shapeKey = prompt('Enter shape key (e.g., "CuCuCuCu" for uncolored circle, "RbRbRbRb" for blue rectangle):\n\nFormat: Each layer is 8 characters (4 quadrants of 2 chars each)\nShapes: C=Circle, R=Rectangle, S=Star, W=Windmill, -=Empty\nColors: r=red, g=green, b=blue, y=yellow, p=purple, c=cyan, w=white, u=uncolored\nMultiple layers separated by ":"\n\nExamples:\n- CuCuCuCu (simple circle)\n- RbRbRbRb (blue rectangle)\n- CbCbCbRb:CwCwCwCw (2-layer shape)');
+  
+  if (!shapeKey || shapeKey.trim() === '') {
+    return;
+  }
+  
+  let sprite = '';
+  
+  try {
+    sprite = renderShape(shapeKey.trim(), 48);
+  } catch (error) {
+    console.error('Failed to render shape:', error);
+    alert(`Invalid shape key: ${(error as Error).message}`);
+    return;
+  }
+  
+  // Check if shape already exists
+  if (customEntityShapes.some(s => s.shape === shapeKey.trim())) {
+    alert('This shape already exists!');
+    selectedEntityShape.value = shapeKey.trim();
+    return;
+  }
+  
+  const shapeName = `Custom ${customEntityShapes.filter(s => s.name.startsWith('Custom')).length + 1}`;
+  customEntityShapes.push({
+    name: shapeName,
+    shape: shapeKey.trim(),
+    sprite
+  });
+  
+  selectedEntityShape.value = shapeKey.trim();
+  selectedTool.value = 'entity';
+};
+
 // Expand grid if items are within 5 cells of edge
 const expandGridIfNeeded = () => {
   const MARGIN = 5;
@@ -378,9 +457,26 @@ const loadMap = (name: string) => {
     buildings.set(building.id, building);
   });
   
-  // Load entities
+  // Load entities and track custom shapes
   saved.entities.forEach(entity => {
     entities.set(entity.id, entity);
+    
+    // Check if this entity has a custom shape not in our list
+    if (entity.data?.shape) {
+      const shapeExists = customEntityShapes.some(s => s.shape === entity.data.shape);
+      if (!shapeExists) {
+        try {
+          const sprite = renderShape(entity.data.shape, 48);
+          customEntityShapes.push({
+            name: `Loaded ${customEntityShapes.length + 1}`,
+            shape: entity.data.shape,
+            sprite,
+          });
+        } catch (error) {
+          console.error('Failed to render loaded shape:', entity.data.shape, error);
+        }
+      }
+    }
   });
   
   // Load wires
@@ -528,6 +624,35 @@ refreshSavedMaps();
             <img :src="`/src/assets/wires/${wire.sprite}`" :alt="wire.name" />
           </button>
         </div>
+      </div>
+      
+      <div class="tool-section" v-if="selectedTool === 'entity'">
+        <h3>Entity Shapes</h3>
+        <div class="entity-list">
+          <button 
+            v-for="color in entityColorConfigs" 
+            :key="color.name"
+            :class="{ active: selectedEntityShape === color.name }"
+            @click="() => { selectedEntityShape = color.name; selectedTool = 'entity'; }"
+            :title="color.name"
+          >
+            <img :src="`/src/assets/entities/${color.sprite}`" :alt="color.name" />
+            <span class="entity-name">{{ color.name }}</span>
+          </button>
+          <button 
+            v-for="shape in customEntityShapes" 
+            :key="shape.shape"
+            :class="{ active: selectedEntityShape === shape.shape }"
+            @click="selectEntityShape(shape)"
+            :title="shape.name"
+          >
+            <img v-if="shape.sprite" :src="shape.sprite" :alt="shape.name" />
+            <span class="entity-name">{{ shape.name }}</span>
+          </button>
+        </div>
+        <button @click="generateNewShape" class="generate-shape-btn">
+          ➕ Add Custom Shape
+        </button>
       </div>
       
       <div class="tool-section">
@@ -708,6 +833,47 @@ button.danger:hover {
 .building-list button span {
   font-size: 10px;
   opacity: 0.7;
+}
+
+.entity-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.entity-list button {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 60px;
+}
+
+.entity-list button img {
+  max-width: 100%;
+  max-height: 40px;
+  image-rendering: pixelated;
+}
+
+.entity-list button .entity-name {
+  font-size: 10px;
+  opacity: 0.7;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+.generate-shape-btn {
+  width: 100%;
+  margin-top: 5px;
+  background: #0066cc !important;
+  border-color: #0088ff !important;
+}
+
+.generate-shape-btn:hover {
+  background: #0088ff !important;
 }
 
 .rotation-controls {

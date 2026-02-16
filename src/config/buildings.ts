@@ -40,6 +40,26 @@ export const buildingConfigs: BuildingConfig[] = [
   { name: 'Underground_belt_exit-tier2', size: '1x1', sprite: 'Underground_belt_exit-tier2.webp' },
 ];
 
+export const entityColorConfigs = [
+    { name: 'red', sprite: 'red.png' },
+    { name: 'green', sprite: 'green.png' },
+    { name: 'blue', sprite: 'blue.png' },
+    { name: 'cyan', sprite: 'cyan.png' },
+    { name: 'magenta', sprite: 'magenta.png' },
+    { name: 'yellow', sprite: 'yellow.png' },
+    { name: 'white', sprite: 'white.png' },
+];
+
+export const entityShapeConfigs = [
+    { name: 'Circle', shape: 'CuCuCuCu' },
+    { name: 'Rectangle', shape: 'RuRuRuRu' },
+    { name: 'Windmill', shape: 'WuWuWuWu' },
+    { name: 'Star', shape: 'SuSuSuSu' },
+    { name: 'Blueprint', shape: 'CbCbCbRb:CwCwCwCw' },
+    { name: 'Logo Shape', shape: 'RuCw--Cw:----Ru--'},
+    { name: 'Rocket Shape', shape: 'CbCuCbCu:Sr------:--CrSrCr:CwCwCwCw' }
+];
+
 export const wireConfigs = [
   { name: 'Analyzer', sprite: 'Analyzer.webp' },
   { name: 'Comparator', sprite: 'Comparator.webp' },
