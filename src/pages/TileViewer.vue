@@ -90,7 +90,7 @@ onMounted(() => {
             <small>{{ new Date(map.timestamp).toLocaleString() }}</small>
           </button>
           <div v-if="savedMaps.length === 0" class="no-maps">
-            No saved maps. Create one in the <router-link to="/editor">editor</router-link>.
+            No saved maps. Create one in the <a href="editor.html">editor</a>.
           </div>
         </div>
       </div>
@@ -108,7 +108,7 @@ onMounted(() => {
       </div>
       
       <div class="section">
-        <router-link to="/editor" class="edit-button">Go to Editor</router-link>
+        <a href="editor.html" class="edit-button">Go to Editor</a>
       </div>
     </div>
     

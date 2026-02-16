@@ -20,21 +20,12 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        viewer: resolve(__dirname, 'viewer.html'),
+        editor: resolve(__dirname, 'editor.html'),
+      },
       output: {
-        manualChunks: {
-          'vue-vendor': ['vue', 'vue-router'],
-          'pages': [
-            './src/pages/Main.vue',
-            './src/pages/TileViewer.vue',
-            './src/pages/TileEditor.vue'
-          ],
-          'config': ['./src/config/buildings.ts'],
-          'utils': [
-            './src/utils/helper.ts',
-            './src/utils/shape-generator.ts',
-            './src/utils/storage.ts'
-          ]
-        },
         assetFileNames: (assetInfo) => {
           if (assetInfo.name && /\.(png|jpe?g|svg|gif|webp)$/i.test(assetInfo.name)) {
             return 'assets/images/[name]-[hash][extname]';

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router';
 </script>
 
 <template>
@@ -7,18 +6,18 @@ import { RouterLink } from 'vue-router';
     <div class="container">
       <h1>Shapez AP Tracker</h1>
       <nav class="navigation">
-        <RouterLink to="/viewer" class="nav-link">
+        <a href="viewer.html" class="nav-link">
           <div class="nav-card">
             <h2>Tile Viewer</h2>
             <p>View saved tile maps</p>
           </div>
-        </RouterLink>
-        <RouterLink to="/editor" class="nav-link">
+        </a>
+        <a href="editor.html" class="nav-link">
           <div class="nav-card">
             <h2>Tile Editor</h2>
             <p>Create and edit tile maps</p>
           </div>
-        </RouterLink>
+        </a>
       </nav>
     </div>
   </div>
