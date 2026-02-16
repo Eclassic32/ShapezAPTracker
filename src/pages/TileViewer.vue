@@ -139,7 +139,7 @@ onMounted(() => {
   gap: 20px;
   padding: 20px;
   background: #0d0d0d;
-  min-height: 100vh;
+  min-height: 95vh;
 }
 
 .sidebar {
@@ -247,7 +247,6 @@ input[type="checkbox"] {
 
 .edit-button {
   display: block;
-  width: 100%;
   padding: 12px;
   background: #0066cc;
   color: #fff;

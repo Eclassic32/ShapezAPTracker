@@ -850,7 +850,6 @@ refreshSavedMaps();
   gap: 20px;
   padding: 20px;
   background: #0d0d0d;
-  min-height: 100vh;
 }
 
 .toolbar {
@@ -860,7 +859,7 @@ refreshSavedMaps();
   border-radius: 8px;
   border: 1px solid #333;
   overflow-y: auto;
-  max-height: calc(100vh - 40px);
+  max-height: calc(95vh - 40px);
 }
 
 .tool-section {
@@ -1048,7 +1047,7 @@ input[type="checkbox"] {
 }
 
 .map-name-input {
-  width: 100%;
+  width: 96%;
   padding: 8px;
   margin-bottom: 10px;
   background: #2a2a2a;
