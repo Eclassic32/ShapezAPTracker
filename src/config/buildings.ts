@@ -10,6 +10,8 @@ export interface BuildingConfig {
 // Size format: HxW (height x width) - e.g., '1x2' = 1 tile high, 2 tiles wide
 export const buildingConfigs: BuildingConfig[] = [
   { name: 'Belt_top', size: '1x1', sprite: 'Belt_top.webp' },
+  { name: 'Belt_left', size: '1x1', sprite: 'Belt_left.webp' },
+  { name: 'Belt_right', size: '1x1', sprite: 'Belt_right.webp' },
   { name: 'Balancer', size: '1x2', sprite: 'Balancer.webp' },
   { name: 'Color_mixer', size: '1x2', sprite: 'Color_mixer.webp' },
   { name: 'Cutter', size: '1x2', sprite: 'Cutter.webp' },
@@ -56,8 +58,8 @@ export const entityShapeConfigs = [
     { name: 'Windmill', shape: 'WuWuWuWu' },
     { name: 'Star', shape: 'SuSuSuSu' },
     { name: 'Blueprint', shape: 'CbCbCbRb:CwCwCwCw' },
-    { name: 'Logo Shape', shape: 'RuCw--Cw:----Ru--'},
-    { name: 'Rocket Shape', shape: 'CbCuCbCu:Sr------:--CrSrCr:CwCwCwCw' }
+    { name: 'Logo_Shape', shape: 'RuCw--Cw:----Ru--'},
+    { name: 'Rocket_Shape', shape: 'CbCuCbCu:Sr------:--CrSrCr:CwCwCwCw' }
 ];
 
 export const wireConfigs = [

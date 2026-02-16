@@ -3,14 +3,17 @@ import { ref, onMounted, watch } from 'vue';
 import type { Building, Wire, Entity, GridConfig, Rotation } from '../types/tile';
 import { isBuildingAvailable } from '../utils/helper';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   buildings: Map<string, Building>;
   entities: Map<string, Entity>;
   wires: Map<string, Wire>;
   gridConfig: GridConfig;
   showGrid?: boolean;
   showWireLayer?: boolean;
-}>();
+  canvasHeight?: string;
+}>(), {
+  canvasHeight: '95vh',
+});
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 const ctx = ref<CanvasRenderingContext2D | null>(null);
@@ -224,7 +227,7 @@ const render = async () => {
         const img = await loadImage(wire.sprite);
         const x = wire.position.x * tileSize;
         const y = wire.position.y * tileSize;
-        ctx.value.drawImage(img, x, y, tileSize, tileSize);
+        drawRotatedImage(img, x, y, tileSize, tileSize, tileSize, tileSize, wire.rotation);
       } catch (error) {
         // Fallback: draw a colored rectangle
         ctx.value.fillStyle = '#ff6600';
@@ -250,6 +253,7 @@ defineExpose({ render });
     ref="canvas"
     :width="gridConfig.width * gridConfig.tileSize"
     :height="gridConfig.height * gridConfig.tileSize"
+    :style="{ maxHeight: canvasHeight }"
     class="tile-canvas"
   />
 </template>

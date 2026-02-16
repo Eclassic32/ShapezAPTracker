@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue';
-import TileRenderer from './TileRenderer.vue';
+import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
+import TileRenderer from '../components/TileRenderer.vue';
 import type { Building, Wire, Entity, GridConfig, Position, Rotation, BuildingSize } from '../types/tile';
 import { saveTileMap, loadTileMap, getAllSavedMaps, deleteTileMap, exportTileMap, importTileMap } from '../utils/storage';
 import type { SavedTileMap } from '../utils/storage';
@@ -46,6 +46,12 @@ const customEntityShapes = reactive<Array<{ name: string; shape: string; sprite:
 // Panning state
 const isPanning = ref(false);
 const panStart = ref<{ x: number; y: number } | null>(null);
+
+// Keyboard state
+const isShiftPressed = ref(false);
+const isSpacePressed = ref(false);
+const isContinuousPlacing = ref(false);
+const toolBeforeSpace = ref<typeof selectedTool.value | null>(null);
 
 // Auto-enable wire layer when Wire tool is selected
 const showWireLayer = computed(() => selectedTool.value === 'wire');
@@ -97,10 +103,21 @@ const generateEntity = (position: Position): Entity => {
 const getTilePosition = (event: MouseEvent): Position => {
   const canvas = event.target as HTMLCanvasElement;
   const rect = canvas.getBoundingClientRect();
+  
+  // Calculate the scale factor between displayed size and actual canvas size
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  
+  // Get mouse position relative to canvas in actual pixels
+  const canvasX = (event.clientX - rect.left) * scaleX;
+  const canvasY = (event.clientY - rect.top) * scaleY;
+  
+  // Apply camera offset and convert to tile coordinates
   const offsetX = gridConfig.value.offsetX || 0;
   const offsetY = gridConfig.value.offsetY || 0;
-  const x = Math.floor((event.clientX - rect.left + offsetX) / gridConfig.value.tileSize);
-  const y = Math.floor((event.clientY - rect.top + offsetY) / gridConfig.value.tileSize);
+  const x = Math.floor((canvasX + offsetX) / gridConfig.value.tileSize);
+  const y = Math.floor((canvasY + offsetY) / gridConfig.value.tileSize);
+  
   return { x, y };
 };
 
@@ -160,14 +177,19 @@ const handleCanvasMouseDown = (event: MouseEvent) => {
   
   // Left click - either pan or use tool
   if (event.button === 0) {
-    // Start panning if None tool is selected or if middle mouse
-    if (selectedTool.value === 'none') {
+    // Start panning if None tool is selected or space is pressed
+    if (selectedTool.value === 'none' || isSpacePressed.value) {
       isPanning.value = true;
       panStart.value = { x: event.clientX, y: event.clientY };
       return;
     }
     
-    // Otherwise use the selected tool
+    // Enable continuous placement if Shift is held
+    if (isShiftPressed.value) {
+      isContinuousPlacing.value = true;
+    }
+    
+    // Use the selected tool
     const position = getTilePosition(event);
     
     if (selectedTool.value === 'erase') {
@@ -182,23 +204,41 @@ const handleCanvasMouseDown = (event: MouseEvent) => {
   }
 };
 
-// Handle mouse move for panning
+// Handle mouse move for panning and continuous placement
 const handleCanvasMouseMove = (event: MouseEvent) => {
-  if (!isPanning.value || !panStart.value) return;
+  // Handle panning
+  if (isPanning.value && panStart.value) {
+    const dx = event.clientX - panStart.value.x;
+    const dy = event.clientY - panStart.value.y;
+    
+    gridConfig.value.offsetX = Math.max(0, (gridConfig.value.offsetX || 0) - dx);
+    gridConfig.value.offsetY = Math.max(0, (gridConfig.value.offsetY || 0) - dy);
+    
+    panStart.value = { x: event.clientX, y: event.clientY };
+    return;
+  }
   
-  const dx = event.clientX - panStart.value.x;
-  const dy = event.clientY - panStart.value.y;
-  
-  gridConfig.value.offsetX = Math.max(0, (gridConfig.value.offsetX || 0) - dx);
-  gridConfig.value.offsetY = Math.max(0, (gridConfig.value.offsetY || 0) - dy);
-  
-  panStart.value = { x: event.clientX, y: event.clientY };
+  // Handle continuous placement (Shift + LMB)
+  if (isContinuousPlacing.value && event.buttons === 1) {
+    const position = getTilePosition(event);
+    
+    if (selectedTool.value === 'erase') {
+      handleErase(position);
+    } else if (selectedTool.value === 'building') {
+      placeBuilding(position);
+    } else if (selectedTool.value === 'wire') {
+      placeWire(position);
+    } else if (selectedTool.value === 'entity') {
+      placeEntity(position);
+    }
+  }
 };
 
-// Handle mouse up to stop panning
+// Handle mouse up to stop panning and continuous placement
 const handleCanvasMouseUp = () => {
   isPanning.value = false;
   panStart.value = null;
+  isContinuousPlacing.value = false;
 };
 
 // Place a building
@@ -231,9 +271,6 @@ const placeBuilding = (position: Position) => {
   };
   
   buildings.set(buildingId, building);
-  
-  // Expand grid if needed
-  expandGridIfNeeded();
 };
 
 // Place a wire
@@ -254,6 +291,7 @@ const placeWire = (position: Position) => {
   const wire: Wire = {
     id: wireId,
     position,
+    rotation: selectedRotation.value,
     sprite: `/src/assets/wires/${wireConfig?.sprite || 'Analyzer.webp'}`,
     connectedToBuildingId: building?.id,
   };
@@ -264,18 +302,12 @@ const placeWire = (position: Position) => {
   if (building) {
     building.wireAttached = true;
   }
-  
-  // Expand grid if needed
-  expandGridIfNeeded();
 };
 
 // Place an entity
 const placeEntity = (position: Position) => {
   const entity = generateEntity(position);
   entities.set(entity.id, entity);
-  
-  // Expand grid if needed
-  expandGridIfNeeded();
 };
 
 // Erase at position
@@ -384,44 +416,6 @@ const generateNewShape = () => {
 };
 
 // Expand grid if items are within 5 cells of edge
-const expandGridIfNeeded = () => {
-  const MARGIN = 5;
-  let maxX = 0;
-  let maxY = 0;
-  
-  // Check all buildings
-  for (const building of buildings.values()) {
-    const [h = 1, w = 1] = building.size.split('x').map(Number);
-    const dims = building.rotation === 90 || building.rotation === 270 
-      ? { width: h, height: w } 
-      : { width: w, height: h };
-    
-    maxX = Math.max(maxX, building.position.x + dims.width);
-    maxY = Math.max(maxY, building.position.y + dims.height);
-  }
-  
-  // Check all wires
-  for (const wire of wires.values()) {
-    maxX = Math.max(maxX, wire.position.x + 1);
-    maxY = Math.max(maxY, wire.position.y + 1);
-  }
-  
-  // Check all entities
-  for (const entity of entities.values()) {
-    maxX = Math.max(maxX, entity.position.x + 1);
-    maxY = Math.max(maxY, entity.position.y + 1);
-  }
-  
-  // Expand if within margin
-  if (maxX >= gridConfig.value.width - MARGIN) {
-    gridConfig.value.width = maxX + MARGIN + 10;
-  }
-  
-  if (maxY >= gridConfig.value.height - MARGIN) {
-    gridConfig.value.height = maxY + MARGIN + 10;
-  }
-};
-
 // Clear all
 const clearAll = () => {
   buildings.clear();
@@ -547,6 +541,98 @@ const refreshSavedMaps = () => {
   savedMaps.value = getAllSavedMaps();
 };
 
+// Keyboard event handlers
+const handleKeyDown = (event: KeyboardEvent) => {
+  // Ignore keyboard shortcuts when typing in input fields
+  const target = event.target as HTMLElement;
+  if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+    return;
+  }
+  
+  // Track modifier keys
+  if (event.key === 'Shift') {
+    isShiftPressed.value = true;
+  }
+  
+  if (event.key === ' ') {
+    event.preventDefault();
+    if (!isSpacePressed.value) {
+      isSpacePressed.value = true;
+      // Save current tool and switch to temporary panning
+      if (selectedTool.value !== 'none') {
+        toolBeforeSpace.value = selectedTool.value;
+        selectedTool.value = 'none';
+      }
+    }
+    return;
+  }
+  
+  // R - Rotate (clockwise by default, counter-clockwise with Shift)
+  if (event.key === 'r' || event.key === 'R') {
+    event.preventDefault();
+    if (selectedTool.value === 'entity') {
+      // Entities cannot be rotated
+      return;
+    }
+    if (event.shiftKey) {
+      rotateCounterClockwise();
+    } else {
+      rotateClockwise();
+    }
+    return;
+  }
+  
+  // E - Cycle tools: Building > Entity > Wire > Building
+  if (event.key === 'e' || event.key === 'E') {
+    event.preventDefault();
+    if (selectedTool.value === 'building') {
+      selectedTool.value = 'entity';
+    } else if (selectedTool.value === 'entity') {
+      selectedTool.value = 'wire';
+    } else if (selectedTool.value === 'wire') {
+      selectedTool.value = 'building';
+    } else {
+      // From erase or none, go to building
+      selectedTool.value = 'building';
+    }
+  }
+};
+
+const handleKeyUp = (event: KeyboardEvent) => {
+  // Ignore keyboard shortcuts when typing in input fields
+  const target = event.target as HTMLElement;
+  if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+    return;
+  }
+  
+  // Track modifier keys
+  if (event.key === 'Shift') {
+    isShiftPressed.value = false;
+    isContinuousPlacing.value = false;
+  }
+  
+  if (event.key === ' ') {
+    event.preventDefault();
+    isSpacePressed.value = false;
+    // Restore previous tool
+    if (toolBeforeSpace.value) {
+      selectedTool.value = toolBeforeSpace.value;
+      toolBeforeSpace.value = null;
+    }
+  }
+};
+
+// Add keyboard event listeners
+onMounted(() => {
+  window.addEventListener('keydown', handleKeyDown);
+  window.addEventListener('keyup', handleKeyUp);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeyDown);
+  window.removeEventListener('keyup', handleKeyUp);
+});
+
 // Initialize saved maps list
 refreshSavedMaps();
 </script>
@@ -563,16 +649,16 @@ refreshSavedMaps();
           Building
         </button>
         <button 
-          :class="{ active: selectedTool === 'wire' }" 
-          @click="selectedTool = 'wire'"
-        >
-          Wire
-        </button>
-        <button 
           :class="{ active: selectedTool === 'entity' }" 
           @click="selectedTool = 'entity'"
         >
           Entity
+        </button>
+        <button 
+          :class="{ active: selectedTool === 'wire' }" 
+          @click="selectedTool = 'wire'"
+        >
+          Wire
         </button>
         <button 
           :class="{ active: selectedTool === 'erase' }" 
@@ -622,6 +708,7 @@ refreshSavedMaps();
             :title="wire.name"
           >
             <img :src="`/src/assets/wires/${wire.sprite}`" :alt="wire.name" />
+            <span class="wire-name">{{ wire.name }}</span>
           </button>
         </div>
       </div>
@@ -684,6 +771,32 @@ refreshSavedMaps();
           style="display: none;"
         />
       </div>
+      
+      <div class="tool-section">
+        <h3>Keyboard Shortcuts</h3>
+        <div class="shortcuts-list">
+          <div class="shortcut-item">
+            <kbd>R</kbd>
+            <span>Rotate clockwise</span>
+          </div>
+          <div class="shortcut-item">
+            <kbd>Shift</kbd> + <kbd>R</kbd>
+            <span>Rotate counter-clockwise</span>
+          </div>
+          <div class="shortcut-item">
+            <kbd>E</kbd>
+            <span>Cycle tools</span>
+          </div>
+          <div class="shortcut-item">
+            <kbd>Shift</kbd> + <kbd>LMB</kbd>
+            <span>Continuous placement</span>
+          </div>
+          <div class="shortcut-item">
+            <kbd>Space</kbd>
+            <span>Temporary pan (hold)</span>
+          </div>
+        </div>
+      </div>
     </div>
     
     <div class="canvas-container" :class="{ 'cursor-grab': selectedTool === 'none' && !isPanning, 'cursor-grabbing': isPanning }">
@@ -741,7 +854,7 @@ refreshSavedMaps();
 }
 
 .toolbar {
-  width: 250px;
+  width: 460px;
   background: #1a1a1a;
   padding: 15px;
   border-radius: 8px;
@@ -804,16 +917,45 @@ button.danger:hover {
   margin-bottom: 5px;
 }
 
-.building-list,
-.wire-list {
+.building-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 5px;
   margin-bottom: 10px;
 }
 
-.building-list button,
+.wire-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
 .wire-list button {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 60px;
+}
+
+.wire-list button img {
+  max-width: 100%;
+  max-height: 40px;
+  image-rendering: pixelated;
+}
+
+.wire-list button .wire-name {
+  font-size: 10px;
+  opacity: 0.7;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+
+.building-list button {
   aspect-ratio: 1;
   padding: 5px;
   display: flex;
@@ -823,8 +965,7 @@ button.danger:hover {
   gap: 3px;
 }
 
-.building-list button img,
-.wire-list button img {
+.building-list button img {
   max-width: 100%;
   max-height: 32px;
   image-rendering: pixelated;
@@ -837,7 +978,7 @@ button.danger:hover {
 
 .entity-list {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 5px;
   margin-bottom: 10px;
 }
@@ -1024,5 +1165,34 @@ input[type="checkbox"] {
 
 .close-dialog {
   width: 100%;
+}
+
+.shortcuts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shortcut-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #ccc;
+}
+
+.shortcut-item kbd {
+  background: #333;
+  border: 1px solid #555;
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-family: monospace;
+  font-size: 11px;
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.shortcut-item span {
+  flex: 1;
 }
 </style>

@@ -22,6 +22,7 @@ export interface Building {
 export interface Wire {
   id: string;
   position: Position;
+  rotation: Rotation;
   connectedToBuildingId?: string; // if attached to building, stores building ID
   sprite: string;
 }

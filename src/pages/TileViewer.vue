@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue';
-import TileRenderer from './TileRenderer.vue';
+import TileRenderer from '../components/TileRenderer.vue';
 import type { Building, Wire, Entity, GridConfig } from '../types/tile';
 import { getAllSavedMaps, loadTileMap } from '../utils/storage';
 import type { SavedTileMap } from '../utils/storage';
@@ -124,6 +124,7 @@ onMounted(() => {
         :grid-config="gridConfig"
         :show-grid="showGrid"
         :show-wire-layer="showWireLayer"
+        canvas-height="90vh"
       />
       <div v-else class="no-selection">
         <p>Select a map from the sidebar to view</p>
