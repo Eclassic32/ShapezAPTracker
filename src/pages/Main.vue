@@ -1,54 +1,68 @@
 <template>
-  <div class="main-page">
-    <div class="container">
+  <div class="main-page" :class="{ fullscreen: !isConnected }">
+    <!-- Connection Section -->
+    <div v-if="!isConnected" class="connection-section">
       
       <div id="ap-connect">
         <h1>Shapez AP Tracker</h1>
-        <input type="text" id="ap-connect-address" placeholder="Server Address">
-        <input type="text" id="ap-connect-slotname" placeholder="Slot Name">
-        <input type="text" id="ap-connect-password" placeholder="Password">
-        <button @click="connectToServer">Connect</button>
+        <input type="text" v-model="address" placeholder="Server Address">
+        <input type="text" v-model="slotName" placeholder="Slot Name">
+        <input type="password" v-model="password" placeholder="Password">
+        <button @click="connectToServer" :disabled="isConnected">
+          {{ isConnected ? 'Connected' : 'Connect' }}
+        </button>
+        <p v-if="isConnected" class="status-connected">Connected as {{ slotName }}</p>
       </div>
 
 
-      <nav class="navigation">
-        <a href="viewer.html" class="nav-link">
-          <div class="nav-card">
+      <div class="tilemaps">
+        <a href="viewer.html" class="tilemap-link">
+          <div class="tilemap-card">
             <h2>Tile Viewer</h2>
             <p>View saved tile maps</p>
           </div>
         </a>
-        <a href="editor.html" class="nav-link">
-          <div class="nav-card">
+        <a href="editor.html" class="tilemap-link">
+          <div class="tilemap-card">
             <h2>Tile Editor</h2>
             <p>Create and edit tile maps</p>
           </div>
         </a>
-      </nav>
+      </div>
+    </div>
+
+    <!-- Tracker Section -->
+    <div v-else class="tracker-section">
+      <TopBar :isConnected="isConnected" :slotName="slotName" />
+      <h1>Connected to AP Server!</h1>
+
     </div>
   </div>
 </template>
 
 <script>
+import TopBar from '@/components/TopBar.vue';
 import { Client } from 'archipelago.js';
 
 export default {
   name: 'MainPage',
-  props: {
-    isConnected: { type: Boolean, default: false },
-    address: { type: String, default: '' },
-    slotName: { type: String, default: '' },
-    password: { type: String, default: '' },
+  data() {
+    return {
+      apClient: null,
+      isConnected: false,
+      address: localStorage.getItem('ap-address') || '',
+      slotName: localStorage.getItem('ap-slotName') || '',
+      password: localStorage.getItem('ap-password') || '',
 
-    apClient: { type: Object, default: () => ({}) }
+
+    };
   },
+  components: {
+    TopBar
+  },
+
   methods: {
     connectToServer() {
-      this.address = document.getElementById('ap-connect-address').value;
-      this.slotName = document.getElementById('ap-connect-slotname').value;
-      this.password = document.getElementById('ap-connect-password').value;
-
-
       console.log('Connecting to server...');
       
       const apClient = new Client();
@@ -58,38 +72,72 @@ export default {
         console.log('Received message:', message);
       });
 
-      apClient.connect(this.address, this.slotName, { password: this.password })
+      apClient.login(this.address, this.slotName, "shapez", { password: this.password })
         .then(() => {
           console.log('Connected to server!');
           this.isConnected = true;
-          apClient.sendMessage({ type: 'hello', content: 'Hello from client!' });
-
-          console.log(apClient);
           
+          // Save connection info to localStorage
+          localStorage.setItem('ap-address', this.address);
+          localStorage.setItem('ap-slotName', this.slotName);
+          localStorage.setItem('ap-password', this.password);
+          apClient.messages.say('Hello from shapez AP Tracker!');
+          console.log(apClient);
         })
         .catch(err => {
           console.error('Failed to connect:', err);
           alert('Failed to connect to server. Please check your details and try again.');
         });
-      
+    }
+  },
+
+  beforeUnmount() {
+    // Clean up client connection when component is destroyed
+    if (this.apClient) {
+      this.apClient.disconnect();
     }
   }
 };
 </script>
 
 <style scoped>
+/* --- Main --- */
 .main-page {
-  min-height: 100vh;
+  /* min-height: 100vh; */
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
 }
 
-.container {
+button {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #4CAF50;
+  border-radius: 4px;
+  background: #4CAF50;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+button:hover:not(:disabled) {
+  background: #45a049;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.fullscreen {
+  width: 100%;
+  height: 100vh;
+}
+
+/* --- Connection Section --- */
+.connection-section {
   display: flex;
   flex-direction: row;
   gap: 4rem;
+  align-items: center;
   text-align: center;
   max-width: 800px;
   width: 100%;
@@ -101,7 +149,7 @@ h1 {
   color: #fff;
 }
 
-.navigation {
+.tilemaps {
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -109,35 +157,35 @@ h1 {
   flex-wrap: wrap;
 }
 
-.nav-link {
+.tilemap-link {
   text-decoration: none;
   flex: 1;
   min-width: 250px;
 }
 
-.nav-card {
-  background: var(--container-bg-dark);
-  border: 2px solid var(--container-border-dark);
+.tilemap-card {
+  background: var(--container-bg);
+  border: 2px solid var(--container-border);
   border-radius: 8px;
   padding: 2rem;
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
-.nav-card:hover {
+.tilemap-card:hover {
   border-color: #4CAF50;
   background: #222;
   transform: translateY(-4px);
   box-shadow: 0 8px 16px rgba(76, 175, 80, 0.2);
 }
 
-.nav-card h2 {
+.tilemap-card h2 {
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
   color: #4CAF50;
 }
 
-.nav-card p {
+.tilemap-card p {
   color: #999;
   font-size: 0.9rem;
 }
@@ -146,7 +194,6 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-bottom: 3rem;
 }
 
 input[type="text"] {
@@ -156,5 +203,30 @@ input[type="text"] {
   background: #1a1a1a;
   color: #fff;
 }
+
+input[type="password"] {
+  padding: 0.75rem;
+  border: 2px solid #333;
+  border-radius: 4px;
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.status-connected {
+  color: #4CAF50;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+/* --- Tracker Section --- */
+.tracker-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+  width: 100%;
+}
+
+
 
 </style>

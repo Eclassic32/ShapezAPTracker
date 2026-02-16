@@ -1,13 +1,12 @@
 :root {
-  --background-dark: #1a1a1a;
-  --background-light: #f9f9f9;
-  --text-dark: rgba(255, 255, 255, 0.87);
-  --text-light: #213547;
+  --background: #1a1a1a;
+  --text: rgba(255, 255, 255, 0.87);
+  --link-selected: #646cff;
 
-  --container-bg-dark: #242424;
-  --container-border-dark: #333333;
-  --container-bg-light: #ffffff;
-  --container-border-light: #cccccc;
+
+  --container-bg: #242424;
+  --container-border: #333333;
+  
 }
 
 :root {
@@ -16,8 +15,8 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: var(--text-dark);
-  background-color: var(--background-dark);
+  color: var(--text);
+  background-color: var(--background);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -36,6 +35,7 @@ a:hover {
 
 body {
   margin: 0;
+  padding: 0;
   display: flex;
   place-items: center;
   min-width: 320px;
@@ -54,7 +54,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: var(--container-bg-dark);
+  background-color: var(--container-bg);
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -64,10 +64,6 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
-
-.card {
-  padding: 2em;
 }
 
 #app {
@@ -80,13 +76,18 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: var(--text-light);
-    background-color: var(--background-light);
+    --background: #f9f9f9;
+    --text: #213547;
+    --link-selected: #747bff;
+    
+    --container-bg: #ffffff;
+    --container-border: #cccccc;
+
   }
   a:hover {
     color: #747bff;
   }
   button {
-    background-color: var(--container-bg-light);
+    background-color: var(--container-bg);
   }
 }

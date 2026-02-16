@@ -19,6 +19,31 @@ const routes = [
         name: 'Editor',
         component: TileEditor,
     },
+    {
+        path: '/#templates',
+        name: 'Templates',
+        component: Main,
+    },
+    {
+        path: '/#shapesanity',
+        name: 'Shapesanity',
+        component: Main,
+    },
+    {
+        path: '/#achievements',
+        name: 'Achievements',
+        component: Main,
+    },
+    {
+        path: '/#textclient',
+        name: 'Text Client',
+        component: Main,
+    },
+    {
+        path: '/#settings',
+        name: 'Settings',
+        component: Main,
+    }
 ];
 
 const router = createRouter({
