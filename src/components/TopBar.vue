@@ -1,10 +1,10 @@
 <template>
     <nav>
         <div class="container">
-            <router-link to="#templates" class="nav-link">Templates</router-link>
-            <router-link to="#shapesanity" class="nav-link">Shapesanity</router-link>
-            <router-link to="#achievements" class="nav-link">Achievements</router-link>
-            <router-link to="#textclient" class="nav-link">Text Client</router-link>
+            <router-link to="templates" class="nav-link">Templates</router-link>
+            <router-link to="shapesanity" class="nav-link">Shapesanity</router-link>
+            <router-link to="achievements" class="nav-link">Achievements</router-link>
+            <router-link to="textclient" class="nav-link">Text Client</router-link>
 
             <!-- <a href="#templates" class="nav-link" :class="{ selected: currentTab === 'templates' }">Templates</a>
             <a href="#shapesanity" class="nav-link" :class="{ selected: currentTab === 'shapesanity' }">Shapesanity</a>
