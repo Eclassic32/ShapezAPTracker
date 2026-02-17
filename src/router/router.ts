@@ -1,10 +1,10 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-import ConnectionTab from '@/components/ConnectionTab.vue';
-import TemplatesTab from '@/components/TemplatesTab.vue';
-import ShapesanityTab from '@/components/ShapesanityTab.vue';
-import AchievementTab from '@/components/AchievementTab.vue';
-import TextClientTab from '@/components/TextClientTab.vue';
-import SettingsTab from '@/components/SettingsTab.vue';
+import ConnectionTab from '@/pages/tabs/ConnectionTab.vue';
+import TemplatesTab from '@/pages/tabs/TemplatesTab.vue';
+import ShapesanityTab from '@/pages/tabs/ShapesanityTab.vue';
+import AchievementTab from '@/pages/tabs/AchievementTab.vue';
+import TextClientTab from '@/pages/tabs/TextClientTab.vue';
+import SettingsTab from '@/pages/tabs/SettingsTab.vue';
 
 
 const routes = [

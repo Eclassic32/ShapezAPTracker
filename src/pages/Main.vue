@@ -1,10 +1,10 @@
 <script setup>
-import AchievementTab from '@/components/AchievementTab.vue';
-import ConnectionTab from '@/components/ConnectionTab.vue';
-import SettingsTab from '@/components/SettingsTab.vue';
-import ShapesanityTab from '@/components/ShapesanityTab.vue';
-import TemplatesTab from '@/components/TemplatesTab.vue';
-import TextClientTab from '@/components/TextClientTab.vue';
+import AchievementTab from '@/pages/tabs/AchievementTab.vue';
+import ConnectionTab from '@/pages/tabs/ConnectionTab.vue';
+import SettingsTab from '@/pages/tabs/SettingsTab.vue';
+import ShapesanityTab from '@/pages/tabs/ShapesanityTab.vue';
+import TemplatesTab from '@/pages/tabs/TemplatesTab.vue';
+import TextClientTab from '@/pages/tabs/TextClientTab.vue';
 import TopBar from '@/components/TopBar.vue';
 import router from '@/router/router';
 import { apService } from '@/utils/archipelago-helper';

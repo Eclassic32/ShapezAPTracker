@@ -19,7 +19,6 @@
 </template>
 
 <script>
-import { Hint, Player } from 'archipelago.js';
 import { markRaw } from 'vue';
 
 export default {
