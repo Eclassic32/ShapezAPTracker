@@ -29,15 +29,12 @@ export default {
             type: Object,
             required: true
         },
-        doNotDisplayFoundHints: {
-            type: Boolean,
-            default: true
-        }
     },
     data() {
         return {
             receivedHints: [],
-            sentHints: []
+            sentHints: [],
+            showFoundTrashHints: false
         };
     },
     mounted() {
