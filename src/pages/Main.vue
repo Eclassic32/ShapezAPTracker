@@ -34,68 +34,65 @@
     <!-- Tracker Section -->
     <div v-else class="tracker-section">
       <TopBar :isConnected="isConnected" :slotName="slotName" />
-      <h1>Connected to AP Server!</h1>
+      <TextClientTab :apService="apService"/>
 
     </div>
   </div>
 </template>
 
 <script>
+import TextClientTab from '@/components/TextClientTab.vue';
 import TopBar from '@/components/TopBar.vue';
-import { Client } from 'archipelago.js';
+import { apService } from '@/utils/archipelago-helper';
+import { markRaw, toRaw } from 'vue'
 
 export default {
   name: 'MainPage',
   data() {
     return {
-      apClient: null,
-      isConnected: false,
       address: localStorage.getItem('ap-address') || '',
       slotName: localStorage.getItem('ap-slotName') || '',
       password: localStorage.getItem('ap-password') || '',
+      
+      apService: null,
+      isConnected: false,
 
+      player: null,
+      hints: [],
+      items: [],
+      locations: []
 
     };
   },
   components: {
-    TopBar
+    TopBar,
+    TextClientTab
   },
 
   methods: {
     connectToServer() {
       console.log('Connecting to server...');
       
-      const apClient = new Client();
-      this.apClient = apClient;
+      this.apService = apService;
+      this.apService.connect(this.address, this.slotName, this.password);
 
-      apClient.messages.on('message', (message) => {
-        console.log('Received message:', message);
-      });
-
-      apClient.login(this.address, this.slotName, "shapez", { password: this.password })
-        .then(() => {
-          console.log('Connected to server!');
-          this.isConnected = true;
-          
-          // Save connection info to localStorage
-          localStorage.setItem('ap-address', this.address);
-          localStorage.setItem('ap-slotName', this.slotName);
-          localStorage.setItem('ap-password', this.password);
-          apClient.messages.say('Hello from shapez AP Tracker!');
-          console.log(apClient);
-        })
-        .catch(err => {
-          console.error('Failed to connect:', err);
-          alert('Failed to connect to server. Please check your details and try again.');
-        });
+      // Let it load after connection
+      setTimeout(() => {
+        this.player = this.apService.getThisPlayer();
+        this.hints = this.apService.getHints();
+        // this.items = this.apService.getItems();
+        // this.locations = this.apService.getLocations();
+        this.isConnected = true;
+      }, 1000);
     }
   },
 
   beforeUnmount() {
     // Clean up client connection when component is destroyed
-    if (this.apClient) {
-      this.apClient.disconnect();
+    if (this.apService) {
+      this.apService.disconnect();
     }
+    this.isConnected = false;
   }
 };
 </script>

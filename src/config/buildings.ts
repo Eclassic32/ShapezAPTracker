@@ -17,7 +17,7 @@ export const buildingConfigs: BuildingConfig[] = [
   { name: 'Cutter', size: '1x2', sprite: 'Cutter.webp' },
   { name: 'Cutter-quad', size: '1x4', sprite: 'Cutter-quad.webp' },
   { name: 'Display', size: '1x1', sprite: 'Display.webp' },
-  { name: 'Filter', size: '1x1', sprite: 'Filter.webp' },
+  { name: 'Filter', size: '1x2', sprite: 'Filter.webp' },
   { name: 'Hub', size: '4x4', sprite: 'Hub.webp' },
   { name: 'Lever', size: '1x1', sprite: 'Lever.webp' },
   { name: 'Lever_on', size: '1x1', sprite: 'Lever_on.webp' },
