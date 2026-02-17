@@ -33,7 +33,8 @@ class ArchipelagoService {
   }
 
   async connect(address, slot, password, game) {
-    return this.client.login(address, slot, game, { password })
+    this.slotData = await this.client.login(address, slot, game, { password })
+    return this.slotData;
   }
 
   disconnect() {
@@ -70,6 +71,10 @@ class ArchipelagoService {
       flags: h.item.flags,
       found: h.found
     }))
+  }
+
+  getSlotData() {
+    return this.slotData;
   }
 }
 

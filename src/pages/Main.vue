@@ -36,11 +36,17 @@ function connectToServer({ address: addr, slotName: slot, password: pass }) {
 
   // Let it load after connection
   setTimeout(() => {
+    console.log(apService); // Debug
+    
+
     player.value = apService.getThisPlayer();
     hints.value = apService.getHints();
     // items.value = apService.getItems();
     // locations.value = apService.getLocations();
     isConnected.value = true;
+
+    console.log("Slot Data: ", apService.slotData);
+    
 
     router.push('/templates');
   }, 1000);
