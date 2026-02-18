@@ -23,7 +23,14 @@ class ArchipelagoService {
 
     this.client.items.on('hintReceived', (hint) => {
       console.log('❔', hint);
-      this.hints.push(hint);
+      const exists = this.hints.some(h =>
+        h.item.locationName === hint.item.locationName &&
+        h.item.name === hint.item.name &&
+        h.item.receiver.slot === hint.item.receiver.slot
+      );
+      if (!exists) {
+        this.hints.push(hint);
+      }
     });
 
     this.client.items.on('hintFound', (hint) => {
