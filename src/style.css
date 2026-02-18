@@ -7,6 +7,10 @@
   --container-bg: #242424;
   --container-border: #333333;
   
+  --out-of-logic: #ff4d4d;
+  --out-of-logic-bg: hsl(0, 50%, 25%);
+  --found: #4dff4d;
+  --found-bg: hsl(120, 50%, 25%);
 }
 
 :root {
