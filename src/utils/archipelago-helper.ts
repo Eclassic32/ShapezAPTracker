@@ -128,13 +128,18 @@ class ArchipelagoService {
 
   // Shapesanity Alias
   getShapesanity () { return this.getShapesanityParsed(); }
+
+  getReceivedItems() {
+    this.receivedItems = this.client.items.received.map(i => i.name);
+    return this.receivedItems;
+  }
 }
 
 export const apService = new ArchipelagoService()
 
-
 // backport function, will be replaced
 export function isBuildingAvailable(name) {
-  return name != "Lever_on";
+  const items = apService.getReceivedItems();
+  return items.includes(name);
   
 }
