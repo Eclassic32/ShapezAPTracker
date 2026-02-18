@@ -1,7 +1,7 @@
 <template>
     <div class="templates-tab">
         <div class="config-panel">
-            <select name="map-select" id="map-select" v-model="selectedMap">
+            <select name="map-select" id="map-select" v-model="selectedMapName" @change="loadMap(selectedMapName)">
                 <option v-for="map in savedMaps" :key="map.name" :value="map.name">
                     {{ map.name }}
                 </option>
