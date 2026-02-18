@@ -139,10 +139,13 @@ export const apService = new ArchipelagoService()
 
 // backport function, will be replaced
 export function isBuildingAvailable(name) {
+  if (!name) return true; // if no name provided, assume available
   if (!apService.getSlotData()) return true; // if not connected, assume all are available
 
+  
+  
   const items = apService.getReceivedItems();
-  console.log(name, " is available? ", items.includes(name));
+  console.log("Is building available: ", name, items.includes(name));
   return items.includes(name);
   
 }

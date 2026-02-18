@@ -1,3 +1,5 @@
+import type { BuildingConfig, WireConfig } from "@/config/buildings";
+
 export type Rotation = 0 | 90 | 180 | 270;
 
 // Building size format: HxW (height x width)
@@ -25,14 +27,17 @@ export interface Building {
   rotation: Rotation;
   attachedWires?: AttachedWire[]; // may be empty or omitted
   sprite: string; // path to sprite
+  config?: BuildingConfig; // optional reference to building config
 }
 
 export interface Wire {
   id: string;
+  type: string; 
   position: Position;
   rotation: Rotation;
   connectedToBuildingId?: string; // if attached to building, stores building ID
   sprite: string;
+  config?: WireConfig; // optional reference to wire config
 }
 
 export interface Entity {

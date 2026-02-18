@@ -263,6 +263,7 @@ const placeBuilding = (position: Position) => {
   const buildingConfig = availableBuildings.find(b => b.name === selectedBuilding.value);
   const building: Building = {
     id: buildingId,
+    config: buildingConfig,
     name: buildingConfig?.name || selectedBuilding.value,
     type: buildingConfig?.item || selectedBuilding.value,
     position,
@@ -298,10 +299,12 @@ const placeWire = (position: Position) => {
   const wireId = `wire-${Date.now()}-${Math.random()}`;
   const wire: Wire = {
     id: wireId,
+    type: wireConfig?.item || selectedWire.value,
     position,
     rotation: selectedRotation.value,
     sprite: `/src/assets/wires/${wireConfig?.sprite || 'Analyzer.webp'}`,
     connectedToBuildingId: building?.id,
+    config: wireConfig,
   };
   
   wires.set(wireId, wire);

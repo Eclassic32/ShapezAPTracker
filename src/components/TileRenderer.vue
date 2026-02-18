@@ -2,7 +2,6 @@
 import { ref, onMounted, watch } from 'vue';
 import type { Building, Wire, Entity, GridConfig, Rotation } from '../types/tile';
 import { isBuildingAvailable } from '@/utils/archipelago-helper';
-import { buildingConfigs } from '@/config/buildings';
 
 const props = withDefaults(defineProps<{
   buildings: Map<string, Building>;
@@ -15,10 +14,6 @@ const props = withDefaults(defineProps<{
 }>(), {
   canvasHeight: '95vh',
 });
-
-const buildingConfigMap = new Map(
-  buildingConfigs.map(c => [c.name, c])
-);
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 const ctx = ref<CanvasRenderingContext2D | null>(null);
@@ -152,17 +147,14 @@ const render = async () => {
   // Draw buildings layer (bottom)
   for (const building of props.buildings.values()) {
     try {
-      // Get building config 
-      const config = buildingConfigMap.get(building.type);
-      const itemName = config?.item;
-
       // Add attached wires to wires map for rendering
-      if (config?.attachedWires) {
-        for (const [index, attachedWire] of config.attachedWires.entries()) {
+      if (building.config?.attachedWires) {
+        for (const [index, attachedWire] of building.config.attachedWires.entries()) {
           const wireId = `${building.id}-${attachedWire.name}-${index}`;
           if (!props.wires.has(wireId)) {
             props.wires.set(wireId, {
               id: wireId,
+              type: attachedWire.name,
               position: {
                 x: building.position.x + attachedWire.offsetX,
                 y: building.position.y + attachedWire.offsetY
@@ -192,10 +184,8 @@ const render = async () => {
       
       drawRotatedImage(img, x, y, originalWidth, originalHeight, boundingWidth, boundingHeight, building.rotation);
       
-      console.log("Checking if Available: ", building);
-      
       // Draw red overlay if building is unavailable
-      if (itemName && !isBuildingAvailable(itemName)) {
+      if (!isBuildingAvailable(building.config?.item)) {
         ctx.value.fillStyle = 'rgba(255, 0, 0, 0.4)';
         ctx.value.fillRect(
           x,
@@ -258,6 +248,17 @@ const render = async () => {
         const x = wire.position.x * tileSize;
         const y = wire.position.y * tileSize;
         drawRotatedImage(img, x, y, tileSize, tileSize, tileSize, tileSize, wire.rotation);
+        
+        // Draw red overlay if building is unavailable
+        if (!isBuildingAvailable(wire.config?.item)) {
+          ctx.value.fillStyle = 'rgba(255, 0, 0, 0.4)';
+          ctx.value.fillRect(
+            x,
+            y,
+            tileSize,
+            tileSize
+          );
+        }
       } catch (error) {
         // Fallback: draw a colored rectangle
         ctx.value.fillStyle = '#ff6600';
