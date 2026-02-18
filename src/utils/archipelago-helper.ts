@@ -3,7 +3,7 @@
 import { Client } from "archipelago.js"
 import { markRaw } from "vue"
 import { shapesanityArrayToCodes } from "./shapesanity";
-import { fromShortKey } from "./shape-generator";
+import { fromShortKey, renderShape } from "./shape-generator";
 
 class ArchipelagoService {
   constructor() {
@@ -111,7 +111,8 @@ class ArchipelagoService {
         code: codes[name],
         name,
         location: `Shapesanity ${index + 1}`,
-        shape: fromShortKey(codes[name])
+        shape: fromShortKey(codes[name]),
+        image: renderShape(codes[name])
       });
     });
     this.shapesanity.parsed = parsed;

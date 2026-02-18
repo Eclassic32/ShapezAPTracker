@@ -5,7 +5,7 @@
             <div>
                 <h2>Received Hints</h2>
                 <p v-for="hint in receivedHints"  :key="hint.item">
-                    {{ hint.sender.name }}'s {{ hint.item }} at {{ hint.location }} ({{ hint.type }})
+                    {{ hint.receiver.name }}'s {{ hint.item }} at {{ hint.location }} ({{ hint.type }})
                 </p>
             </div>
             <div>
@@ -43,6 +43,9 @@ export default {
     methods: {
         updateHints() {
             console.log("Updating Hints");
+
+            this.receivedHints = [];
+            this.sentHints = [];
             
             const player = this.apService.getThisPlayer();
             const hints = this.apService.getHints();

@@ -25,31 +25,38 @@ const locations = ref([]);
 
 provide('isConnected', isConnected);
 
-function connectToServer({ address: addr, slotName: slot, password: pass }) {
+async function connectToServer({ address: addr, slotName: slot, password: pass }) {
   address.value = addr;
   slotName.value = slot;
   password.value = pass;
 
+  // debug
+  window.apService = apService;
+
   console.log('Connecting to server...');
   
-  apService.connect(address.value, slotName.value, password.value);
-
-  // Let it load after connection
-  setTimeout(() => {
+  try {
+    await apService.connect(address.value, slotName.value, password.value);
+  
     console.log(apService); // Debug
     
-
+    localStorage.setItem('ap-address', address.value);
+    localStorage.setItem('ap-slotName', slotName.value);
+    localStorage.setItem('ap-password', password.value);
+  
     player.value = apService.getThisPlayer();
     hints.value = apService.getHints();
     // items.value = apService.getItems();
     // locations.value = apService.getLocations();
     isConnected.value = true;
-
+  
     console.log("Slot Data: ", apService.slotData);
     
-
+  
     router.push('/templates');
-  }, 1000);
+  } catch (error) {
+    console.error('Connection failed:', error);
+  }
 }
 
 // Cleanup on unmount
@@ -76,7 +83,6 @@ onBeforeUnmount(() => {
   /* min-height: 100vh; */
   display: flex;
   flex-direction: column;
-  gap: 2rem;
   align-items: center;
   width: 100%;
 }

@@ -1,36 +1,60 @@
 <template>
     <div class="shapesanity-tab">
-        <div v-for="shape in shapesanity" :key="shape.name" class="card">
-            <div class="shape-name">{{ shape.name }}</div>
-            <div class="shape-code">{{ shape.code }}</div>
+        <div v-for="shape in shapesanity"
+            :key="shape.name"
+            class="card"
+            @mouseenter="handleEnter($event, shape)"
+            @mouseleave="handleLeave"
+        >
+            <img :src="shape.image" :alt="shape.code" />
+        </div>
+
+        <div
+            v-if="openShape"
+            ref="floating"
+            :style="floatingStyles"
+            class="shape-info"
+        >
+            <div class="shape-location">{{ openShape.location }}</div>
+            <div class="shape-name">{{ openShape.name }}</div>
+            <div class="shape-code">{{ openShape.code }}</div>
         </div>
     </div>
 </template>
 
-<script>
-import { fromShortKey } from '@/utils/shape-generator';
+<script setup>
+import { ref, onMounted } from 'vue'
+import { useFloating, offset, flip, shift } from '@floating-ui/vue'
 
-export default {
-    name: 'ShapesanityTab',
-    setup() {
-        // Setup code here if needed
+const props = defineProps({
+    apService: {
+        type: Object,
+        required: true
     },
-    props: {
-        apService: {
-            type: Object,
-            required: true
-        },
-    },
-    data() {
-        return {
-            shapesanity: []
-        };
-    },
-    mounted() {
-        this.shapesanity = this.apService.getShapesanityParsed() || [];
-    }
-};
+})
 
+const shapesanity = ref([])
+const openShape = ref(null)
+const reference = ref(null)
+const floating = ref(null)
+
+const { floatingStyles } = useFloating(reference, floating, {
+    placement: 'right',
+    middleware: [offset(8), flip(), shift({ padding: 8 })],
+})
+
+onMounted(() => {
+    shapesanity.value = props.apService.getShapesanityParsed() || []
+})
+
+function handleEnter(event, shape) {
+    reference.value = event.currentTarget
+    openShape.value = shape
+}
+
+function handleLeave() {
+    openShape.value = null
+}
 </script>
 
 <style>
@@ -44,15 +68,73 @@ export default {
 .card {
     background: var(--container-bg);
     border-radius: 8px;
-    padding: 16px;
-    width: 150px;
+    padding: 0;
     text-align: center;
+    position: relative;
+    width: 5rem;
+    transition: width 0.2s ease;
 }
 
-.card.out-of-logic {
-    background: var(--out-of-logic-bg);
+.card.unavailable {
+    background: var(--unavailable-bg);
 }
 .card.found {
     background: var(--found-bg);
+}
+
+.card img {
+    width: 5rem;
+    height: auto;
+    display: block;
+}
+
+.shape-info {
+    position: absolute;
+    background: var(--container-bg);
+    border: 2px solid var(--container-border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    z-index: 10;
+}
+
+.card.unavailable .shape-info {
+    background: var(--unavailable-bg);
+}
+
+.card.found .shape-info {
+    background: var(--found-bg);
+}
+
+.card:hover .shape-info {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+
+.shape-location,
+.shape-name,
+.shape-code {
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.shape-location {
+    font-weight: bold;
+    color: var(--text-primary, #fff);
+}
+
+.shape-name {
+    color: var(--text-secondary, #ccc);
+}
+
+.shape-code {
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--text-tertiary, #999);
 }
 </style>
