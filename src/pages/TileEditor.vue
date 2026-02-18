@@ -263,11 +263,19 @@ const placeBuilding = (position: Position) => {
   const buildingConfig = availableBuildings.find(b => b.name === selectedBuilding.value);
   const building: Building = {
     id: buildingId,
-    type: selectedBuilding.value,
+    name: buildingConfig?.name || selectedBuilding.value,
+    type: buildingConfig?.item || selectedBuilding.value,
     position,
     size: selectedBuildingSize.value,
     rotation: selectedRotation.value,
     sprite: `/src/assets/buildings/${buildingConfig?.sprite || selectedBuilding.value + '.webp'}`,
+    attachedWires: buildingConfig?.attachedWires?.map(w => ({
+      name: w.name,
+      sprite: `/src/assets/wires/${w.sprite}`,
+      offsetX: w.offsetX,
+      offsetY: w.offsetY,
+      rotation: w.rotation as Rotation,
+    })) || [],
   };
   
   buildings.set(buildingId, building);
@@ -300,7 +308,14 @@ const placeWire = (position: Position) => {
   
   // Mark building as having wire attached
   if (building) {
-    building.wireAttached = true;
+    if (!building.attachedWires) building.attachedWires = [];
+    building.attachedWires.push({
+      name: wireConfig?.name || selectedWire.value,
+      sprite: `/src/assets/wires/${wireConfig?.sprite || 'Analyzer.webp'}`,
+      offsetX: wire.position.x - building.position.x,
+      offsetY: wire.position.y - building.position.y,
+      rotation: selectedRotation.value,
+    });
   }
 };
 

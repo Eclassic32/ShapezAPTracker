@@ -2,6 +2,7 @@
 import { ref, onMounted, watch } from 'vue';
 import type { Building, Wire, Entity, GridConfig, Rotation } from '../types/tile';
 import { isBuildingAvailable } from '@/utils/archipelago-helper';
+import { buildingConfigs } from '@/config/buildings';
 
 const props = withDefaults(defineProps<{
   buildings: Map<string, Building>;
@@ -14,6 +15,10 @@ const props = withDefaults(defineProps<{
 }>(), {
   canvasHeight: '95vh',
 });
+
+const buildingConfigMap = new Map(
+  buildingConfigs.map(c => [c.name, c])
+);
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 const ctx = ref<CanvasRenderingContext2D | null>(null);
@@ -147,6 +152,29 @@ const render = async () => {
   // Draw buildings layer (bottom)
   for (const building of props.buildings.values()) {
     try {
+      // Get building config 
+      const config = buildingConfigMap.get(building.type);
+      const itemName = config?.item;
+
+      // Add attached wires to wires map for rendering
+      if (config?.attachedWires) {
+        for (const [index, attachedWire] of config.attachedWires.entries()) {
+          const wireId = `${building.id}-${attachedWire.name}-${index}`;
+          if (!props.wires.has(wireId)) {
+            props.wires.set(wireId, {
+              id: wireId,
+              position: {
+                x: building.position.x + attachedWire.offsetX,
+                y: building.position.y + attachedWire.offsetY
+              },
+              rotation: attachedWire.rotation,
+              sprite: attachedWire.sprite
+            });
+          }
+        }
+      }
+      
+      // Load building image
       const img = await loadImage(building.sprite);
       
       // Get original dimensions (HxW format)
@@ -164,8 +192,10 @@ const render = async () => {
       
       drawRotatedImage(img, x, y, originalWidth, originalHeight, boundingWidth, boundingHeight, building.rotation);
       
+      console.log("Checking if Available: ", building);
+      
       // Draw red overlay if building is unavailable
-      if (!isBuildingAvailable(building.type)) {
+      if (itemName && !isBuildingAvailable(itemName)) {
         ctx.value.fillStyle = 'rgba(255, 0, 0, 0.4)';
         ctx.value.fillRect(
           x,

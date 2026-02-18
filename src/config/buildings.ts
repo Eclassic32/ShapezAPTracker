@@ -1,5 +1,6 @@
 
-import type { BuildingSize } from '../types/tile';
+import type { BuildingSize, Rotation } from '../types/tile';
+
 
 export interface BuildingConfig {
   name: string;
@@ -18,18 +19,19 @@ export interface WireConfig {
 export interface WireConnectedToBuilding extends WireConfig {
   offsetX: number;
   offsetY: number;
-  rotation: 0 | 90 | 180 | 270;
+  rotation: Rotation;
 }
 
+const wiresPath = '/src/assets/wires/';
 // Building configurations
 // Size format: HxW (height x width) - e.g., '1x2' = 1 tile high, 2 tiles wide
 export const buildingConfigs: BuildingConfig[] = [
   { name: 'Belt_top', size: '1x1', sprite: 'Belt_top.webp', item: 'Belt' },
-  { name: 'Belt_left', size: '1x1', sprite: 'Belt_left.webp', item: 'Belt' },
-  { name: 'Belt_right', size: '1x1', sprite: 'Belt_right.webp', item: 'Belt' },
-  { name: 'Belt-Reader', size: '1x1', sprite: 'Belt-Reader.webp', item: 'Belt Reader',
+  { name: 'Belt_left', size: '1x1', sprite: 'Belt_left.png', item: 'Belt' },
+  { name: 'Belt_right', size: '1x1', sprite: 'Belt_right.png', item: 'Belt' },
+  { name: 'Belt-Reader', size: '1x1', sprite: 'Belt-Reader.png', item: 'Belt Reader',
     attachedWires: [
-      { name: 'Signal_output_double', sprite: 'Signal_output_double.webp', offsetX: 0, offsetY: 0, rotation: 0 }
+      { name: 'Signal_output_double', sprite: `${wiresPath}Signal_output_double.webp`, offsetX: 0, offsetY: 0, rotation: 0 }
     ]
   },
   { name: 'Balancer', size: '1x2', sprite: 'Balancer.webp', item: 'Balancer' },
@@ -38,25 +40,29 @@ export const buildingConfigs: BuildingConfig[] = [
   { name: 'Cutter-quad', size: '1x4', sprite: 'Cutter-quad.webp', item: 'Cutter Quad' },
   { name: 'Display', size: '1x1', sprite: 'Display.webp', item: 'Display',
     attachedWires: [
-      { name: 'Signal_input', sprite: 'Signal_input.webp', offsetX: 0, offsetY: 0, rotation: 0 }
+      { name: 'Signal_input', sprite: `${wiresPath}Signal_input.png`, offsetX: 0, offsetY: 0, rotation: 0 }
     ]
    },
   { name: 'Filter', size: '1x2', sprite: 'Filter.webp', item: 'Filter', 
     attachedWires: [
-      { name: 'Signal_input', sprite: 'Signal_input.webp', offsetX: 0, offsetY: 0, rotation: 90 }
+      { name: 'Signal_input', sprite: `${wiresPath}Signal_input.png`, offsetX: 0, offsetY: 0, rotation: 90 }
     ]
   },
   { name: 'Hub', size: '4x4', sprite: 'Hub.webp', item: 'Hub',
     attachedWires: [
-      { name: 'Signal_output', sprite: 'Signal_output.webp', offsetX: 0, offsetY: 2, rotation: 90 },
+      { name: 'Signal_output_shape', sprite: `${wiresPath}Signal_output_shape.png`, offsetX: 0, offsetY: 2, rotation: 90 },
     ]
    },
   { name: 'Lever', size: '1x1', sprite: 'Lever.webp', item: 'Lever', 
     attachedWires: [
-      { name: 'Signal_output', sprite: 'Signal_output.webp', offsetX: 0, offsetY: 0, rotation: 180 }
+      { name: 'Signal_output_binary', sprite: `${wiresPath}Signal_output_binary.png`, offsetX: 0, offsetY: 0, rotation: 180 }
     ]
   },
-  { name: 'Lever_on', size: '1x1', sprite: 'Lever_on.webp', item: 'Lever' },
+  { name: 'Lever_on', size: '1x1', sprite: 'Lever_on.webp', item: 'Lever',
+    attachedWires: [
+      { name: 'Signal_output_binary', sprite: `${wiresPath}Signal_output_binary.png`, offsetX: 0, offsetY: 0, rotation: 180 }
+    ]
+   },
   { name: 'Merger-compact-L', size: '1x1', sprite: 'Merger-compact-L.webp', item: 'Merger Compact L' },
   { name: 'Merger-compact-R', size: '1x1', sprite: 'Merger-compact-R.webp', item: 'Merger Compact R' },
   { name: 'Miner', size: '1x1', sprite: 'Miner.webp', item: 'Miner' },
@@ -66,10 +72,10 @@ export const buildingConfigs: BuildingConfig[] = [
   { name: 'Painter-mirrored', size: '1x2', sprite: 'Painter-mirrored.webp', item: 'Painter Mirrored' },
   { name: 'Painter-quad', size: '1x4', sprite: 'Painter-quad.webp', item: 'Painter Quad',
     attachedWires: [
-      { name: 'Signal_input', sprite: 'Signal_input.webp', offsetX: 0, offsetY: 0, rotation: 0 },
-      { name: 'Signal_input', sprite: 'Signal_input.webp', offsetX: 1, offsetY: 0, rotation: 0 },
-      { name: 'Signal_input', sprite: 'Signal_input.webp', offsetX: 2, offsetY: 0, rotation: 0 },
-      { name: 'Signal_input', sprite: 'Signal_input.webp', offsetX: 3, offsetY: 0, rotation: 0 }
+      { name: 'Signal_input', sprite: `${wiresPath}Signal_input.png`, offsetX: 0, offsetY: 0, rotation: 0 },
+      { name: 'Signal_input', sprite: `${wiresPath}Signal_input.png`, offsetX: 1, offsetY: 0, rotation: 0 },
+      { name: 'Signal_input', sprite: `${wiresPath}Signal_input.png`, offsetX: 2, offsetY: 0, rotation: 0 },
+      { name: 'Signal_input', sprite: `${wiresPath}Signal_input.png`, offsetX: 3, offsetY: 0, rotation: 0 }
     ]
    },
   { name: 'Rotater', size: '1x1', sprite: 'Rotater.webp', item: 'Rotater' },
@@ -78,10 +84,10 @@ export const buildingConfigs: BuildingConfig[] = [
   { name: 'Splitter-compact-L', size: '1x1', sprite: 'Splitter-compact-L.webp', item: 'Splitter Compact L' },
   { name: 'Splitter-compact-R', size: '1x1', sprite: 'Splitter-compact-R.webp', item: 'Splitter Compact R' },
   { name: 'Stacker', size: '1x2', sprite: 'Stacker.webp', item: 'Stacker' },
-  { name: 'Storage', size: '2x2', sprite: 'Storage.webp', item: 'Storage',
+  { name: 'Storage', size: '2x2', sprite: 'Storage.png', item: 'Storage',
     attachedWires: [
-      { name: 'Signal_output', sprite: 'Signal_output.webp', offsetX: 0, offsetY: 1, rotation: 90 },
-      { name: 'Signal_output', sprite: 'Signal_output.webp', offsetX: 1, offsetY: 1, rotation: 270 }
+      { name: 'Signal_output_binary', sprite: `${wiresPath}Signal_output_binary.png`, offsetX: 0, offsetY: 1, rotation: 90 },
+      { name: 'Signal_output', sprite: `${wiresPath}Signal_output.png`, offsetX: 1, offsetY: 1, rotation: 270 }
     ]
    },
   { name: 'Trash', size: '1x1', sprite: 'Trash.webp', item: 'Trash' },
@@ -112,16 +118,16 @@ export const entityShapeConfigs = [
 ];
 
 export const wireConfigs : WireConfig[] = [
-  { name: 'Green_wire_top', sprite: 'Green_wire_top.webp' },
-  { name: 'Green_wire_corner', sprite: 'Green_wire_corner.webp' },
-  { name: 'Green_wire_cross', sprite: 'Green_wire_cross.webp' },
-  { name: 'Green_wire_T', sprite: 'Green_wire_T.webp' },
-  { name: 'Blue_wire_top', sprite: 'Blue_wire_top.webp' },
-  { name: 'Blue_wire_corner', sprite: 'Blue_wire_corner.webp' },
-  { name: 'Blue_wire_cross', sprite: 'Blue_wire_cross.webp' },
-  { name: 'Blue_wire_T', sprite: 'Blue_wire_T.webp' },
+  { name: 'Green_wire_top', sprite: 'Green_wire_top.png' },
+  { name: 'Green_wire_corner', sprite: 'Green_wire_corner.png' },
+  { name: 'Green_wire_cross', sprite: 'Green_wire_cross.png' },
+  { name: 'Green_wire_T', sprite: 'Green_wire_T.png' },
+  { name: 'Blue_wire_top', sprite: 'Blue_wire_top.png' },
+  { name: 'Blue_wire_corner', sprite: 'Blue_wire_corner.png' },
+  { name: 'Blue_wire_cross', sprite: 'Blue_wire_cross.png' },
+  { name: 'Blue_wire_T', sprite: 'Blue_wire_T.png' },
   { name: 'Wire_tunnel', sprite: 'Wire_tunnel.webp' },
-  { name: 'Constant', sprite: 'Constant.webp' },
+  { name: 'Constant', sprite: 'Constant.png' },
   { name: 'Analyzer', sprite: 'Analyzer.webp' },
   { name: 'Comparator', sprite: 'Comparator.webp' },
   { name: 'Logic_gate-and', sprite: 'Logic_gate-and.webp' },
@@ -134,7 +140,9 @@ export const wireConfigs : WireConfig[] = [
   { name: 'Virtual_processor-rotater', sprite: 'Virtual_processor-rotater.webp' },
   { name: 'Virtual_processor-stacker', sprite: 'Virtual_processor-stacker.webp' },
   { name: 'Virtual_processor-unstacker', sprite: 'Virtual_processor-unstacker.webp' },
-  // { name: 'Signal_output', sprite: 'Signal_output.webp' },
-  // { name: 'Signal_output_double', sprite: 'Signal_output_double.webp' },
-  // { name: 'Signal_input', sprite: 'Signal_input.webp' },
+  { name: 'Signal_output', sprite: `Signal_output.png` },
+  { name: 'Signal_output_binary', sprite: `Signal_output_binary.png` },
+  { name: 'Signal_output_shape', sprite: `Signal_output_shape.png` },
+  { name: 'Signal_output_double', sprite: `Signal_output_double.png` },
+  { name: 'Signal_input', sprite: `Signal_input.png` },
 ];

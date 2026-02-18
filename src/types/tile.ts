@@ -8,13 +8,22 @@ export interface Position {
   y: number;
 }
 
+export interface AttachedWire {
+  name: string;
+  sprite: string;
+  offsetX: number;
+  offsetY: number;
+  rotation: Rotation;
+}
+
 export interface Building {
   id: string;
+  name: string; // config 'name' (e.g., 'Belt_top')
   type: string;
   position: Position;
   size: BuildingSize;
   rotation: Rotation;
-  wireAttached?: boolean;
+  attachedWires?: AttachedWire[]; // may be empty or omitted
   sprite: string; // path to sprite
 }
 
