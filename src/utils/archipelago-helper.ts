@@ -1,10 +1,15 @@
+// @ts-nocheck
+
 import { Client } from "archipelago.js"
 import { markRaw } from "vue"
+import { shapesanityArrayToCodes } from "./shapesanity";
+import { fromShortKey } from "./shape-generator";
 
 class ArchipelagoService {
   constructor() {
     this.client = markRaw(new Client())
     this.hints = markRaw([])
+    this.shapesanity = {};
 
     this.client.messages.on('message', (message) => {
       console.log('💬', message);
@@ -76,6 +81,45 @@ class ArchipelagoService {
   getSlotData() {
     return this.slotData;
   }
+
+  getShapesanityRaw() {
+    if (this.shapesanity?.raw) return this.shapesanity.raw;
+    const shapesanityRaw = this.slotData?.shapesanity;
+    this.shapesanity.raw = shapesanityRaw;
+    return shapesanityRaw;
+  }
+  
+  getShapesanityCodes() {
+    if (this.shapesanity?.codes) return this.shapesanity.codes;
+    const raw = this.getShapesanityRaw();
+    if (!raw) return null;
+
+    const codes = shapesanityArrayToCodes(raw);
+    this.shapesanity.codes = codes;
+    return codes;
+  }
+
+  getShapesanityParsed() {
+    if (this.shapesanity?.parsed) return this.shapesanity.parsed;
+    const raw = this.getShapesanityRaw();
+    const codes = this.getShapesanityCodes();
+    if (!codes || !raw) return null;
+    
+    let parsed = [];
+    raw.forEach((name, index) => {
+      parsed.push({
+        code: codes[name],
+        name,
+        location: `Shapesanity ${index + 1}`,
+        shape: fromShortKey(codes[name])
+      });
+    });
+    this.shapesanity.parsed = parsed;
+    return this.shapesanity.parsed;
+  }
+
+  // Shapesanity Alias
+  getShapesanity () { return this.getShapesanityParsed(); }
 }
 
 export const apService = new ArchipelagoService()
