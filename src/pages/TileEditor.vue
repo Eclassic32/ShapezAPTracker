@@ -973,19 +973,16 @@ button.danger:hover {
 
 
 .building-list button {
-  aspect-ratio: 1;
   padding: 5px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
 }
 
 .building-list button img {
   max-width: 100%;
-  max-height: 32px;
-  image-rendering: pixelated;
+  max-height: 48px;
 }
 
 .building-list button span {

@@ -13,6 +13,7 @@
 [ ] Settings: Allow custom colors
 
 FIX: 
+[ ] Templates: Fix Belt_left and Belt_right sprites
 [ ] Text Client: Hints appear twice when refreshed 
 
 INVESTIGATE:
