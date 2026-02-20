@@ -80,7 +80,7 @@ const generateEntity = (position: Position): Entity => {
       id: `entity-${Date.now()}-${Math.random()}`,
       type: 'color',
       position,
-      sprite: `/src/assets/entities/${colorEntity.sprite}`,
+      sprite: `assets/entities/${colorEntity.sprite}`,
       data: {
         color: colorEntity.name,
       }
@@ -269,10 +269,10 @@ const placeBuilding = (position: Position) => {
     position,
     size: selectedBuildingSize.value,
     rotation: selectedRotation.value,
-    sprite: `/src/assets/buildings/${buildingConfig?.sprite || selectedBuilding.value + '.webp'}`,
+    sprite: `assets/buildings/${buildingConfig?.sprite || selectedBuilding.value + '.webp'}`,
     attachedWires: buildingConfig?.attachedWires?.map(w => ({
       name: w.name,
-      sprite: `/src/assets/wires/${w.sprite}`,
+      sprite: `assets/wires/${w.sprite}`,
       offsetX: w.offsetX,
       offsetY: w.offsetY,
       rotation: w.rotation as Rotation,
@@ -302,7 +302,7 @@ const placeWire = (position: Position) => {
     type: wireConfig?.item || selectedWire.value,
     position,
     rotation: selectedRotation.value,
-    sprite: `/src/assets/wires/${wireConfig?.sprite || 'Analyzer.webp'}`,
+    sprite: `assets/wires/${wireConfig?.sprite || 'Analyzer.webp'}`,
     connectedToBuildingId: building?.id,
     config: wireConfig,
   };
@@ -314,7 +314,7 @@ const placeWire = (position: Position) => {
     if (!building.attachedWires) building.attachedWires = [];
     building.attachedWires.push({
       name: wireConfig?.name || selectedWire.value,
-      sprite: `/src/assets/wires/${wireConfig?.sprite || 'Analyzer.webp'}`,
+      sprite: `assets/wires/${wireConfig?.sprite || 'Analyzer.webp'}`,
       offsetX: wire.position.x - building.position.x,
       offsetY: wire.position.y - building.position.y,
       rotation: selectedRotation.value,
@@ -702,7 +702,7 @@ refreshSavedMaps();
             @click="selectBuilding(building)"
             :title="`${building.name} (${building.size})`"
           >
-            <img :src="`/src/assets/buildings/${building.sprite}`" :alt="building.name" />
+            <img :src="`assets/buildings/${building.sprite}`" :alt="building.name" />
             <span>{{ building.size }}</span>
           </button>
         </div>
@@ -725,7 +725,7 @@ refreshSavedMaps();
             @click="selectWire(wire)"
             :title="wire.name"
           >
-            <img :src="`/src/assets/wires/${wire.sprite}`" :alt="wire.name" />
+            <img :src="`assets/wires/${wire.sprite}`" :alt="wire.name" />
             <span class="wire-name">{{ wire.name }}</span>
           </button>
         </div>
@@ -741,7 +741,7 @@ refreshSavedMaps();
             @click="() => { selectedEntityShape = color.name; selectedTool = 'entity'; }"
             :title="color.name"
           >
-            <img :src="`/src/assets/entities/${color.sprite}`" :alt="color.name" />
+            <img :src="`assets/entities/${color.sprite}`" :alt="color.name" />
             <span class="entity-name">{{ color.name }}</span>
           </button>
           <button 

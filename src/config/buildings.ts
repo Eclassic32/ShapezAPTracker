@@ -22,7 +22,7 @@ export interface WireConnectedToBuilding extends WireConfig {
   rotation: Rotation;
 }
 
-const wiresPath = '/src/assets/wires/';
+const wiresPath = 'assets/wires/';
 // Building configurations
 // Size format: HxW (height x width) - e.g., '1x2' = 1 tile high, 2 tiles wide
 export const buildingConfigs: BuildingConfig[] = [
