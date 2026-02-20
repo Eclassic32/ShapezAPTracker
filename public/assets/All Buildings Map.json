@@ -1,0 +1,1569 @@
+{
+  "name": "All Buildings Map",
+  "timestamp": 1771564159914,
+  "buildings": [
+    {
+      "id": "building-1771563834516-0.7066532194124387",
+      "config": {
+        "name": "Belt_top",
+        "size": "1x1",
+        "sprite": "Belt_top.webp",
+        "item": "Belt"
+      },
+      "name": "Belt_top",
+      "type": "Belt",
+      "position": {
+        "x": 1,
+        "y": 1
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Belt_top.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563836245-0.2961829924318664",
+      "config": {
+        "name": "Belt_left",
+        "size": "1x1",
+        "sprite": "Belt_left.png",
+        "item": "Belt"
+      },
+      "name": "Belt_left",
+      "type": "Belt",
+      "position": {
+        "x": 2,
+        "y": 1
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Belt_left.png",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563837533-0.19279807681313188",
+      "config": {
+        "name": "Belt_right",
+        "size": "1x1",
+        "sprite": "Belt_right.png",
+        "item": "Belt"
+      },
+      "name": "Belt_right",
+      "type": "Belt",
+      "position": {
+        "x": 3,
+        "y": 1
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Belt_right.png",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563841709-0.32181038791866345",
+      "config": {
+        "name": "Balancer",
+        "size": "1x2",
+        "sprite": "Balancer.webp",
+        "item": "Balancer"
+      },
+      "name": "Balancer",
+      "type": "Balancer",
+      "position": {
+        "x": 1,
+        "y": 3
+      },
+      "size": "1x2",
+      "rotation": 0,
+      "sprite": "assets/buildings/Balancer.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563843757-0.9362671761765748",
+      "config": {
+        "name": "Color_mixer",
+        "size": "1x2",
+        "sprite": "Color_mixer.webp",
+        "item": "Color Mixer"
+      },
+      "name": "Color_mixer",
+      "type": "Color Mixer",
+      "position": {
+        "x": 1,
+        "y": 5
+      },
+      "size": "1x2",
+      "rotation": 0,
+      "sprite": "assets/buildings/Color_mixer.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563845613-0.29201227877337566",
+      "config": {
+        "name": "Cutter",
+        "size": "1x2",
+        "sprite": "Cutter.webp",
+        "item": "Cutter"
+      },
+      "name": "Cutter",
+      "type": "Cutter",
+      "position": {
+        "x": 1,
+        "y": 6
+      },
+      "size": "1x2",
+      "rotation": 0,
+      "sprite": "assets/buildings/Cutter.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563847214-0.19132689438714234",
+      "config": {
+        "name": "Cutter-quad",
+        "size": "1x4",
+        "sprite": "Cutter-quad.webp",
+        "item": "Quad Cutter"
+      },
+      "name": "Cutter-quad",
+      "type": "Quad Cutter",
+      "position": {
+        "x": 3,
+        "y": 6
+      },
+      "size": "1x4",
+      "rotation": 0,
+      "sprite": "assets/buildings/Cutter-quad.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563849821-0.23301835253905456",
+      "config": {
+        "name": "Display",
+        "size": "1x1",
+        "sprite": "Display.webp",
+        "item": "Display",
+        "attachedWires": [
+          {
+            "name": "Signal_input",
+            "sprite": "assets/wires/Signal_input.png",
+            "offsetX": 0,
+            "offsetY": 0,
+            "rotation": 0
+          }
+        ]
+      },
+      "name": "Display",
+      "type": "Display",
+      "position": {
+        "x": 1,
+        "y": 4
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Display.webp",
+      "attachedWires": [
+        {
+          "name": "Signal_input",
+          "sprite": "assets/wires/assets/wires/Signal_input.png",
+          "offsetX": 0,
+          "offsetY": 0,
+          "rotation": 0
+        }
+      ]
+    },
+    {
+      "id": "building-1771563851863-0.1000196149307736",
+      "config": {
+        "name": "Filter",
+        "size": "1x2",
+        "sprite": "Filter.webp",
+        "item": "Item Filter",
+        "attachedWires": [
+          {
+            "name": "Signal_input",
+            "sprite": "assets/wires/Signal_input.png",
+            "offsetX": 0,
+            "offsetY": 0,
+            "rotation": 90
+          }
+        ]
+      },
+      "name": "Filter",
+      "type": "Item Filter",
+      "position": {
+        "x": 2,
+        "y": 4
+      },
+      "size": "1x2",
+      "rotation": 0,
+      "sprite": "assets/buildings/Filter.webp",
+      "attachedWires": [
+        {
+          "name": "Signal_input",
+          "sprite": "assets/wires/assets/wires/Signal_input.png",
+          "offsetX": 0,
+          "offsetY": 0,
+          "rotation": 90
+        }
+      ]
+    },
+    {
+      "id": "building-1771563856007-0.5143717235851777",
+      "config": {
+        "name": "Hub",
+        "size": "4x4",
+        "sprite": "Hub.webp",
+        "attachedWires": [
+          {
+            "name": "Signal_output_shape",
+            "sprite": "assets/wires/Signal_output_shape.png",
+            "offsetX": 0,
+            "offsetY": 2,
+            "rotation": 90
+          }
+        ]
+      },
+      "name": "Hub",
+      "type": "Hub",
+      "position": {
+        "x": 1,
+        "y": 8
+      },
+      "size": "4x4",
+      "rotation": 0,
+      "sprite": "assets/buildings/Hub.webp",
+      "attachedWires": [
+        {
+          "name": "Signal_output_shape",
+          "sprite": "assets/wires/assets/wires/Signal_output_shape.png",
+          "offsetX": 0,
+          "offsetY": 2,
+          "rotation": 90
+        }
+      ]
+    },
+    {
+      "id": "building-1771563861423-0.5447897128657395",
+      "config": {
+        "name": "Miner-chainable",
+        "size": "1x1",
+        "sprite": "Miner-chainable.webp",
+        "item": "Chaining Extractor"
+      },
+      "name": "Miner-chainable",
+      "type": "Chaining Extractor",
+      "position": {
+        "x": 6,
+        "y": 9
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Miner-chainable.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563862327-0.7508771069916038",
+      "config": {
+        "name": "Miner-chainable",
+        "size": "1x1",
+        "sprite": "Miner-chainable.webp",
+        "item": "Chaining Extractor"
+      },
+      "name": "Miner-chainable",
+      "type": "Chaining Extractor",
+      "position": {
+        "x": 6,
+        "y": 10
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Miner-chainable.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563862503-0.8539288692130877",
+      "config": {
+        "name": "Miner-chainable",
+        "size": "1x1",
+        "sprite": "Miner-chainable.webp",
+        "item": "Chaining Extractor"
+      },
+      "name": "Miner-chainable",
+      "type": "Chaining Extractor",
+      "position": {
+        "x": 6,
+        "y": 11
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Miner-chainable.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563863976-0.9269485117235847",
+      "config": {
+        "name": "Miner",
+        "size": "1x1",
+        "sprite": "Miner.webp",
+        "item": "Extractor"
+      },
+      "name": "Miner",
+      "type": "Extractor",
+      "position": {
+        "x": 6,
+        "y": 8
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Miner.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563880705-0.651290730076991",
+      "config": {
+        "name": "Lever",
+        "size": "1x1",
+        "sprite": "Lever.webp",
+        "item": "Switch",
+        "attachedWires": [
+          {
+            "name": "Signal_output_binary",
+            "sprite": "assets/wires/Signal_output_binary.png",
+            "offsetX": 0,
+            "offsetY": 0,
+            "rotation": 180
+          }
+        ]
+      },
+      "name": "Lever",
+      "type": "Switch",
+      "position": {
+        "x": 5,
+        "y": 4
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Lever.webp",
+      "attachedWires": [
+        {
+          "name": "Signal_output_binary",
+          "sprite": "assets/wires/assets/wires/Signal_output_binary.png",
+          "offsetX": 0,
+          "offsetY": 0,
+          "rotation": 180
+        }
+      ]
+    },
+    {
+      "id": "building-1771563882298-0.9481679542092906",
+      "config": {
+        "name": "Lever_on",
+        "size": "1x1",
+        "sprite": "Lever_on.webp",
+        "item": "Switch",
+        "attachedWires": [
+          {
+            "name": "Signal_output_binary",
+            "sprite": "assets/wires/Signal_output_binary.png",
+            "offsetX": 0,
+            "offsetY": 0,
+            "rotation": 180
+          }
+        ]
+      },
+      "name": "Lever_on",
+      "type": "Switch",
+      "position": {
+        "x": 6,
+        "y": 4
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Lever_on.webp",
+      "attachedWires": [
+        {
+          "name": "Signal_output_binary",
+          "sprite": "assets/wires/assets/wires/Signal_output_binary.png",
+          "offsetX": 0,
+          "offsetY": 0,
+          "rotation": 180
+        }
+      ]
+    },
+    {
+      "id": "building-1771563884786-0.6683149549470356",
+      "config": {
+        "name": "Merger-compact-L",
+        "size": "1x1",
+        "sprite": "Merger-compact-L.webp",
+        "item": "Compact Merger"
+      },
+      "name": "Merger-compact-L",
+      "type": "Compact Merger",
+      "position": {
+        "x": 4,
+        "y": 3
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Merger-compact-L.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563886098-0.007387753719205303",
+      "config": {
+        "name": "Merger-compact-R",
+        "size": "1x1",
+        "sprite": "Merger-compact-R.webp",
+        "item": "Compact Merger"
+      },
+      "name": "Merger-compact-R",
+      "type": "Compact Merger",
+      "position": {
+        "x": 3,
+        "y": 3
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Merger-compact-R.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563892187-0.15640210943695088",
+      "config": {
+        "name": "Painter",
+        "size": "1x2",
+        "sprite": "Painter.webp",
+        "item": "Painter"
+      },
+      "name": "Painter",
+      "type": "Painter",
+      "position": {
+        "x": 1,
+        "y": 13
+      },
+      "size": "1x2",
+      "rotation": 0,
+      "sprite": "assets/buildings/Painter.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563897021-0.11287860473027878",
+      "config": {
+        "name": "Painter-double",
+        "size": "2x2",
+        "sprite": "Painter-double.webp",
+        "item": "Double Painter"
+      },
+      "name": "Painter-double",
+      "type": "Double Painter",
+      "position": {
+        "x": 3,
+        "y": 13
+      },
+      "size": "2x2",
+      "rotation": 0,
+      "sprite": "assets/buildings/Painter-double.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563898388-0.9724074621560449",
+      "config": {
+        "name": "Painter-mirrored",
+        "size": "1x2",
+        "sprite": "Painter-mirrored.webp",
+        "item": "Painter"
+      },
+      "name": "Painter-mirrored",
+      "type": "Painter",
+      "position": {
+        "x": 1,
+        "y": 14
+      },
+      "size": "1x2",
+      "rotation": 0,
+      "sprite": "assets/buildings/Painter-mirrored.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563899227-0.5316969162291332",
+      "config": {
+        "name": "Painter-quad",
+        "size": "1x4",
+        "sprite": "Painter-quad.webp",
+        "item": "Quad Painter",
+        "attachedWires": [
+          {
+            "name": "Signal_input",
+            "sprite": "assets/wires/Signal_input.png",
+            "offsetX": 0,
+            "offsetY": 0,
+            "rotation": 0
+          },
+          {
+            "name": "Signal_input",
+            "sprite": "assets/wires/Signal_input.png",
+            "offsetX": 1,
+            "offsetY": 0,
+            "rotation": 0
+          },
+          {
+            "name": "Signal_input",
+            "sprite": "assets/wires/Signal_input.png",
+            "offsetX": 2,
+            "offsetY": 0,
+            "rotation": 0
+          },
+          {
+            "name": "Signal_input",
+            "sprite": "assets/wires/Signal_input.png",
+            "offsetX": 3,
+            "offsetY": 0,
+            "rotation": 0
+          }
+        ]
+      },
+      "name": "Painter-quad",
+      "type": "Quad Painter",
+      "position": {
+        "x": 1,
+        "y": 15
+      },
+      "size": "1x4",
+      "rotation": 0,
+      "sprite": "assets/buildings/Painter-quad.webp",
+      "attachedWires": [
+        {
+          "name": "Signal_input",
+          "sprite": "assets/wires/assets/wires/Signal_input.png",
+          "offsetX": 0,
+          "offsetY": 0,
+          "rotation": 0
+        },
+        {
+          "name": "Signal_input",
+          "sprite": "assets/wires/assets/wires/Signal_input.png",
+          "offsetX": 1,
+          "offsetY": 0,
+          "rotation": 0
+        },
+        {
+          "name": "Signal_input",
+          "sprite": "assets/wires/assets/wires/Signal_input.png",
+          "offsetX": 2,
+          "offsetY": 0,
+          "rotation": 0
+        },
+        {
+          "name": "Signal_input",
+          "sprite": "assets/wires/assets/wires/Signal_input.png",
+          "offsetX": 3,
+          "offsetY": 0,
+          "rotation": 0
+        }
+      ]
+    },
+    {
+      "id": "building-1771563902612-0.5456779402636369",
+      "config": {
+        "name": "Rotater",
+        "size": "1x1",
+        "sprite": "Rotater.webp",
+        "item": "Rotator"
+      },
+      "name": "Rotater",
+      "type": "Rotator",
+      "position": {
+        "x": 1,
+        "y": 2
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Rotater.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563904101-0.0032094875680100943",
+      "config": {
+        "name": "Rotater-180",
+        "size": "1x1",
+        "sprite": "Rotater-180.webp",
+        "item": "Rotator (180°)"
+      },
+      "name": "Rotater-180",
+      "type": "Rotator (180°)",
+      "position": {
+        "x": 2,
+        "y": 2
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Rotater-180.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563905532-0.14390223229299592",
+      "config": {
+        "name": "Rotater-ccw",
+        "size": "1x1",
+        "sprite": "Rotater-ccw.webp",
+        "item": "Rotator (CCW)"
+      },
+      "name": "Rotater-ccw",
+      "type": "Rotator (CCW)",
+      "position": {
+        "x": 3,
+        "y": 2
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Rotater-ccw.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563906813-0.2799467998707942",
+      "config": {
+        "name": "Stacker",
+        "size": "1x2",
+        "sprite": "Stacker.webp",
+        "item": "Stacker"
+      },
+      "name": "Stacker",
+      "type": "Stacker",
+      "position": {
+        "x": 3,
+        "y": 5
+      },
+      "size": "1x2",
+      "rotation": 0,
+      "sprite": "assets/buildings/Stacker.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563909612-0.2329405540957401",
+      "config": {
+        "name": "Splitter-compact-L",
+        "size": "1x1",
+        "sprite": "Splitter-compact-L.webp",
+        "item": "Compact Splitter"
+      },
+      "name": "Splitter-compact-L",
+      "type": "Compact Splitter",
+      "position": {
+        "x": 6,
+        "y": 3
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Splitter-compact-L.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563911093-0.57341772307993",
+      "config": {
+        "name": "Splitter-compact-R",
+        "size": "1x1",
+        "sprite": "Splitter-compact-R.webp",
+        "item": "Compact Splitter"
+      },
+      "name": "Splitter-compact-R",
+      "type": "Compact Splitter",
+      "position": {
+        "x": 5,
+        "y": 3
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Splitter-compact-R.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563918254-0.3708442664617819",
+      "config": {
+        "name": "Storage",
+        "size": "2x2",
+        "sprite": "Storage.png",
+        "item": "Storage",
+        "attachedWires": [
+          {
+            "name": "Signal_output_binary",
+            "sprite": "assets/wires/Signal_output_binary.png",
+            "offsetX": 0,
+            "offsetY": 1,
+            "rotation": 90
+          },
+          {
+            "name": "Signal_output",
+            "sprite": "assets/wires/Signal_output.png",
+            "offsetX": 1,
+            "offsetY": 1,
+            "rotation": 270
+          }
+        ]
+      },
+      "name": "Storage",
+      "type": "Storage",
+      "position": {
+        "x": 5,
+        "y": 14
+      },
+      "size": "2x2",
+      "rotation": 0,
+      "sprite": "assets/buildings/Storage.png",
+      "attachedWires": [
+        {
+          "name": "Signal_output_binary",
+          "sprite": "assets/wires/assets/wires/Signal_output_binary.png",
+          "offsetX": 0,
+          "offsetY": 1,
+          "rotation": 90
+        },
+        {
+          "name": "Signal_output",
+          "sprite": "assets/wires/assets/wires/Signal_output.png",
+          "offsetX": 1,
+          "offsetY": 1,
+          "rotation": 270
+        }
+      ]
+    },
+    {
+      "id": "building-1771563921238-0.30636433224212345",
+      "config": {
+        "name": "Trash",
+        "size": "1x1",
+        "sprite": "Trash.webp",
+        "item": "Trash"
+      },
+      "name": "Trash",
+      "type": "Trash",
+      "position": {
+        "x": 4,
+        "y": 1
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Trash.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563923959-0.7491807601713208",
+      "config": {
+        "name": "Underground_belt_exit",
+        "size": "1x1",
+        "sprite": "Underground_belt_exit.webp",
+        "item": "Tunnel"
+      },
+      "name": "Underground_belt_exit",
+      "type": "Tunnel",
+      "position": {
+        "x": 5,
+        "y": 1
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Underground_belt_exit.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563925215-0.6575660975902449",
+      "config": {
+        "name": "Underground_belt_entry",
+        "size": "1x1",
+        "sprite": "Underground_belt_entry.webp",
+        "item": "Tunnel"
+      },
+      "name": "Underground_belt_entry",
+      "type": "Tunnel",
+      "position": {
+        "x": 5,
+        "y": 2
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Underground_belt_entry.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563926607-0.8828670226436893",
+      "config": {
+        "name": "Underground_belt_entry-tier2",
+        "size": "1x1",
+        "sprite": "Underground_belt_entry-tier2.webp",
+        "item": "Tunnel Tier II"
+      },
+      "name": "Underground_belt_entry-tier2",
+      "type": "Tunnel Tier II",
+      "position": {
+        "x": 6,
+        "y": 2
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Underground_belt_entry-tier2.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563928112-0.2506045134040106",
+      "config": {
+        "name": "Underground_belt_exit-tier2",
+        "size": "1x1",
+        "sprite": "Underground_belt_exit-tier2.webp",
+        "item": "Tunnel Tier II"
+      },
+      "name": "Underground_belt_exit-tier2",
+      "type": "Tunnel Tier II",
+      "position": {
+        "x": 6,
+        "y": 1
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Underground_belt_exit-tier2.webp",
+      "attachedWires": []
+    },
+    {
+      "id": "building-1771563946666-0.9915688302583011",
+      "config": {
+        "name": "Belt-Reader",
+        "size": "1x1",
+        "sprite": "Belt-Reader.png",
+        "item": "Belt Reader",
+        "attachedWires": [
+          {
+            "name": "Signal_output_double",
+            "sprite": "assets/wires/Signal_output_double.png",
+            "offsetX": 0,
+            "offsetY": 0,
+            "rotation": 0
+          }
+        ]
+      },
+      "name": "Belt-Reader",
+      "type": "Belt Reader",
+      "position": {
+        "x": 4,
+        "y": 4
+      },
+      "size": "1x1",
+      "rotation": 0,
+      "sprite": "assets/buildings/Belt-Reader.png",
+      "attachedWires": [
+        {
+          "name": "Signal_output_double",
+          "sprite": "assets/wires/assets/wires/Signal_output_double.png",
+          "offsetX": 0,
+          "offsetY": 0,
+          "rotation": 0
+        }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "id": "entity-1771564008288-0.7190293503506077",
+      "type": "color",
+      "position": {
+        "x": 8,
+        "y": 1
+      },
+      "sprite": "assets/entities/red.png",
+      "data": {
+        "color": "red"
+      }
+    },
+    {
+      "id": "entity-1771564009752-0.4490164325127176",
+      "type": "color",
+      "position": {
+        "x": 9,
+        "y": 1
+      },
+      "sprite": "assets/entities/green.png",
+      "data": {
+        "color": "green"
+      }
+    },
+    {
+      "id": "entity-1771564011016-0.11244043931891512",
+      "type": "color",
+      "position": {
+        "x": 10,
+        "y": 1
+      },
+      "sprite": "assets/entities/blue.png",
+      "data": {
+        "color": "blue"
+      }
+    },
+    {
+      "id": "entity-1771564012208-0.07748658503805939",
+      "type": "color",
+      "position": {
+        "x": 11,
+        "y": 1
+      },
+      "sprite": "assets/entities/cyan.png",
+      "data": {
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "entity-1771564014321-0.2543338203205493",
+      "type": "color",
+      "position": {
+        "x": 12,
+        "y": 1
+      },
+      "sprite": "assets/entities/magenta.png",
+      "data": {
+        "color": "magenta"
+      }
+    },
+    {
+      "id": "entity-1771564016657-0.08797712625553789",
+      "type": "color",
+      "position": {
+        "x": 13,
+        "y": 1
+      },
+      "sprite": "assets/entities/yellow.png",
+      "data": {
+        "color": "yellow"
+      }
+    },
+    {
+      "id": "entity-1771564018297-0.11304711897642594",
+      "type": "color",
+      "position": {
+        "x": 14,
+        "y": 1
+      },
+      "sprite": "assets/entities/white.png",
+      "data": {
+        "color": "white"
+      }
+    },
+    {
+      "id": "entity-1771564020882-0.39948334069784586",
+      "type": "shape",
+      "position": {
+        "x": 8,
+        "y": 2
+      },
+      "sprite": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAFYklEQVRoQ+1Z+0tkdRQ/d9Tx7SQ+UFNs00UZUdTKBCURVHysEK7SbrHQa0OIfmvrX4ii3xaW2oLaYrfwMSKSPyiom66g+SAEcXW0HB3ByceAis+ZPufiDMOqc+/93llL8AvDzNw73+85n3M+53HPSHTBl3TB9adLAP+1By89cOkBnRZ4LhRqamoyHRwcxAcHB7/B+h0eHj4OCQn5p6WlxalT3xPbAwXA0NDQUGYwGK5LknQDUuI8ktxuN+Ga5+savj/El/bW1tbHeHfpBaQbwHUsKP4VFLnCyhiNRjKZTLJe6+vrdHR0RAkJCfJ3p9NJ+/v7Hp2t+HAHXrHoASEMADQxQ/ADvF4JCgpyZ2VlScnJyRQbG+u1eHd3N21vb1NjY6OsI3tjY2ODVlZWaGZmxg1wEq49gYfeB5AZESBCAKDQNQj9FQIjUlNTqaCggMLCwk7IZwA7OzsEJ524t7u7SxMTE7S0tMT3dgDkLdCqSysIzQBg+TsQ8iVoQ0VFRZSWlnamzGc9cNoPbTYbjYyMkMslh8Nn8ATTUfXSBACWvAnFH0ZGRlJpaSnFxMT4FaQGgCc2hoaGZLrBEzfhiV/UIlANAMq/CtoMIUiNFRUVFBUVpSjDH4We3czK9/T0ENIvR/nr8MSkogD8QBUA0CYIlrHC+unl5eUUF+fNkooeOCsGTtvocDhoYGCAvfAU980AcaQEQhUAWP9jKH8XmYby8vKUzvTe1+IBz6bJyUmanZ1lEM2g0jdKwhQBVFVVRSKv21BVX6irq5M4z6tdIgC4TnR1dXGKXYVHXurv79/1J08RAOhzCwc8yMzMlNOlliUCgM8fHx8nq9XKmenttra2R7oAIOf/jOB9h7kfHx+vRX8SBbC6uuqJhR9Bo3d1AYAHNkNDQ0319fW+PY0qIKIAuGJ3dnbS3t6eAwAShQGgQUtGm2BPSUmhkpISVUr7/kgUAJ8xODgotxxYichGjrOE+40BWD8XG//MyMigwsLCcwUwNjZG8/Pz3IqbLRbLtBAApM9mpM97ERERxNVX6+JuFArIHarWxV0stxd4fYRAvi8K4DYAfMt9D6ikVQdZeVYiMdEvjU89lyszF0EAud3e3v6dKICrUP6pSAplgXpigDvVubk5bi0yOzo6+Nnh1OU3BmpqamLQ8zi54ywuLtbsAT0AhoeH5VYbxSwExexQCABvQiD/Df6n1tbWGrQi0AMAadSNNGpFBroqnEZ5IwrZPRSy5urqaoqOjtaEQRTA5uam3Jli3QWAT3QBQCZ6E3Fgyc3Npezs7HMBMD09TVNTU9zQ1Ss9panphTgHzoWHh7+ImDBoyUYiHuD0iX0uZCD7wsLCy6gHB7o8cEyjD0Gj+2azmXJyclR7QQQAW549gPUe6PODkjBFDxwHMj/QzIJKV8rKyrxjEqXDtQJYW1ujvr4+ps5fUD4D5yvOjVQBYEXRF70G+gxiwmasrKxUVZm1ANja2qLe3l6eG+0DQAmq7x9KBuL7qgEcU+kGqPToeTzUc/PGlReVuxHKt6lRXjOAYxCfA8QXgRqrLC4u0ujo6PmMVTxWQW1owuefACSUq3R+fr6uwRYos4fzbiFltqi1vOd3mijkeziPWeCF33AtgUeLqBFSUlKS4miRi5TdbvcdLa6ANtfQsI1rVV6IQr5CuFdCq/0BgHyK6yl8D0HuxthFwlMcLS8vyx1peno68SgR7bUbzZlsNHjPBst/jY/fI+NsiSivG4CPUO94Hdc40M8arzugNE/deLw+gHe3qOK6KeRPsOcPDlCL/zNwweq//9//4NBrSOH9wkEsLDHAGy8BBNigmo+79IBmkwV4w4X3wL9HIcdPII3SjgAAAABJRU5ErkJggg==",
+      "data": {
+        "shape": "CuCuCuCu"
+      }
+    },
+    {
+      "id": "entity-1771564023818-0.38857943619380464",
+      "type": "shape",
+      "position": {
+        "x": 9,
+        "y": 2
+      },
+      "sprite": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABVUlEQVRoQ+1ZPWqGQBCdVRAEKwvxBBIs4jXypVWvkZwluYbaxlzDVEE8gJWVKIg/2SV8ZT7cVQkmz8bGNztv3s5z2GV08oedPH8Cgd9WEApAgY0VuLmF4ji2l2W5V12DY+8EljH2qRqDYz+SJGl+wt8kEEXRhQd4U118DxwvwmOaprkSAa7AAwfmruuSbdvS+VRVRcMwkO/70timaaiua4G7cAXelQhcFQiCgDzPk04iz3Pquo7CMJTGlmVJRVHQJgVAAApgC33bKJoYLqT4I4ONwkZhoye3UT6EPWma9mJZFpmmKT2QiYlyHEcyDEMaO88zTdNE/P2cZdmr0jR6JaDrOnEi0kmI5EUijuNIY/u+p7ZttxGAjcJGYaMnt1E0MZoYTYwmxsHW/z6Z+zOHu9Kz8I6ATVvo9BccOxbysFC4pTystCsDQ4GVhTrsMyhwWGlXBv4CgOJ6T+tpLAgAAAAASUVORK5CYII=",
+      "data": {
+        "shape": "RuRuRuRu"
+      }
+    },
+    {
+      "id": "entity-1771564025586-0.6423654745517484",
+      "type": "shape",
+      "position": {
+        "x": 10,
+        "y": 2
+      },
+      "sprite": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAEuUlEQVRoQ+1YW0tbWRRex1u02mh90AoqokYJM1WhULVlFPogExFF1HkpbbEdhpkyQ/vUH9Gnlt6h92HmoSoiiI4+DCidUQvDqDNUTATxgq15UEy8306/dciRYJNz9kkiJpADIYHstfb6vrW+vdbZEkX4I0V4/BQFcNwZjGYgmoEgGdAsocbGRmtsbGxmMHtIkrTe1tb23qgPm81mTklJaYXdO9j/489eE0BLS8t1GD4zuvmh9XYEUCzqo6mpqRygf8D6S/g24dsG+z8CAlBTU5NsNps/xsTEnLRaraIxHKybmpqira0tR3t7e5GWMe+Tmpp6CWt+wqeM1yYmJtLm5ib/DBwAWyMLj9hxVVUVZWYaq6be3l5aXV2dAoMWXwDg+wz7lmX5MthOiY+P38/Ly4spLCykhYUFGhsbI/xXCwJ6A8oAG0EHX8fFxf2XnZ1NlZWVhrLgCwBq24Ta/g6B/Yigz7PD9PR0ys/Pp9zcXILmlD3sdntoALCz5ubmYZTRubq6OolTK/p4A0BtW+CDg25F8KcQqAy2JWYbZfqFy1ADaMXGL0pKSqi4WFiP5AHwCdF9wOciR5mWliYXFBRIzDYy65eLkALwpN2ZlJR0krNgMAME5uWcnByFbS4XkcfhcNDo6GjwIlY3g+Du4/fP1dXVlJGRIRKDkoH19XWqr68nCFTIRl0UcgCqmMEkVVRUCAWjAkD9C633XhTSElIdQ8x/oRwqGxoaJBFGwxHAFYj5dWlpKRUVafYmBXPYAVDFnJycbK6trdUti7ADwBFDzHfxdVNEzGEJwNOQ7HyOl5eXa2YhLAF4OvMgxPwNxKx5PB47AJTLOQR8xwfN3AismCApISHBbxaWlpZod3dXc41qzL5wQBz42tjY4EEwuEYGAN/yYYLhi9CFD5xjlqGVlRVdEXPw+/v7mo1ve3tb9TUBh04fTm9rvRBpjgU4921gpUf02Dy8uUgJ7ezsUFdXlwyg7zA2V+mycmjBsQPgeEZGRmh2dpazVdTR0eEwAiIsADidThoYGOC476FcbkUcAA64p6eH1tbWXBBuBkpvSxREWGSAg/Ua3q5CC28iDoCXmIcA4ELEAeCAh4eHaW5uzpCY9e6FlD5QVlZGFovPiwW/RDGjfX19ytUIjmMhQhcXF2lwcJDXPoCYfxExCjkA7r58HwQm+WyXMHKQkRea7u5uGV3YLSrmkIiYOy6f4whcRoeW0KllsPcnmuBXGL1Pi4zeKtuTk5M0Pj7O90HXoIWXelkICoDL5SJ+d52ZmZH39vbY1xI+r8D8E25IGEUcGEMK8R6hF8fB/1xynAX4eA8Auu+uhgEgUEVoXCbLy8vKxmDrb7D9BGl/632GBwKA/Q0NDdH8/DwPgmc6Ozv/10IvrIGsrCyF7enpaZVtNwL/FYE/hOD43ueLJ1AAXmJ+DN83ggbAQuSp0sP2vwj8sdvt/r2/v39NyzlOH7vJZLLwfZDRZ2Jigvd0o0yztPYRygAC5tb+G9h+auSuHxmYhJ3+2782uu+x53N/S/QAnEXw5zGjvEZtu4yyyC9EsD9h1M57PTS3CB3wu4LPR/iaMJggjtI2CuAo2RXxHc2ACEtHuSaagaNkV8T3Z8cr/U9r2mCKAAAAAElFTkSuQmCC",
+      "data": {
+        "shape": "WuWuWuWu"
+      }
+    },
+    {
+      "id": "entity-1771564028019-0.6975577225025649",
+      "type": "shape",
+      "position": {
+        "x": 11,
+        "y": 2
+      },
+      "sprite": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAFaUlEQVRoQ+1Z60tcVxCfuz66QaOLjy0takWtfmn1gx/UNkQtFKqIUh/E1mjphyZtU2hJW/o/9JVCCYkUWqI1JfgAURSF2JWEqh/8oIWCb3xAyWq1Lq7oqnv7m2Vv2cbsPeded22EvXBxdc+Zmd/M/M7MGRU6449yxu2nCID/O4KRCEQicEIP6KZQfX39TUVRpra3tzuGh4fdJ9RlaHtDQ0O8qqpN2JTf1dV1LdhmXQAQ0oyNbQDhhrA2fL7V2dn5uyFLDC6Gzpeh6xp0voOtVq/X29zd3f2zKQBlZWXWlJSUPyHMpgmA8N/wudXtdt8bHBzcN2jfE5fD6HOQ24gvr0JXUcCirfX19ecdDseeKQC8CcK/w4+PCwsLyeVy0eLionp0dMSR+xvvj/DQbXhozgwQyM7ze7sF+xNjYmK8mZmZloSEBJqcnCR8dwPpc11PtvAYraure9Fiscymp6dTcXExwXhaXV2l+fl52traYiUqvPYrpxfA9ULxgZ5CGB2LLQ3Y8z7WXeC1SUlJlJWVRRkZGRQVFUVjY2O0trZGcE6uyDlCAP4oPITCV6qqqhSr1fqvfRyRubk5Wl5e1qLixJc/eDye1t7e3tVAIHBEFmR8iPddthmGqvC2kpOTQ+xx7dnb26P+/n72ywPwrVQUWVkAPjLn5+dTXl7eMZmHh4cMghYWFlScWCzTi3cQHmxFxM4hNa7CoHIYr9hsNjU7O1thb0dHRx+TNTMzQ9PT0/z3JgC4GxIATObU1NRHcXFx5ysrK3VBb2xsME84zVQAUGA4p4WKFPR5m9NF7xkYGFB3dnZcwGoHAE9IALAQ1IQbEPpJaWkp2e12kVw6ODigkZERgjFUXV1NiIJwj9PppNHRUebV1yDv58INWCCVQizocTLLCMcxS7u7u7xXZjmNj4/7DggZ8moCpQH4yfwAUXi1pqZGkfGoEQAcMRCfyetA6rwmhdhIBPwAfGQuKCig3NxcoQ4jAGZnZ2lqaoplNgLAPaFw/wJDEaioqHgmPj7eCTIngMxCHUYAgLyE6r6JyvssKu+hULgZAP4o+CqzDJllAQSQ90uQ9wtZ43mdoQgEkpnP8aKiwLbluFpZABMTE75iCH5lIn1WwgoggMwXQGbd41EGQAB578P4140YbyoCvKm2trYZxaktMTGRYmNjg+rc3NwkrtJ6a7jQMQgcnY09PT3S5DV1jGqbAOBtNHgdfJQi7EEBsPEwTLfwoW8itB/cJLYAQPupRAAd5X0YXi6qBwZTSKp5exzgU0PilZUVQxXYdAqhJ/oK3v8sTMeo8AJzogigK432d6VJYSpkLjR/diNXVUMphKbsLZD3bjhbCZxKl1HMOmTJbAgAyOtA+lwUkVdTLkNibW1APTBEZmkAZ76dhve/gbeuy5CXvcoeHRoaIr7jiiq2FgWtJ8Lv36IqfyqTRlIR4C4UHegjdKLcheru4erLE4un6kqJ9LkM8rbrXer5HIfhvks930rgvRG8fKn34PJ+BZ/fwGuRvdTLklkqAkgf301MYqzyFxT/hPcW5jmLgSmA9uMFOOEK5LyHv6eKxipoQR7iNLooSiMhAI28aWlpVFJScmywxQp4hgPDbmMa0SkabGHCF4N50JsAw4Otct4f1sFW4GiRm66lpSVtiLUNw+/A8O9BuHmRp570PTsH+z/wD7tsIR8tBhnuTrC3UTF/MVIx9QCynuTk5Et+MP8Z7kLPc3p6RP8faIHQO/D0LgzgMTt7+w8z3pbdo43XsZ5189RatzKLANyEoOn9/f32vr4+BnFqD4Zh55FSTQDxEsj8UTDFQhKfmsUmFUUAmHRcyLZFIhAyV5oUFImASceFbNs/zA9PXt4EPA4AAAAASUVORK5CYII=",
+      "data": {
+        "shape": "SuSuSuSu"
+      }
+    },
+    {
+      "id": "entity-1771564030034-0.9547578147927934",
+      "type": "shape",
+      "position": {
+        "x": 12,
+        "y": 2
+      },
+      "sprite": "data:image/png;base64,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",
+      "data": {
+        "shape": "CbCbCbRb:CwCwCwCw"
+      }
+    },
+    {
+      "id": "entity-1771564031843-0.04565708434210136",
+      "type": "shape",
+      "position": {
+        "x": 13,
+        "y": 2
+      },
+      "sprite": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAEDklEQVRoQ+1YS0iUURQ+4+gIiq8alEEsrBQR2pgWGliEqIW50BGKdKHiStSNphAISgstciEKIikRkeYbCXSXLRKRMdBVDYrhgPkYX5BImjN95w9DEud/zEz+P8yFgWHmnnu/75zvnnPu1ZHGh07j+MlH4Kwj6IuALwJuesArEiooKAg7ODgw+vv7pzudzkCdTvdFKU7YzvX392+eZu8pAn55eXm3/Pz88vF5ANDnjzbEdwIIpfgJ9vcGBgbGvEYgHwOgn2ODWN4kJCSEYmJihP3m5+dpf3+fEhMTZRPY3NyklZUVtruLCIx7nABkwqhe43PNYDA4c3NzdcnJyRQbG/vX45WVlbS6ukpms1k2AavVSrOzs96JAADlQBbvgCooNTWViouLKTw8/ARIJrC2tkYIknoIwPM1QPMMXqfy8nJiAqcN1UUAnnwIvb+Nioqiuro6io6OdunZqqoqQceqkBDAJwP8p+DgYENzczNFRkaKykI1EoJs9EC7oNfrLzY0NFB8fLwoeJ6gGgLwfjm834ZMQ4WFhZLAq4ZAZmZmMDKMLTAwMLyjo0MXFBSkLQKQTxHn++zsbCopKZEMXjURQAZ5g5z/qLGxkRISErRHABHYDsPo7OyU3dOc+SFGg2ZC5llOSUmhmhquX/LGmROA968C8lxWVhaVlpbKQ6+GNAr934b+PxiNRqFwbW1t0c7OjmQie3t75HA4iNsOuYPtDg8P2b5qcHCw9TR7l406InCd+55jxtwyX4iIiCBcVkQxcUvMIJS009wE2u12ti8bGhp6qYjAv0Yg9BS/PcnIyCAmITbGxsaIo9DT0yM29cT/3d3dND4+TrjZXRkZGVnQHIGWlhaampqi9fX1gImJiV+aI1BWVubEeVvAbSzOVfhkXVb/l4SWlpaourqacbeBQIXmCAwPDwvnBhf6+7jQv9cUAX4EQAF0bGxsLC8uLl6amZk50BSB3t5eQtpkzMWQzyux9KWqM8AvEfX19Sydb319fZcB3qEZAly4amtraXd3dx/V9yaqr0UMPP+vKAJJSUnCA5bYmJ6eFh62xAqZzWajpqYmzvncOpgBflBs7aP/FRGQujjPQzfrksDk5CS1t7dzxeXpj6F7fuWTPOQSuAN9pktenagiNDT0XFdX1wmT7e1t4naBqy3GT6xbhJTZL2NtYaosAnIXRzdrNZlMca2tf5pJfuhFaiSLxUKjo6NOyEuH375DNjnIPJ/lru91AqjcX9G1xqelpQltOB57nTikgtPQptsA/gW+dkE2P5SA9zoBjgCAHu9l1gG6FxsPQS4fOShKgSs6xHI3w3vSDbwnOXFANwICAuzwtPTbkMTNvHoGJGJwa5qPgFvu84CxLwIecKJbS/gi4Jb7PGD8Gw+Uk08fjfixAAAAAElFTkSuQmCC",
+      "data": {
+        "shape": "RuCw--Cw:----Ru--"
+      }
+    },
+    {
+      "id": "entity-1771564033315-0.003554540217266311",
+      "type": "shape",
+      "position": {
+        "x": 14,
+        "y": 2
+      },
+      "sprite": "data:image/png;base64,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",
+      "data": {
+        "shape": "CbCuCbCu:Sr------:--CrSrCr:CwCwCwCw"
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "building-1771563849821-0.23301835253905456-Signal_input-0",
+      "type": "Signal_input",
+      "position": {
+        "x": 1,
+        "y": 4
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Signal_input.png"
+    },
+    {
+      "id": "building-1771563851863-0.1000196149307736-Signal_input-0",
+      "type": "Signal_input",
+      "position": {
+        "x": 2,
+        "y": 4
+      },
+      "rotation": 90,
+      "sprite": "assets/wires/Signal_input.png"
+    },
+    {
+      "id": "building-1771563856007-0.5143717235851777-Signal_output_shape-0",
+      "type": "Signal_output_shape",
+      "position": {
+        "x": 1,
+        "y": 10
+      },
+      "rotation": 90,
+      "sprite": "assets/wires/Signal_output_shape.png"
+    },
+    {
+      "id": "building-1771563880705-0.651290730076991-Signal_output_binary-0",
+      "type": "Signal_output_binary",
+      "position": {
+        "x": 5,
+        "y": 4
+      },
+      "rotation": 180,
+      "sprite": "assets/wires/Signal_output_binary.png"
+    },
+    {
+      "id": "building-1771563882298-0.9481679542092906-Signal_output_binary-0",
+      "type": "Signal_output_binary",
+      "position": {
+        "x": 6,
+        "y": 4
+      },
+      "rotation": 180,
+      "sprite": "assets/wires/Signal_output_binary.png"
+    },
+    {
+      "id": "building-1771563899227-0.5316969162291332-Signal_input-0",
+      "type": "Signal_input",
+      "position": {
+        "x": 1,
+        "y": 15
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Signal_input.png"
+    },
+    {
+      "id": "building-1771563899227-0.5316969162291332-Signal_input-1",
+      "type": "Signal_input",
+      "position": {
+        "x": 2,
+        "y": 15
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Signal_input.png"
+    },
+    {
+      "id": "building-1771563899227-0.5316969162291332-Signal_input-2",
+      "type": "Signal_input",
+      "position": {
+        "x": 3,
+        "y": 15
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Signal_input.png"
+    },
+    {
+      "id": "building-1771563899227-0.5316969162291332-Signal_input-3",
+      "type": "Signal_input",
+      "position": {
+        "x": 4,
+        "y": 15
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Signal_input.png"
+    },
+    {
+      "id": "building-1771563918254-0.3708442664617819-Signal_output_binary-0",
+      "type": "Signal_output_binary",
+      "position": {
+        "x": 5,
+        "y": 15
+      },
+      "rotation": 90,
+      "sprite": "assets/wires/Signal_output_binary.png"
+    },
+    {
+      "id": "building-1771563918254-0.3708442664617819-Signal_output-1",
+      "type": "Signal_output",
+      "position": {
+        "x": 6,
+        "y": 15
+      },
+      "rotation": 270,
+      "sprite": "assets/wires/Signal_output.png"
+    },
+    {
+      "id": "building-1771563946666-0.9915688302583011-Signal_output_double-0",
+      "type": "Signal_output_double",
+      "position": {
+        "x": 4,
+        "y": 4
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Signal_output_double.png"
+    },
+    {
+      "id": "wire-1771564045148-0.5647203732349464",
+      "type": "Green Wire",
+      "position": {
+        "x": 8,
+        "y": 4
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Green_wire_top.png",
+      "config": {
+        "name": "Green_wire_top",
+        "sprite": "Green_wire_top.png",
+        "item": "Green Wire"
+      }
+    },
+    {
+      "id": "wire-1771564047245-0.3022985659269939",
+      "type": "Green Wire",
+      "position": {
+        "x": 9,
+        "y": 4
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Green_wire_corner.png",
+      "config": {
+        "name": "Green_wire_corner",
+        "sprite": "Green_wire_corner.png",
+        "item": "Green Wire"
+      }
+    },
+    {
+      "id": "wire-1771564048301-0.32720055925668423",
+      "type": "Green Wire",
+      "position": {
+        "x": 10,
+        "y": 4
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Green_wire_cross.png",
+      "config": {
+        "name": "Green_wire_cross",
+        "sprite": "Green_wire_cross.png",
+        "item": "Green Wire"
+      }
+    },
+    {
+      "id": "wire-1771564049637-0.2625995838143944",
+      "type": "Green Wire",
+      "position": {
+        "x": 11,
+        "y": 4
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Green_wire_T.png",
+      "config": {
+        "name": "Green_wire_T",
+        "sprite": "Green_wire_T.png",
+        "item": "Green Wire"
+      }
+    },
+    {
+      "id": "wire-1771564051053-0.2118335325348749",
+      "type": "Blue Wire",
+      "position": {
+        "x": 8,
+        "y": 5
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Blue_wire_top.png",
+      "config": {
+        "name": "Blue_wire_top",
+        "sprite": "Blue_wire_top.png",
+        "item": "Blue Wire"
+      }
+    },
+    {
+      "id": "wire-1771564052318-0.9207823866415942",
+      "type": "Blue Wire",
+      "position": {
+        "x": 9,
+        "y": 5
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Blue_wire_corner.png",
+      "config": {
+        "name": "Blue_wire_corner",
+        "sprite": "Blue_wire_corner.png",
+        "item": "Blue Wire"
+      }
+    },
+    {
+      "id": "wire-1771564053502-0.23888781149334448",
+      "type": "Blue Wire",
+      "position": {
+        "x": 10,
+        "y": 5
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Blue_wire_cross.png",
+      "config": {
+        "name": "Blue_wire_cross",
+        "sprite": "Blue_wire_cross.png",
+        "item": "Blue Wire"
+      }
+    },
+    {
+      "id": "wire-1771564055030-0.8106009168645317",
+      "type": "Blue Wire",
+      "position": {
+        "x": 11,
+        "y": 5
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Blue_wire_T.png",
+      "config": {
+        "name": "Blue_wire_T",
+        "sprite": "Blue_wire_T.png",
+        "item": "Blue Wire"
+      }
+    },
+    {
+      "id": "wire-1771564061198-0.7352866774333803",
+      "type": "Wire Tunnel",
+      "position": {
+        "x": 8,
+        "y": 7
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Wire_tunnel.webp",
+      "config": {
+        "name": "Wire_tunnel",
+        "sprite": "Wire_tunnel.webp",
+        "item": "Wire Tunnel"
+      }
+    },
+    {
+      "id": "wire-1771564062598-0.13810441308425203",
+      "type": "Constant Signal",
+      "position": {
+        "x": 9,
+        "y": 7
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Constant.png",
+      "config": {
+        "name": "Constant",
+        "sprite": "Constant.png",
+        "item": "Constant Signal"
+      }
+    },
+    {
+      "id": "wire-1771564063919-0.22420036943151544",
+      "type": "Logic Gate",
+      "position": {
+        "x": 10,
+        "y": 7
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Analyzer.webp",
+      "config": {
+        "name": "Analyzer",
+        "sprite": "Analyzer.webp",
+        "item": "Logic Gate"
+      }
+    },
+    {
+      "id": "wire-1771564065455-0.8659076440630132",
+      "type": "Logic Gate",
+      "position": {
+        "x": 11,
+        "y": 7
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Comparator.webp",
+      "config": {
+        "name": "Comparator",
+        "sprite": "Comparator.webp",
+        "item": "Logic Gate"
+      }
+    },
+    {
+      "id": "wire-1771564067078-0.36722987205704305",
+      "type": "Logic Gate",
+      "position": {
+        "x": 8,
+        "y": 9
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Logic_gate-and.webp",
+      "config": {
+        "name": "Logic_gate-and",
+        "sprite": "Logic_gate-and.webp",
+        "item": "Logic Gate"
+      }
+    },
+    {
+      "id": "wire-1771564068471-0.4503135171170769",
+      "type": "Logic Gate",
+      "position": {
+        "x": 9,
+        "y": 9
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Logic_gate-not.webp",
+      "config": {
+        "name": "Logic_gate-not",
+        "sprite": "Logic_gate-not.webp",
+        "item": "Logic Gate"
+      }
+    },
+    {
+      "id": "wire-1771564069719-0.46232289872764054",
+      "type": "Logic Gate",
+      "position": {
+        "x": 10,
+        "y": 9
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Logic_gate-or.webp",
+      "config": {
+        "name": "Logic_gate-or",
+        "sprite": "Logic_gate-or.webp",
+        "item": "Logic Gate"
+      }
+    },
+    {
+      "id": "wire-1771564071208-0.4967247200521242",
+      "type": "Logic Gate",
+      "position": {
+        "x": 11,
+        "y": 9
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Logic_gate-xor.webp",
+      "config": {
+        "name": "Logic_gate-xor",
+        "sprite": "Logic_gate-xor.webp",
+        "item": "Logic Gate"
+      }
+    },
+    {
+      "id": "wire-1771564074784-0.4785859541521065",
+      "type": "Transistor",
+      "position": {
+        "x": 13,
+        "y": 4
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Transistor_L.webp",
+      "config": {
+        "name": "Transistor_L",
+        "sprite": "Transistor_L.webp",
+        "item": "Transistor"
+      }
+    },
+    {
+      "id": "wire-1771564076800-0.892519749163867",
+      "type": "Transistor",
+      "position": {
+        "x": 13,
+        "y": 5
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Transistor_R.webp",
+      "config": {
+        "name": "Transistor_R",
+        "sprite": "Transistor_R.webp",
+        "item": "Transistor"
+      }
+    },
+    {
+      "id": "wire-1771564078608-0.5069277685153082",
+      "type": "Virtual Processor",
+      "position": {
+        "x": 8,
+        "y": 11
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Virtual_processor-cutter.webp",
+      "config": {
+        "name": "Virtual_processor-cutter",
+        "sprite": "Virtual_processor-cutter.webp",
+        "item": "Virtual Processor"
+      }
+    },
+    {
+      "id": "wire-1771564080080-0.3105380712532364",
+      "type": "Virtual Processor",
+      "position": {
+        "x": 9,
+        "y": 11
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Virtual_processor-painter.webp",
+      "config": {
+        "name": "Virtual_processor-painter",
+        "sprite": "Virtual_processor-painter.webp",
+        "item": "Virtual Processor"
+      }
+    },
+    {
+      "id": "wire-1771564081433-0.8465606688758261",
+      "type": "Virtual Processor",
+      "position": {
+        "x": 10,
+        "y": 11
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Virtual_processor-rotater.webp",
+      "config": {
+        "name": "Virtual_processor-rotater",
+        "sprite": "Virtual_processor-rotater.webp",
+        "item": "Virtual Processor"
+      }
+    },
+    {
+      "id": "wire-1771564082825-0.6446097501835997",
+      "type": "Virtual Processor",
+      "position": {
+        "x": 11,
+        "y": 11
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Virtual_processor-stacker.webp",
+      "config": {
+        "name": "Virtual_processor-stacker",
+        "sprite": "Virtual_processor-stacker.webp",
+        "item": "Virtual Processor"
+      }
+    },
+    {
+      "id": "wire-1771564084289-0.13771180911584857",
+      "type": "Virtual Processor",
+      "position": {
+        "x": 12,
+        "y": 11
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Virtual_processor-unstacker.webp",
+      "config": {
+        "name": "Virtual_processor-unstacker",
+        "sprite": "Virtual_processor-unstacker.webp",
+        "item": "Virtual Processor"
+      }
+    },
+    {
+      "id": "wire-1771564087058-0.9969591615778837",
+      "type": "Signal_output",
+      "position": {
+        "x": 8,
+        "y": 13
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Signal_output.png",
+      "config": {
+        "name": "Signal_output",
+        "sprite": "Signal_output.png"
+      }
+    },
+    {
+      "id": "wire-1771564088409-0.48763533067163833",
+      "type": "Signal_output_binary",
+      "position": {
+        "x": 9,
+        "y": 13
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Signal_output_binary.png",
+      "config": {
+        "name": "Signal_output_binary",
+        "sprite": "Signal_output_binary.png"
+      }
+    },
+    {
+      "id": "wire-1771564090042-0.0808244529076908",
+      "type": "Signal_output_shape",
+      "position": {
+        "x": 10,
+        "y": 13
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Signal_output_shape.png",
+      "config": {
+        "name": "Signal_output_shape",
+        "sprite": "Signal_output_shape.png"
+      }
+    },
+    {
+      "id": "wire-1771564091986-0.988756937754545",
+      "type": "Signal_output_double",
+      "position": {
+        "x": 11,
+        "y": 13
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Signal_output_double.png",
+      "config": {
+        "name": "Signal_output_double",
+        "sprite": "Signal_output_double.png"
+      }
+    },
+    {
+      "id": "wire-1771564093546-0.32170828373056404",
+      "type": "Signal_input",
+      "position": {
+        "x": 12,
+        "y": 13
+      },
+      "rotation": 0,
+      "sprite": "assets/wires/Signal_input.png",
+      "config": {
+        "name": "Signal_input",
+        "sprite": "Signal_input.png"
+      }
+    }
+  ]
+}
