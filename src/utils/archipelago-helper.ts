@@ -9,6 +9,7 @@ class ArchipelagoService {
   constructor() {
     this.client = markRaw(new Client())
     this.hints = markRaw([])
+    this.items = {};
     this.shapesanity = {};
 
     this.client.messages.on('message', (message) => {
@@ -46,6 +47,12 @@ class ArchipelagoService {
 
   async connect(address, slot, password, game) {
     this.slotData = await this.client.login(address, slot, game, { password })
+
+    this.getHints();
+    this.getShapesanity();
+    this.getReceivedItems();
+    this.getUniqueReceivedItems();
+
     return this.slotData;
   }
 
@@ -119,7 +126,10 @@ class ArchipelagoService {
         name,
         location: `Shapesanity ${index + 1}`,
         shape: fromShortKey(codes[name]),
-        image: renderShape(codes[name])
+        image: renderShape(codes[name]),
+        hint: false,
+        found: false,
+        logic: getShapeLogic(fromShortKey(codes[name])),
       });
     });
     this.shapesanity.parsed = parsed;
@@ -130,8 +140,13 @@ class ArchipelagoService {
   getShapesanity () { return this.getShapesanityParsed(); }
 
   getReceivedItems() {
-    this.receivedItems = this.client.items.received.map(i => i.name);
-    return this.receivedItems;
+    this.items.all = this.client.items.received.map(i => i.name);
+    return this.items.all;
+  }
+  
+  getUniqueReceivedItems() {
+    this.items.unique = [...new Set(this.getReceivedItems())];
+    return this.items.unique;
   }
 }
 
@@ -145,7 +160,140 @@ export function isBuildingAvailable(name) {
   
   
   const items = apService.getReceivedItems();
-  console.log("Is building available: ", name, items.includes(name));
+  // console.log("Is building available: ", name, items.includes(name));
   return items.includes(name);
   
+}
+
+class Logic {
+  constructor() {
+    this.items = apService.items.unique;
+  }
+
+  static count(item) {
+    return apService.items.all.filter(i => i === item).length;
+  }
+
+  static has(item) {
+    return apService.items.unique.includes(item);
+  }
+  
+  static hasAny(items) {
+    return items.some(item => apService.items.unique.includes(item));
+  }
+
+  static hasAll(items) {
+    return items.every(item => apService.items.unique.includes(item));
+  }
+
+  static canCutHalf() {
+    return this.has('Cutter');
+  }
+
+  static canRotate90(){
+    return this.hasAny(['Rotator', 'Rotator (CCW)']);
+  }
+
+  static canRotate180() {
+    return this.hasAny(['Rotator', 'Rotator (180°)', 'Rotator (CCW)']);
+  }
+
+  static canStack() {
+    return this.has('Stacker');
+  }
+
+  static canPaint() {
+    return this.hasAny(['Painter', 'Double Painter']) || this.canUseQuadPainter();
+  }
+
+  static canMixColors() {
+    return this.has('Color Mixer');
+  }
+
+  static hasTunnel() {
+    return this.hasAny(['Tunnel', 'Tunnel Tier II']);
+  }
+
+  static hasBalancer() {
+    return this.has('Balancer') || this.hasAll(['Compact Merger', 'Compact Splitter']);
+  }
+
+  static canUseQuadPainter() {
+    return this.hasAll(['Quad Painter', 'Wire']) && this.hasAny(['Switch', 'Constant Signal']);
+  }
+
+  static canMakeStitchedShape(floating: boolean){
+    return this.canStack() && ((this.has('Quad Cutter') && !floating) || (this.canCutHalf() && this.canRotate90()));
+  }
+
+  static canBuildMAM(floating: Boolean) {
+    return this.canMakeStitchedShape(floating) && this.canPaint() && 
+          this.canMixColors() && this.hasBalancer() && this.hasTunnel();
+  }
+
+  static canMakeEastWindmill() {
+    // Only used for shapesanity => single layers
+    return this.canStack() && (this.has('Quad Cutter') || (this.canCutHalf() && this.canRotate180()));
+  }
+
+  static canMakeHalfHalfShape() {
+    // Only used for shapesanity => single layers
+    return this.canStack() && this.hasAny(['Quad Cutter', 'Cutter']);
+  }
+
+  static canMakeHalfShape(){
+    // Only used for shapesanity => single layers
+    return this.canCutHalf() || this.hasAll(['Quad Cutter', 'Stacker']);
+  }
+
+  static hasXbeltMultiplier(needed: number) {
+    let mult = 1;
+  }
+
+  // Note: Seems to be not used in shapesanity?
+  static hasFloatingCorner(shape) {
+    const layers = shape.length;
+    const corners = shape[0].length;
+
+    for (let layer = 0; layer < layers; layer++) {
+      for (let corner = 0; corner < corners; corner++) {
+        
+        // If current corner is absent
+        if (shape[layer][corner] === null) {
+          
+          // Check all higher layers at same corner index
+          for (let higherLayer = layer + 1; higherLayer < layers; higherLayer++) {
+            if (shape[higherLayer][corner] !== null) {
+              return true; // Floating detected
+            }
+          }
+        }
+      }
+    }
+
+    return false; // No floating corners found
+  }
+}
+
+export function getShapeLogic(shape) {
+  if (!shape) return false; // if no shape provided, assume available
+  
+  let logic = [];
+  const items = apService.items.unique;
+
+  let floating = Logic.hasFloatingCorner(shape);
+  
+  // Check for Color Logic
+  if (shape.some(layer => layer.some(corner => corner && corner.color != 'uncolored'))) {
+    logic.push(Logic.canPaint);
+  }
+
+
+
+  return logic;
+}
+
+export function isInLogic(logic) {
+  if (!logic) return true; // if no logic provided, assume available
+  return getShapeLogic(logic);
 }

@@ -3,6 +3,7 @@
         <div v-for="shape in shapesanity"
             :key="shape.name"
             class="card"
+            :class="(shape.found ? 'found' : !shape.logic ? 'unavailable' : shape.hinted ? 'hinted' : '')"
             @mouseenter="handleEnter($event, shape)"
             @mouseleave="handleLeave"
         >
@@ -78,6 +79,9 @@ function handleLeave() {
 .card.unavailable {
     background: var(--unavailable-bg);
 }
+.card.hinted {
+    background: var(--hinted-bg);
+}
 .card.found {
     background: var(--found-bg);
 }
@@ -104,6 +108,10 @@ function handleLeave() {
 
 .card.unavailable .shape-info {
     background: var(--unavailable-bg);
+}
+
+.card.hinted .shape-info {
+    background: var(--hinted-bg);
 }
 
 .card.found .shape-info {
