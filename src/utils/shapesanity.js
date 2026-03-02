@@ -269,7 +269,7 @@ function debugRegexMatch(name) {
 export function shapesanityRegion(name) {
     name = name.replace(/^Shapesanity\s+/, "");
 
-    debugRegexMatch(name);
+    // debugRegexMatch(name);
 
     // Simple Regions
     const fullShapeMatch = name.match(patterns.fullSingle);

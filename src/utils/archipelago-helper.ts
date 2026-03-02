@@ -10,6 +10,7 @@ class ArchipelagoService {
     this.client = markRaw(new Client())
     this.hints = markRaw([])
     this.items = {};
+    this.locations = {};
     this.shapesanity = {};
 
     this.client.messages.on('message', (message) => {
@@ -49,9 +50,11 @@ class ArchipelagoService {
     this.slotData = await this.client.login(address, slot, game, { password })
 
     this.getHints();
-    this.getShapesanity();
     this.getReceivedItems();
     this.getUniqueReceivedItems();
+    // this.getAllLocations();
+    this.getSentLocations();
+    this.getShapesanity();
 
     return this.slotData;
   }
@@ -92,17 +95,49 @@ class ArchipelagoService {
     }))
   }
 
+  
+  // Items
+  getReceivedItems() {
+    this.items.all = this.client.items.received.map(i => i.name);
+    return this.items.all;
+  }
+  getUniqueReceivedItems() {
+    this.items.unique = [...new Set(this.getReceivedItems())];
+    return this.items.unique;
+  }
+
+  // Locations
+  // getAllLocations() {
+  //   // this.locations.all = this.client.package.shapez.reverseLocationTable;
+  //   return this.locations.all;
+  // }
+  getSentLocations() {
+    const sentLocations = this.client.room.checkedLocations;
+    sentLocations.forEach(loc => {
+      this.locations[loc] = this.client.package.lookupLocationName("shapez", loc);
+    });
+    return this.locations;
+  }
+
+  isLocationSentByName(location) {
+    const sentLocations = this.getSentLocations();
+    return Object.values(sentLocations).includes(location);
+  }
+
+  isHintedByLocationName(location) {
+    return this.hints.find(h => h.item.locationName == location) || null;
+  }
+
+  // Shapesanity
   getSlotData() {
     return this.slotData;
   }
-
   getShapesanityRaw() {
     if (this.shapesanity?.raw) return this.shapesanity.raw;
     const shapesanityRaw = this.slotData?.shapesanity;
     this.shapesanity.raw = shapesanityRaw;
     return shapesanityRaw;
   }
-  
   getShapesanityCodes() {
     if (this.shapesanity?.codes) return this.shapesanity.codes;
     const raw = this.getShapesanityRaw();
@@ -112,7 +147,6 @@ class ArchipelagoService {
     this.shapesanity.codes = codes;
     return codes;
   }
-
   getShapesanityParsed() {
     if (this.shapesanity?.parsed) return this.shapesanity.parsed;
     const raw = this.getShapesanityRaw();
@@ -127,27 +161,16 @@ class ArchipelagoService {
         location: `Shapesanity ${index + 1}`,
         shape: fromShortKey(codes[name]),
         image: renderShape(codes[name]),
-        hint: -1, // Hint id, "-1" is no hint
-        found: false,
+        hint: this.isHintedByLocationName(`Shapesanity ${index + 1}`), // Hint id, "-1" is no hint
+        found: this.isLocationSentByName(`Shapesanity ${index + 1}`),
         logic: assignShapeLogic(fromShortKey(codes[name]), name),
       });
     });
     this.shapesanity.parsed = parsed;
     return this.shapesanity.parsed;
   }
-
   // Shapesanity Alias
   getShapesanity () { return this.getShapesanityParsed(); }
-
-  getReceivedItems() {
-    this.items.all = this.client.items.received.map(i => i.name);
-    return this.items.all;
-  }
-  
-  getUniqueReceivedItems() {
-    this.items.unique = [...new Set(this.getReceivedItems())];
-    return this.items.unique;
-  }
 }
 
 export const apService = new ArchipelagoService()

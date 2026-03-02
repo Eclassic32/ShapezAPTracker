@@ -3,7 +3,7 @@
         <div v-for="shape in shapesanity"
             :key="shape.name"
             class="card"
-            :class="(shape.found ? 'found' : !isInLogic(shape.logic) ? 'unavailable' : shape.hint != -1 ? 'hinted' : '')"
+            :class="(shape.found ? 'found' : !isInLogic(shape.logic) ? 'unavailable' : (apService.isHintedByLocationName(shape.location)) ? 'hinted' : '')"
             @mouseenter="handleEnter($event, shape)"
             @mouseleave="handleLeave"
         >
