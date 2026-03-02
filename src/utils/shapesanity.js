@@ -34,6 +34,48 @@ export function shapesanityArrayToCodes(shapesanityArray) {
     return result;
 }
 
+// Match Regexs
+const patterns = {
+    // Full single shape (e.g., "Uncolored Circle", "Red Star")
+    fullSingle: /^(Uncolored|Red|Green|Blue|Yellow|Purple|Cyan|White)\s+(Circle|Square|Star|Windmill)$/,
+    // Half shape (e.g., "Half Purple Circle")
+    half: /^Half\s+(Uncolored|Red|Green|Blue|Yellow|Purple|Cyan|White)\s+(Circle|Square|Star|Windmill)$/,
+    // Cornered shape (e.g., "Cornered Blue Square")
+    cornered: /^Cornered\s+(Uncolored|Red|Green|Blue|Yellow|Purple|Cyan|White)\s+(Circle|Square|Star|Windmill)$/,
+    // Cut Out shape (e.g., "Cut Out Red Circle")
+    cutOut: /^Cut Out\s+(Uncolored|Red|Green|Blue|Yellow|Purple|Cyan|White)\s+(Circle|Square|Star|Windmill)$/,
+    // Single piece (e.g., "White Circle Piece")
+    singlePiece: /^(Uncolored|Red|Green|Blue|Yellow|Purple|Cyan|White)\s+(Circle|Square|Star|Windmill)\s+Piece$/,
+    // 4 letter color code + shape (e.g., "pruy Star")
+    fourLetterColor: /^([rgbypucw]{4})\s+(Circle|Square|Star|Windmill)$/,
+    // 3 letter color code + shape with dash (e.g., "cpr- Windmill")
+    threeLetterColorDash: /^([rgbypucw]{3})-\s+(Circle|Square|Star|Windmill)$/,
+    // Adjacent 2-1 (e.g., "Adjacent 2-1 Ww Ry")
+    adjacent21: /^Adjacent 2-1\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/,
+    // Cornered 2-1 (e.g., "Cornered 2-1 Su Sb")
+    cornered21: /^Cornered 2-1\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/,
+    // Adjacent Singles (e.g., "Adjacent Singles Cb Wg")
+    adjacentSingles: /^Adjacent Singles\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/,
+    // Cornered Singles (e.g., "Cornered Singles Sg Sp")
+    corneredSingles: /^Cornered Singles\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/,
+    // 3-1 (e.g., "3-1 Sw Su")
+    threeOne: /^3-1\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/,
+    // Half-Half (e.g., "Half-Half Ry Wu")
+    halfHalf: /^Half-Half\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/,
+    // Checkered (e.g., "Checkered Sc Ww")
+    checkered: /^Checkered\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/,
+    // Adjacent 2-1-1 (e.g., "Adjacent 2-1-1 Wu Cw Wb")
+    adjacent211: /^Adjacent 2-1-1\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/,
+    // Cornered 2-1-1 (e.g., "Cornered 2-1-1 Wp Cy Rw")
+    cornered211: /^Cornered 2-1-1\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/,
+    // Singles (4 different quadrants, e.g., "Singles Cc Rp Ry Ww")
+    singles: /^Singles\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/,
+    // Singles with 3 pieces (e.g., "Singles Cy Wp Ww")
+    singles3: /^Singles\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/,
+    // Color + shape letter combination (e.g., "Uncolored CSW-", "Red CRSW")
+    colorShapeLetters: /^(Uncolored|Red|Green|Blue|Yellow|Purple|Cyan|White)\s+([CRWS-]{4})$/
+};
+
 /**
  * Converts a single shapesanity name to a shape code
  * @param {string} name - Shapesanity location name (without "Shapesanity " prefix)
@@ -44,7 +86,7 @@ export function shapesanityNameToCode(name) {
     name = name.replace(/^Shapesanity\s+/, "");
     
     // Full single shape (e.g., "Uncolored Circle", "Red Star")
-    const fullShapeMatch = name.match(/^(Uncolored|Red|Green|Blue|Yellow|Purple|Cyan|White)\s+(Circle|Square|Star|Windmill)$/);
+    const fullShapeMatch = name.match(patterns.fullSingle);
     if (fullShapeMatch) {
         const [, color, shape] = fullShapeMatch;
         const code = shapeToCode[shape] + colorToCode[color];
@@ -52,7 +94,7 @@ export function shapesanityNameToCode(name) {
     }
     
     // Half shape (e.g., "Half Purple Circle")
-    const halfMatch = name.match(/^Half\s+(Uncolored|Red|Green|Blue|Yellow|Purple|Cyan|White)\s+(Circle|Square|Star|Windmill)$/);
+    const halfMatch = name.match(patterns.half);
     if (halfMatch) {
         const [, color, shape] = halfMatch;
         const code = shapeToCode[shape] + colorToCode[color];
@@ -60,7 +102,7 @@ export function shapesanityNameToCode(name) {
     }
     
     // Cornered shape (e.g., "Cornered Blue Square")
-    const corneredMatch = name.match(/^Cornered\s+(Uncolored|Red|Green|Blue|Yellow|Purple|Cyan|White)\s+(Circle|Square|Star|Windmill)$/);
+    const corneredMatch = name.match(patterns.cornered);
     if (corneredMatch) {
         const [, color, shape] = corneredMatch;
         const code = shapeToCode[shape] + colorToCode[color];
@@ -68,7 +110,7 @@ export function shapesanityNameToCode(name) {
     }
     
     // Cut Out shape (e.g., "Cut Out Red Circle")
-    const cutOutMatch = name.match(/^Cut Out\s+(Uncolored|Red|Green|Blue|Yellow|Purple|Cyan|White)\s+(Circle|Square|Star|Windmill)$/);
+    const cutOutMatch = name.match(patterns.cutOut);
     if (cutOutMatch) {
         const [, color, shape] = cutOutMatch;
         const code = shapeToCode[shape] + colorToCode[color];
@@ -76,7 +118,7 @@ export function shapesanityNameToCode(name) {
     }
     
     // Single piece (e.g., "White Circle Piece")
-    const pieceMatch = name.match(/^(Uncolored|Red|Green|Blue|Yellow|Purple|Cyan|White)\s+(Circle|Square|Star|Windmill)\s+Piece$/);
+    const pieceMatch = name.match(patterns.singlePiece);
     if (pieceMatch) {
         const [, color, shape] = pieceMatch;
         const code = shapeToCode[shape] + colorToCode[color];
@@ -84,7 +126,7 @@ export function shapesanityNameToCode(name) {
     }
     
     // 4 letter color code + shape (e.g., "pruy Star")
-    const fourColorMatch = name.match(/^([rgbypucw]{4})\s+(Circle|Square|Star|Windmill)$/);
+    const fourColorMatch = name.match(patterns.fourLetterColor);
     if (fourColorMatch) {
         const [, colors, shape] = fourColorMatch;
         const shapeCode = shapeToCode[shape];
@@ -92,7 +134,7 @@ export function shapesanityNameToCode(name) {
     }
     
     // 3 letter color code + shape with dash (e.g., "cpr- Windmill")
-    const threeColorMatch = name.match(/^([rgbypucw]{3})-\s+(Circle|Square|Star|Windmill)$/);
+    const threeColorMatch = name.match(patterns.threeLetterColorDash);
     if (threeColorMatch) {
         const [, colors, shape] = threeColorMatch;
         const shapeCode = shapeToCode[shape];
@@ -100,7 +142,7 @@ export function shapesanityNameToCode(name) {
     }
     
     // Adjacent 2-1 (e.g., "Adjacent 2-1 Ww Ry")
-    const adjacent21Match = name.match(/^Adjacent 2-1\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/);
+    const adjacent21Match = name.match(patterns.adjacent21);
     if (adjacent21Match) {
         const [, shape1, color1, shape2, color2] = adjacent21Match;
         const code1 = shape1 + color1;
@@ -109,7 +151,7 @@ export function shapesanityNameToCode(name) {
     }
     
     // Cornered 2-1 (e.g., "Cornered 2-1 Su Sb")
-    const cornered21Match = name.match(/^Cornered 2-1\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/);
+    const cornered21Match = name.match(patterns.cornered21);
     if (cornered21Match) {
         const [, shape1, color1, shape2, color2] = cornered21Match;
         const code1 = shape1 + color1;
@@ -118,7 +160,7 @@ export function shapesanityNameToCode(name) {
     }
     
     // Adjacent Singles (e.g., "Adjacent Singles Cb Wg")
-    const adjacentSinglesMatch = name.match(/^Adjacent Singles\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/);
+    const adjacentSinglesMatch = name.match(patterns.adjacentSingles);
     if (adjacentSinglesMatch) {
         const [, shape1, color1, shape2, color2] = adjacentSinglesMatch;
         const code1 = shape1 + color1;
@@ -127,7 +169,7 @@ export function shapesanityNameToCode(name) {
     }
     
     // Cornered Singles (e.g., "Cornered Singles Sg Sp")
-    const corneredSinglesMatch = name.match(/^Cornered Singles\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/);
+    const corneredSinglesMatch = name.match(patterns.corneredSingles);
     if (corneredSinglesMatch) {
         const [, shape1, color1, shape2, color2] = corneredSinglesMatch;
         const code1 = shape1 + color1;
@@ -136,7 +178,7 @@ export function shapesanityNameToCode(name) {
     }
     
     // 3-1 (e.g., "3-1 Sw Su")
-    const threeOneMatch = name.match(/^3-1\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/);
+    const threeOneMatch = name.match(patterns.threeOne);
     if (threeOneMatch) {
         const [, shape1, color1, shape2, color2] = threeOneMatch;
         const code1 = shape1 + color1;
@@ -145,7 +187,7 @@ export function shapesanityNameToCode(name) {
     }
     
     // Half-Half (e.g., "Half-Half Ry Wu")
-    const halfHalfMatch = name.match(/^Half-Half\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/);
+    const halfHalfMatch = name.match(patterns.halfHalf);
     if (halfHalfMatch) {
         const [, shape1, color1, shape2, color2] = halfHalfMatch;
         const code1 = shape1 + color1;
@@ -154,7 +196,7 @@ export function shapesanityNameToCode(name) {
     }
     
     // Checkered (e.g., "Checkered Sc Ww")
-    const checkeredMatch = name.match(/^Checkered\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/);
+    const checkeredMatch = name.match(patterns.checkered);
     if (checkeredMatch) {
         const [, shape1, color1, shape2, color2] = checkeredMatch;
         const code1 = shape1 + color1;
@@ -163,7 +205,7 @@ export function shapesanityNameToCode(name) {
     }
     
     // Adjacent 2-1-1 (e.g., "Adjacent 2-1-1 Wu Cw Wb")
-    const adjacent211Match = name.match(/^Adjacent 2-1-1\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/);
+    const adjacent211Match = name.match(patterns.adjacent211);
     if (adjacent211Match) {
         const [, shape1, color1, shape2, color2, shape3, color3] = adjacent211Match;
         const code1 = shape1 + color1;
@@ -173,7 +215,7 @@ export function shapesanityNameToCode(name) {
     }
     
     // Cornered 2-1-1 (e.g., "Cornered 2-1-1 Wp Cy Rw")
-    const cornered211Match = name.match(/^Cornered 2-1-1\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/);
+    const cornered211Match = name.match(patterns.cornered211);
     if (cornered211Match) {
         const [, shape1, color1, shape2, color2, shape3, color3] = cornered211Match;
         const code1 = shape1 + color1;
@@ -183,21 +225,21 @@ export function shapesanityNameToCode(name) {
     }
     
     // Singles (4 different quadrants, e.g., "Singles Cc Rp Ry Ww")
-    const singlesMatch = name.match(/^Singles\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/);
+    const singlesMatch = name.match(patterns.singles);
     if (singlesMatch) {
         const [, s1, c1, s2, c2, s3, c3, s4, c4] = singlesMatch;
         return `${s1}${c1}${s2}${c2}${s3}${c3}${s4}${c4}`;
     }
     
     // Singles with 3 pieces (e.g., "Singles Cy Wp Ww")
-    const singles3Match = name.match(/^Singles\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/);
+    const singles3Match = name.match(patterns.singles3);
     if (singles3Match) {
         const [, s1, c1, s2, c2, s3, c3] = singles3Match;
         return `${s1}${c1}${s2}${c2}${s3}${c3}--`;
     }
     
     // Color + shape letter combination (e.g., "Uncolored CSW-", "Red CRSW")
-    const colorShapeLetterMatch = name.match(/^(Uncolored|Red|Green|Blue|Yellow|Purple|Cyan|White)\s+([CRWS-]{4})$/);
+    const colorShapeLetterMatch = name.match(patterns.colorShapeLetters);
     if (colorShapeLetterMatch) {
         const [, color, shapeLetters] = colorShapeLetterMatch;
         const colorCode = colorToCode[color];
@@ -213,37 +255,4 @@ export function shapesanityNameToCode(name) {
     }
     
     return false;
-}
-
-// Example usage
-if (typeof require !== 'undefined' && require.main === module) {
-    const examples = [
-        "Uncolored Circle",
-        "Red Star",
-        "Half Purple Circle",
-        "Cornered Blue Square",
-        "Cut Out Red Circle",
-        "White Circle Piece",
-        "pruy Star",
-        "cpr- Windmill",
-        "Adjacent 2-1 Ww Ry",
-        "Cornered 2-1 Su Sb",
-        "Adjacent Singles Cb Wg",
-        "3-1 Sw Su",
-        "Half-Half Ry Wu",
-        "Checkered Sc Ww",
-        "Adjacent 2-1-1 Wu Cw Wb",
-        "Cornered 2-1-1 Wp Cy Rw",
-        "Singles Cc Rp Ry Ww",
-        "Singles Cy Wp Ww",
-        "Uncolored CSW-",
-        "Red CRSW"
-    ];
-    
-    console.log("Shapesanity Name -> Shape Code:");
-    console.log("=".repeat(60));
-    for (const name of examples) {
-        const code = shapesanityNameToCode(name);
-        console.log(`${name.padEnd(40)} -> ${code || "NOT FOUND"}`);
-    }
 }
