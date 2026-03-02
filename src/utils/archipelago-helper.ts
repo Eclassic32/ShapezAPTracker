@@ -2,7 +2,7 @@
 
 import { Client } from "archipelago.js"
 import { markRaw } from "vue"
-import { shapesanityArrayToCodes } from "./shapesanity";
+import { shapesanityArrayToCodes, shapesanityRegion } from "./shapesanity";
 import { fromShortKey, renderShape } from "./shape-generator";
 
 class ArchipelagoService {
@@ -127,9 +127,9 @@ class ArchipelagoService {
         location: `Shapesanity ${index + 1}`,
         shape: fromShortKey(codes[name]),
         image: renderShape(codes[name]),
-        hint: false,
+        hint: -1, // Hint id, "-1" is no hint
         found: false,
-        logic: getShapeLogic(fromShortKey(codes[name])),
+        logic: assignShapeLogic(fromShortKey(codes[name]), name),
       });
     });
     this.shapesanity.parsed = parsed;
@@ -275,7 +275,16 @@ class Logic {
   }
 }
 
-export function getShapeLogic(shape) {
+const regionsLogic = {
+  full: [],
+  east_wind: ["canMakeEastWindmill"],
+  half_half: ["canMakeHalfHalfShape"],
+  half: ["canMakeHalfShape"],
+  piece: ["canCutHalf"],
+  stitched: ["canMakeStitchedShape"],
+}
+
+export function assignShapeLogic(shape, name) {
   if (!shape) return false; // if no shape provided, assume available
   
   let logic = [];
@@ -285,9 +294,25 @@ export function getShapeLogic(shape) {
   
   // Check for Color Logic
   if (shape.some(layer => layer.some(corner => corner && corner.color != 'uncolored'))) {
-    logic.push(Logic.canPaint);
+    logic.push("canPaint");
   }
 
+  // Check for Mixed Colors Logic
+  const mixedColors= ["cyan", "magenta", "yellow", "white"];
+  if (shape.some(layer => layer.some(corner => corner && mixedColors.includes(corner.color)))) {
+    logic.push("canMixColors");
+  }
+
+  // Check for Multi Layer Stacking Logic
+  if (shape.length > 1) {
+    logic.push("canStack");
+  }
+
+  // Region Logic
+  const region = shapesanityRegion(name);
+  if (regionsLogic[region]) {
+    logic.push(...regionsLogic[region]);
+  }
 
 
   return logic;
@@ -295,5 +320,13 @@ export function getShapeLogic(shape) {
 
 export function isInLogic(logic) {
   if (!logic) return true; // if no logic provided, assume available
-  return getShapeLogic(logic);
+  let result = true;
+
+  logic.forEach(condition => {
+    if (typeof Logic[condition] === "function") {
+      result = result && Logic[condition]();
+    }
+  });
+
+  return result;
 }

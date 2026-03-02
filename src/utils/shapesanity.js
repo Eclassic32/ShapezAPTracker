@@ -35,7 +35,7 @@ export function shapesanityArrayToCodes(shapesanityArray) {
 }
 
 // Match Regexs
-const patterns = {
+export const patterns = {
     // Full single shape (e.g., "Uncolored Circle", "Red Star")
     fullSingle: /^(Uncolored|Red|Green|Blue|Yellow|Purple|Cyan|White)\s+(Circle|Square|Star|Windmill)$/,
     // Half shape (e.g., "Half Purple Circle")
@@ -49,7 +49,7 @@ const patterns = {
     // 4 letter color code + shape (e.g., "pruy Star")
     fourLetterColor: /^([rgbypucw]{4})\s+(Circle|Square|Star|Windmill)$/,
     // 3 letter color code + shape with dash (e.g., "cpr- Windmill")
-    threeLetterColorDash: /^([rgbypucw]{3})-\s+(Circle|Square|Star|Windmill)$/,
+    threeLetterColor: /^([rgbypucw]{3})-\s+(Circle|Square|Star|Windmill)$/,
     // Adjacent 2-1 (e.g., "Adjacent 2-1 Ww Ry")
     adjacent21: /^Adjacent 2-1\s+([CRWS])([rgbypucw])\s+([CRWS])([rgbypucw])$/,
     // Cornered 2-1 (e.g., "Cornered 2-1 Su Sb")
@@ -134,7 +134,7 @@ export function shapesanityNameToCode(name) {
     }
     
     // 3 letter color code + shape with dash (e.g., "cpr- Windmill")
-    const threeColorMatch = name.match(patterns.threeLetterColorDash);
+    const threeColorMatch = name.match(patterns.threeLetterColor);
     if (threeColorMatch) {
         const [, colors, shape] = threeColorMatch;
         const shapeCode = shapeToCode[shape];
@@ -255,4 +255,123 @@ export function shapesanityNameToCode(name) {
     }
     
     return false;
+}
+
+function debugRegexMatch(name) {
+    for (const [patternName, pattern] of Object.entries(patterns)) {
+        const match = name.match(pattern);
+        if (match) {
+            console.log(name, patternName, match);
+        }
+    }
+}
+
+export function shapesanityRegion(name) {
+    name = name.replace(/^Shapesanity\s+/, "");
+
+    debugRegexMatch(name);
+
+    // Simple Regions
+    const fullShapeMatch = name.match(patterns.fullSingle);
+    if (fullShapeMatch) {
+        if (fullShapeMatch[2] === "Windmill") return "east_wind";
+        else return "full";
+    }
+    const halfMatch = name.match(patterns.half);
+    if (halfMatch) {
+        return "half";
+    }
+    const singlePieceMatch = name.match(patterns.singlePiece);
+    if (singlePieceMatch) {
+        return "piece";
+    }
+    const cutOutMatch = name.match(patterns.cutOut);
+    const corneredMatch = name.match(patterns.cornered);
+    if (cutOutMatch || corneredMatch) {
+        return "stitched";
+    }
+
+    // 1-4 Regions
+    const threeLetterColorMatch = name.match(patterns.threeLetterColor);
+    if (threeLetterColorMatch) {
+        return "stitched";
+    }
+    const fourLetterColorMatch = name.match(patterns.fourLetterColor);
+    if (fourLetterColorMatch) {
+        if (fourLetterColorMatch[2] === "Windmill") return "east_wind";
+        else return "full";
+    }
+    const colorShapeLetterMatch = name.match(patterns.colorShapeLetters);
+    if (colorShapeLetterMatch) {
+        return "stitched";
+    }
+    
+    // Two Sides Regions
+    const threeOneMatch = name.match(patterns.threeOne);
+    const halfHalfMatch = name.match(patterns.halfHalf);
+    const checkeredMatch = name.match(patterns.checkered);
+    if (threeOneMatch || halfHalfMatch || checkeredMatch) {
+        const match = threeOneMatch || halfHalfMatch || checkeredMatch;
+        if (match[1] == match[3]){
+            if (match[1] === "W") return "east_wind";
+            else return "full";
+        };
+        if (halfHalfMatch){
+            return "half_half";
+        } else return "stitched";
+    }
+
+    const adjacentSinglesMatch = name.match(patterns.adjacentSingles);
+    if (adjacentSinglesMatch) {
+        if (adjacentSinglesMatch[1] == adjacentSinglesMatch[3]) return "half";
+        else return "stitched";
+    }
+    const corneredSinglesMatch = name.match(patterns.corneredSingles);
+    const adjacent21Match = name.match(patterns.adjacent21);
+    const cornered21Match = name.match(patterns.cornered21);
+    if (corneredSinglesMatch || adjacent21Match || cornered21Match) {
+        return "stitched";
+    }
+
+    // Three Parts Regions
+    const singles3Match = name.match(patterns.singles3);
+    if (singles3Match) {
+        return "stitched";
+    }
+
+    const adjacent211Match = name.match(patterns.adjacent211);
+    if (adjacent211Match) {
+        const [, shape1, , shape2, , shape3] = adjacent211Match;
+        if (shape2 !== shape3) return "stitched";
+        if (shape1 === shape2) {
+            if (shape1 === "W") return "east_wind";
+            else return "full";
+        }
+        return "half_half";
+    }
+
+    const cornered211Match = name.match(patterns.cornered211);
+    if (cornered211Match) {
+        const [, shape1, , shape2, , shape3] = cornered211Match;
+        if (shape2 !== shape3) return "stitched";
+        if (shape1 === shape2) {
+            if (shape1 === "W") return "east_wind";
+            else return "full";
+        }
+        return "stitched";
+    }
+
+    // Four Parts Regions
+    const singlesMatch = name.match(patterns.singles);
+    if (singlesMatch) {
+        const shapes = [singlesMatch[1], singlesMatch[3], singlesMatch[5], singlesMatch[7]];
+        const shapeCounts = {};
+        for (const s of shapes) shapeCounts[s] = (shapeCounts[s] || 0) + 1;
+        const counts = Object.values(shapeCounts);
+        if (counts.length === 2 && counts.every(c => c === 2)) return "half_half";
+        else return "stitched";
+    }
+
+
+    return null;
 }

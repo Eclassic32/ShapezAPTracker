@@ -3,7 +3,7 @@
         <div v-for="shape in shapesanity"
             :key="shape.name"
             class="card"
-            :class="(shape.found ? 'found' : !shape.logic ? 'unavailable' : shape.hinted ? 'hinted' : '')"
+            :class="(shape.found ? 'found' : !isInLogic(shape.logic) ? 'unavailable' : shape.hint != -1 ? 'hinted' : '')"
             @mouseenter="handleEnter($event, shape)"
             @mouseleave="handleLeave"
         >
@@ -26,6 +26,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useFloating, offset, flip, shift } from '@floating-ui/vue'
+import { isInLogic } from '@/utils/archipelago-helper'
 
 const props = defineProps({
     apService: {
