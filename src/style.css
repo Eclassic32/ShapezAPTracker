@@ -13,6 +13,13 @@
   --hinted-bg: hsl(36, 50%, 25%);
   --found: #4dff4d;
   --found-bg: hsl(120, 50%, 25%);
+
+  --grey-text: #838383;
+  --this-slot: #ce2dff;
+  --slot: #ffdd9e;
+  --progression: #c379ff;
+  --normal: #57d1f0;
+  --trap: #e08700;
 }
 
 :root {

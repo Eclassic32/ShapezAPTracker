@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { Client } from "archipelago.js"
+import { Client, Player } from "archipelago.js"
 import { markRaw } from "vue"
 import { shapesanityArrayToCodes, shapesanityRegion } from "./shapesanity";
 import { fromShortKey, renderShape } from "./shape-generator";
@@ -12,9 +12,17 @@ class ArchipelagoService {
     this.items = {};
     this.locations = {};
     this.shapesanity = {};
+    this.messages = [];
 
-    this.client.messages.on('message', (message) => {
-      console.log('💬', message);
+    // Generic Message Listener
+    // this.client.messages.on('message', (text, node: MessageNode[]) => {
+    //   console.log('💬', text, node);
+    //   this.messages.push({text, node});
+    // });
+
+    this.client.messages.on('connected', (text: string, player: Player, nodes: MessageNode[]) => {
+      console.log('🔌'+ text);
+      this.messages.push({type: 'connected', text, player: {name: player.name, slot: player.slot, game: player.game}, nodes});
     });
 
     // --- HINTS ---
