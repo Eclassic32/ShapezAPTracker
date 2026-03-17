@@ -9,6 +9,26 @@
   <div class="settings-page">
     <h2>Settings</h2>
 
+    <!-- Tile Map Tools -->
+    <section class="settings-section">
+      <h3>Tile Map Tools</h3>
+      <div class="tilemap-links">
+        <a href="viewer.html" target="_blank" class="tilemap-link">
+          <div class="tilemap-card">
+            <h4>Tile Viewer</h4>
+            <p>View saved tile maps</p>
+          </div>
+        </a>
+        <a href="editor.html" target="_blank" class="tilemap-link">
+          <div class="tilemap-card">
+            <h4>Tile Editor</h4>
+            <p>Create and edit tile maps</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- === Template Options === -->
     <!-- Theme -->
     <section class="settings-section">
       <h3>Theme</h3>
@@ -77,34 +97,17 @@
           {{ MESSAGE_TYPE_LABELS[msgType] }}
         </label>
       </div>
-      <button class="filter-reset" @click="resetMessageFilters">Reset Filters</button>
     </section>
-
+    
     <section class="settings-section">
       <div class="reset-buttons">
+        <button class="filter-reset" @click="resetMessageFilters">Reset Filters</button>
         <button @click="resetColors">Reset Colors</button>
         <button class="danger" @click="resetAllSettings">Reset All Settings</button>
       </div>
     </section>
 
-    <!-- Tile Map Tools -->
-    <section class="settings-section">
-      <h3>Tile Map Tools</h3>
-      <div class="tilemap-links">
-        <a href="viewer.html" target="_blank" class="tilemap-link">
-          <div class="tilemap-card">
-            <h4>Tile Viewer</h4>
-            <p>View saved tile maps</p>
-          </div>
-        </a>
-        <a href="editor.html" target="_blank" class="tilemap-link">
-          <div class="tilemap-card">
-            <h4>Tile Editor</h4>
-            <p>Create and edit tile maps</p>
-          </div>
-        </a>
-      </div>
-    </section>
+    
   </div>
 </template>
 

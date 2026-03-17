@@ -10,6 +10,38 @@ export interface SavedTileMap {
 
 const STORAGE_KEY = 'shapez-tilemaps';
 
+/**
+ * Seed default tile maps on first visit.
+ *
+ * Only runs when the localStorage key does not exist at all (null).
+ * An empty array ("[]") means the user deliberately deleted their maps,
+ * so we respect that and do nothing.
+ */
+export async function seedDefaultTileMaps(): Promise<void> {
+  if (localStorage.getItem(STORAGE_KEY) !== null) return;
+
+  try {
+    const [allBuildingsRes, factoriesRes] = await Promise.all([
+      fetch('/assets/All Buildings Map.json'),
+      fetch('/assets/Factories.json'),
+    ]);
+
+    const defaults: SavedTileMap[] = [];
+
+    if (allBuildingsRes.ok) {
+      defaults.push(await allBuildingsRes.json() as SavedTileMap);
+    }
+    if (factoriesRes.ok) {
+      defaults.push(await factoriesRes.json() as SavedTileMap);
+    }
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(defaults));
+  } catch {
+    // If fetching fails, set an empty array so we don't retry every load.
+    localStorage.setItem(STORAGE_KEY, '[]');
+  }
+}
+
 // Get all saved tile maps
 export const getAllSavedMaps = (): SavedTileMap[] => {
   const data = localStorage.getItem(STORAGE_KEY);

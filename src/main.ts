@@ -9,6 +9,9 @@ import App from "./App.vue";
 import router from "./router";
 import "./styles/global.css";
 import "./stores/settings";
+import { seedDefaultTileMaps } from "./utils/storage";
+
+seedDefaultTileMaps();
 
 const app = createApp(App);
 app.use(router);

@@ -48,8 +48,8 @@ const DEFAULT_COLORS: APColors = {
   location: "#00ff7f",
   entrance: "#5599ff",
   found: "#22aa22",
-  hinted: "#cc88ff",
-  hardLogic: "#ffaa00",
+  hinted: "#ffaa00",
+  hardLogic: "#cc88ff",
   outOfLogic: "#ee4444",
 };
 
