@@ -37,7 +37,7 @@ const router = useRouter();
 
 /** Add new page tabs here. Each entry needs a matching route in router/index.ts. */
 const tabs = [
-  { path: "/templates", label: "Templates" },
+  { path: "/tilemaps", label: "Tile Maps" },
   { path: "/shapesanity", label: "Shapesanity" },
   { path: "/text-client", label: "Text Client" },
   { path: "/settings", label: "Settings" },

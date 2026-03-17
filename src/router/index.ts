@@ -10,7 +10,7 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import MainPage from "@/pages/Main.vue";
 import SettingsPage from "@/pages/SettingsPage.vue";
 import ShapesanityTab from "@/pages/ShapesanityTab.vue";
-import TemplatesTab from "@/pages/TemplatesTab.vue";
+import TileMapsTab from "@/pages/TileMapsTab.vue";
 
 const routes = [
   {
@@ -28,9 +28,9 @@ const routes = [
     component: ShapesanityTab,
   },
   {
-    path: "/templates",
-    name: "Templates",
-    component: TemplatesTab,
+    path: "/tilemaps",
+    name: "TileMaps",
+    component: TileMapsTab,
   },
   {
     path: "/settings",
