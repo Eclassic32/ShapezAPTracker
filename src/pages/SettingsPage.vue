@@ -86,6 +86,25 @@
         <button class="danger" @click="resetAllSettings">Reset All Settings</button>
       </div>
     </section>
+
+    <!-- Tile Map Tools -->
+    <section class="settings-section">
+      <h3>Tile Map Tools</h3>
+      <div class="tilemap-links">
+        <a href="viewer.html" target="_blank" class="tilemap-link">
+          <div class="tilemap-card">
+            <h4>Tile Viewer</h4>
+            <p>View saved tile maps</p>
+          </div>
+        </a>
+        <a href="editor.html" target="_blank" class="tilemap-link">
+          <div class="tilemap-card">
+            <h4>Tile Editor</h4>
+            <p>Create and edit tile maps</p>
+          </div>
+        </a>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -181,5 +200,42 @@ h2 {
 
 .filter-reset {
   font-size: 0.85rem;
+}
+
+/* Tilemap links */
+.tilemap-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.tilemap-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.tilemap-card {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px 24px;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.tilemap-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.tilemap-card h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.tilemap-card p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
 }
 </style>

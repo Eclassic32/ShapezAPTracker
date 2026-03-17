@@ -17,15 +17,6 @@
       >
         {{ tab.label }}
       </router-link>
-      <a
-        v-for="link in externalLinks"
-        :key="link.href"
-        :href="link.href"
-        target="_blank"
-        class="nav-tab nav-tab--external"
-      >
-        {{ link.label }}
-      </a>
     </div>
     <div class="nav-info">
       <span class="connected-label">
@@ -50,12 +41,6 @@ const tabs = [
   { path: "/shapesanity", label: "Shapesanity" },
   { path: "/text-client", label: "Text Client" },
   { path: "/settings", label: "Settings" },
-];
-
-/** External standalone pages (separate HTML entry points). */
-const externalLinks = [
-  { href: "/viewer.html", label: "Tile Viewer" },
-  { href: "/editor.html", label: "Tile Editor" },
 ];
 
 function handleDisconnect() {

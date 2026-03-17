@@ -1,52 +1,69 @@
 <template>
   <div class="connection-form">
-    <div class="connection-card">
-      <h1 class="title">Archipelago Tracker</h1>
-      <p class="subtitle">Connect to an Archipelago server</p>
+    <div class="connection-section">
+      <div class="connection-card">
+        <h1 class="title">Archipelago Tracker</h1>
+        <p class="subtitle">Connect to an Archipelago server</p>
 
-      <form @submit.prevent="handleConnect" class="form">
-        <div class="field">
-          <label for="address">Server Address</label>
-          <input
-            id="address"
-            v-model="address"
-            type="text"
-            placeholder="archipelago.gg:38281"
-            :disabled="isConnecting"
-            autocomplete="off"
-          />
-        </div>
+        <form @submit.prevent="handleConnect" class="form">
+          <div class="field">
+            <label for="address">Server Address</label>
+            <input
+              id="address"
+              v-model="address"
+              type="text"
+              placeholder="archipelago.gg:38281"
+              :disabled="isConnecting"
+              autocomplete="off"
+            />
+          </div>
 
-        <div class="field">
-          <label for="slotInput">Slot Name</label>
-          <input
-            id="slotInput"
-            v-model="slot"
-            type="text"
-            placeholder="Player1"
-            :disabled="isConnecting"
-            autocomplete="off"
-          />
-        </div>
+          <div class="field">
+            <label for="slotInput">Slot Name</label>
+            <input
+              id="slotInput"
+              v-model="slot"
+              type="text"
+              placeholder="Player1"
+              :disabled="isConnecting"
+              autocomplete="off"
+            />
+          </div>
 
-        <div class="field">
-          <label for="password">Password <span class="optional">(optional)</span></label>
-          <input
-            id="password"
-            v-model="password"
-            type="password"
-            placeholder=""
-            :disabled="isConnecting"
-            autocomplete="off"
-          />
-        </div>
+          <div class="field">
+            <label for="password">Password <span class="optional">(optional)</span></label>
+            <input
+              id="password"
+              v-model="password"
+              type="password"
+              placeholder=""
+              :disabled="isConnecting"
+              autocomplete="off"
+            />
+          </div>
 
-        <button type="submit" :disabled="isConnecting || !slot.trim()">
-          {{ isConnecting ? "Connecting..." : "Connect" }}
-        </button>
+          <button type="submit" :disabled="isConnecting || !slot.trim()">
+            {{ isConnecting ? "Connecting..." : "Connect" }}
+          </button>
 
-        <p v-if="connectionError" class="error">{{ connectionError }}</p>
-      </form>
+          <p v-if="connectionError" class="error">{{ connectionError }}</p>
+        </form>
+      </div>
+
+      <div class="tilemaps">
+        <a href="viewer.html" target="_blank" class="tilemap-link">
+          <div class="tilemap-card">
+            <h3>Tile Viewer</h3>
+            <p>View saved tile maps</p>
+          </div>
+        </a>
+        <a href="editor.html" target="_blank" class="tilemap-link">
+          <div class="tilemap-card">
+            <h3>Tile Editor</h3>
+            <p>Create and edit tile maps</p>
+          </div>
+        </a>
+      </div>
     </div>
   </div>
 </template>
@@ -81,6 +98,13 @@ async function handleConnect() {
   justify-content: center;
   flex: 1;
   padding: 24px;
+}
+
+.connection-section {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: flex-start;
 }
 
 .connection-card {
@@ -136,5 +160,44 @@ async function handleConnect() {
   color: var(--danger);
   font-size: 0.85rem;
   text-align: center;
+}
+
+/* Tilemap links */
+.tilemaps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 350px;
+}
+
+.tilemap-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.tilemap-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 24px 32px;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.tilemap-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.tilemap-card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.tilemap-card p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
 }
 </style>
