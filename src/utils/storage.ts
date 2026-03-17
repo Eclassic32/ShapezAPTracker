@@ -21,9 +21,10 @@ export async function seedDefaultTileMaps(): Promise<void> {
   if (localStorage.getItem(STORAGE_KEY) !== null) return;
 
   try {
+    const base = import.meta.env.BASE_URL;
     const [allBuildingsRes, factoriesRes] = await Promise.all([
-      fetch('/assets/All Buildings Map.json'),
-      fetch('/assets/Factories.json'),
+      fetch(`${base}assets/All Buildings Map.json`),
+      fetch(`${base}assets/Factories.json`),
     ]);
 
     const defaults: SavedTileMap[] = [];
