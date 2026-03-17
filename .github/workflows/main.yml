@@ -3,7 +3,7 @@ name: Build and Deploy to Page Branch
 on:
   push:
     branches:
-      - main  # Change this to your default branch if different
+      - rewrite  # Change this to your default branch if different
 
 jobs:
   build-and-deploy:
