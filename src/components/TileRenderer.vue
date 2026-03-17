@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import type { Building, Wire, Entity, GridConfig, Rotation } from '../types/tile';
-import { isBuildingAvailable } from '@/utils/archipelago-helper';
+import { itemsAllRef, isBuildingAvailable } from '@/utils/archipelago-helper';
 
 const props = withDefaults(defineProps<{
   buildings: Map<string, Building>;
@@ -32,6 +32,11 @@ onMounted(() => {
 watch(() => [props.buildings, props.entities, props.wires, props.gridConfig, props.showGrid, props.showWireLayer], () => {
   render();
 }, { deep: true });
+
+// Re-render when received items change (building availability overlay)
+watch(itemsAllRef, () => {
+  render();
+});
 
 // Preload image
 const loadImage = (src: string): Promise<HTMLImageElement> => {

@@ -1,16 +1,15 @@
 <template>
     <div class="flex-row">
         <div id="hints">
-            <button @click="updateHints">Refresh Hints</button>
             <div>
                 <h2>Received Hints</h2>
-                <p v-for="hint in receivedHints"  :key="hint.item">
+                <p v-for="hint in receivedHints" :key="hint.item + hint.location">
                     {{ hint.receiver.name }}'s {{ hint.item }} at {{ hint.location }} ({{ hint.type }})
                 </p>
             </div>
             <div>
                 <h2>Sent Hints</h2>
-                <p v-for="hint in sentHints"  :key="hint.item">
+                <p v-for="hint in sentHints" :key="hint.item + hint.location">
                     {{ hint.item }} at {{ hint.sender.name }}'s {{ hint.location }} ({{ hint.type }})
                 </p>
             </div>
@@ -19,14 +18,22 @@
             <h2>Text Client</h2>
             <div class="text-client container">
                 <div id="messages">
-                    <div v-for="(msg, index) in apService.messages" class="message" :class="{ 'odd': index % 2 === 1 }" :key="msg.id">
+                    <div v-for="(msg, index) in messages" class="message" :class="{ 'odd': index % 2 === 1 }" :key="index">
                         <p v-if="msg.type == 'connected'">
-                            🔌<span :class="msg.player.slot == apService.getThisPlayer().slot ? 'this-slot' : 'slot'">
+                            🔌<span :class="msg.player.slot == player?.slot ? 'this-slot' : 'slot'">
                                 {{ msg.player.name }}
-                            </span> connected to the game {{ msg.player.game }} {{ msg.nodes }}
+                            </span> connected to the game {{ msg.player.game }}
+                        </p>
+                        <p v-else-if="msg.type == 'disconnected'">
+                            🔌<span :class="msg.player?.slot == player?.slot ? 'this-slot' : 'slot'">
+                                {{ msg.player?.name }}
+                            </span> disconnected
+                        </p>
+                        <p v-else-if="msg.type == 'chat'">
+                            {{ msg.text }}
                         </p>
                         <!-- Default -->
-                        <p v-else> 
+                        <p v-else>
                             {{ msg.text }}
                         </p>
                     </div>
@@ -38,44 +45,31 @@
     </div>
 </template>
 
-<script>
-import { markRaw } from 'vue';
+<script setup>
+import { computed } from 'vue'
+import { apService } from '@/utils/archipelago-helper'
 
-export default {
-    name: 'TextClientTab',
-    props: {
-        apService: {
-            type: Object,
-            required: true
-        },
-    },
-    data() {
-        return {
-            receivedHints: [],
-            sentHints: [],
-            showFoundTrashHints: false
-        };
-    },
-    mounted() {
-        this.updateHints();
-    },
-
-    methods: {
-        updateHints() {
-            console.log("Updating Hints");
-
-            this.receivedHints = [];
-            this.sentHints = [];
-            
-            const player = this.apService.getThisPlayer();
-            const hints = this.apService.getHints();
-            this.receivedHints = hints.filter(hint => hint.sender.slot == player.slot);
-            this.sentHints = hints.filter(hint => hint.receiver.slot == player.slot);
-        }
+const player = computed(() => {
+    try {
+        return apService.getThisPlayer();
+    } catch {
+        return null;
     }
+})
 
-};
+const messages = computed(() => apService.messagesRef.value)
 
+const hints = computed(() => apService.getHints())
+
+const receivedHints = computed(() => {
+    if (!player.value) return [];
+    return hints.value.filter(hint => hint.sender.slot == player.value.slot);
+})
+
+const sentHints = computed(() => {
+    if (!player.value) return [];
+    return hints.value.filter(hint => hint.receiver.slot == player.value.slot);
+})
 </script>
 
 <style scoped>

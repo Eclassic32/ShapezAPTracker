@@ -3,7 +3,7 @@
         <div v-for="shape in shapesanity"
             :key="shape.name"
             class="card"
-            :class="(shape.found ? 'found' : !isInLogic(shape.logic) ? 'unavailable' : (apService.isHintedByLocationName(shape.location)) ? 'hinted' : '')"
+            :class="cardClass(shape)"
             @mouseenter="handleEnter($event, shape)"
             @mouseleave="handleLeave"
         >
@@ -24,18 +24,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { computed, ref } from 'vue'
 import { useFloating, offset, flip, shift } from '@floating-ui/vue'
-import { isInLogic } from '@/utils/archipelago-helper'
+import { apService, isInLogic } from '@/utils/archipelago-helper'
 
-const props = defineProps({
-    apService: {
-        type: Object,
-        required: true
-    },
-})
-
-const shapesanity = ref([])
 const openShape = ref(null)
 const reference = ref(null)
 const floating = ref(null)
@@ -45,9 +37,16 @@ const { floatingStyles } = useFloating(reference, floating, {
     middleware: [offset(8), flip(), shift({ padding: 8 })],
 })
 
-onMounted(() => {
-    shapesanity.value = props.apService.getShapesanityParsed() || []
-})
+// Directly use the reactive ref from apService.
+// This updates automatically when items/hints/locations change.
+const shapesanity = computed(() => apService.shapesanityRef.value)
+
+function cardClass(shape) {
+    if (shape.found) return 'found'
+    if (!isInLogic(shape.logic)) return 'unavailable'
+    if (shape.hint) return 'hinted'
+    return ''
+}
 
 function handleEnter(event, shape) {
     reference.value = event.currentTarget

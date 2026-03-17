@@ -1,68 +1,200 @@
 // @ts-nocheck
 
 import { Client, Player } from "archipelago.js"
-import { markRaw } from "vue"
+import { markRaw, ref, shallowRef, triggerRef } from "vue"
 import { shapesanityArrayToCodes, shapesanityRegion } from "./shapesanity";
 import { fromShortKey, renderShape } from "./shape-generator";
 
 class ArchipelagoService {
   constructor() {
     this.client = markRaw(new Client())
-    this.hints = markRaw([])
-    this.items = {};
-    this.locations = {};
-    this.shapesanity = {};
-    this.messages = [];
 
-    // Generic Message Listener
-    // this.client.messages.on('message', (text, node: MessageNode[]) => {
-    //   console.log('💬', text, node);
-    //   this.messages.push({text, node});
-    // });
+    // --- Reactive State ---
+    // These refs are the single source of truth for all components.
+    // They are updated by AP client events and can be imported directly.
+    this.hintsRef = ref([])
+    this.itemsAllRef = ref([])
+    this.itemsUniqueRef = ref([])
+    this.locationsRef = ref({})
+    this.shapesanityRef = shallowRef([])
+    this.messagesRef = ref([])
 
-    this.client.messages.on('connected', (text: string, player: Player, nodes: MessageNode[]) => {
-      console.log('🔌'+ text);
-      this.messages.push({type: 'connected', text, player: {name: player.name, slot: player.slot, game: player.game}, nodes});
+    // Non-reactive internal cache
+    this.slotData = null;
+    this.shapesanityCache = {};
+
+    // --- Event Wiring ---
+
+    // Messages: connected
+    this.client.messages.on('connected', (text, player, tags, nodes) => {
+      console.log('🔌' + text);
+      this.messagesRef.value = [...this.messagesRef.value, {
+        type: 'connected',
+        text,
+        player: { name: player.name, slot: player.slot, game: player.game },
+        nodes
+      }];
+    });
+
+    // Messages: catch-all for non-connected messages
+    this.client.messages.on('itemSent', (text, item, nodes) => {
+      this._pushMessage({ type: 'itemSent', text, nodes });
+    });
+    this.client.messages.on('itemCheated', (text, item, nodes) => {
+      this._pushMessage({ type: 'itemCheated', text, nodes });
+    });
+    this.client.messages.on('itemHinted', (text, item, found, nodes) => {
+      this._pushMessage({ type: 'itemHinted', text, nodes });
+    });
+    this.client.messages.on('disconnected', (text, player, nodes) => {
+      this._pushMessage({
+        type: 'disconnected',
+        text,
+        player: { name: player.name, slot: player.slot, game: player.game },
+        nodes
+      });
+    });
+    this.client.messages.on('chat', (message, player, nodes) => {
+      this._pushMessage({
+        type: 'chat',
+        text: `<${player.name}> ${message}`,
+        player: { name: player.name, slot: player.slot, game: player.game },
+        nodes
+      });
+    });
+    this.client.messages.on('serverChat', (message, nodes) => {
+      this._pushMessage({ type: 'serverChat', text: message, nodes });
+    });
+    this.client.messages.on('goaled', (text, player, nodes) => {
+      this._pushMessage({
+        type: 'goaled',
+        text,
+        player: { name: player.name, slot: player.slot, game: player.game },
+        nodes
+      });
+    });
+    this.client.messages.on('released', (text, player, nodes) => {
+      this._pushMessage({
+        type: 'released',
+        text,
+        player: { name: player.name, slot: player.slot, game: player.game },
+        nodes
+      });
+    });
+    this.client.messages.on('collected', (text, player, nodes) => {
+      this._pushMessage({
+        type: 'collected',
+        text,
+        player: { name: player.name, slot: player.slot, game: player.game },
+        nodes
+      });
+    });
+    this.client.messages.on('countdown', (text, value, nodes) => {
+      this._pushMessage({ type: 'countdown', text, nodes });
+    });
+    this.client.messages.on('userCommand', (text, nodes) => {
+      this._pushMessage({ type: 'userCommand', text, nodes });
+    });
+    this.client.messages.on('adminCommand', (text, nodes) => {
+      this._pushMessage({ type: 'adminCommand', text, nodes });
     });
 
     // --- HINTS ---
     this.client.items.on('hintsInitialized', (hints) => {
       console.log('Hints initialized:', hints);
-      this.hints = markRaw(hints);
+      this.hintsRef.value = markRaw(hints);
+      this._refreshShapesanityHintsAndLocations();
     });
 
     this.client.items.on('hintReceived', (hint) => {
       console.log('❔', hint);
-      const exists = this.hints.some(h =>
+      const exists = this.hintsRef.value.some(h =>
         h.item.locationName === hint.item.locationName &&
         h.item.name === hint.item.name &&
         h.item.receiver.slot === hint.item.receiver.slot
       );
       if (!exists) {
-        this.hints.push(hint);
+        this.hintsRef.value = [...this.hintsRef.value, hint];
+        this._refreshShapesanityHintsAndLocations();
       }
     });
 
     this.client.items.on('hintFound', (hint) => {
       console.log('❓', hint);
-      const index = this.hints.findIndex(h => h.item.toString() === hint.item.toString());
+      // The hint from hintFound already has found=true.
+      // Match by location + item + receiver since Hint uses private fields
+      // and can't be spread.
+      const index = this.hintsRef.value.findIndex(h =>
+        h.item.locationName === hint.item.locationName &&
+        h.item.name === hint.item.name &&
+        h.item.receiver.slot === hint.item.receiver.slot
+      );
       if (index !== -1) {
-        this.hints[index].found = true;
+        // Replace with the new Hint object (which has found=true)
+        const updated = [...this.hintsRef.value];
+        updated[index] = hint;
+        this.hintsRef.value = updated;
+        this._refreshShapesanityHintsAndLocations();
       }
     });
 
+    // --- ITEMS RECEIVED ---
+    this.client.items.on('itemsReceived', (items, startingIndex) => {
+      console.log('📦 Items received:', items.map(i => i.name));
+      this._refreshItems();
+      this._refreshShapesanityHintsAndLocations();
+    });
 
+    // --- LOCATIONS CHECKED ---
+    this.client.room.on('locationsChecked', (locations) => {
+      console.log('📍 Locations checked:', locations);
+      this._refreshLocations();
+      this._refreshShapesanityHintsAndLocations();
+    });
+  }
+
+  _pushMessage(msg) {
+    this.messagesRef.value = [...this.messagesRef.value, msg];
+  }
+
+  _refreshItems() {
+    this.itemsAllRef.value = this.client.items.received.map(i => i.name);
+    this.itemsUniqueRef.value = [...new Set(this.itemsAllRef.value)];
+  }
+
+  _refreshLocations() {
+    const sentLocations = this.client.room.checkedLocations;
+    const newLocs = {};
+    sentLocations.forEach(loc => {
+      newLocs[loc] = this.client.package.lookupLocationName("shapez", loc);
+    });
+    this.locationsRef.value = newLocs;
+  }
+
+  /**
+   * Re-derive hint/found/logic status on each shapesanity entry
+   * without regenerating images or re-parsing shape codes.
+   */
+  _refreshShapesanityHintsAndLocations() {
+    const current = this.shapesanityRef.value;
+    if (!current || current.length === 0) return;
+
+    const updated = current.map(entry => ({
+      ...entry,
+      hint: this.isHintedByLocationName(entry.location),
+      found: this.isLocationSentByName(entry.location),
+      logic: assignShapeLogic(entry.shape, entry.name),
+    }));
+    this.shapesanityRef.value = updated;
   }
 
   async connect(address, slot, password, game) {
     this.slotData = await this.client.login(address, slot, game, { password })
 
-    this.getHints();
-    this.getReceivedItems();
-    this.getUniqueReceivedItems();
-    // this.getAllLocations();
-    this.getSentLocations();
-    this.getShapesanity();
+    // Initial data load into reactive refs
+    this._refreshItems();
+    this._refreshLocations();
+    this._buildShapesanity();
 
     return this.slotData;
   }
@@ -80,7 +212,7 @@ class ArchipelagoService {
   }
 
   getHints() {
-    return this.hints.map(h => ({
+    return this.hintsRef.value.map(h => ({
       location: h.item.locationName,
       item: h.item.name,
       receiver: {
@@ -93,47 +225,35 @@ class ArchipelagoService {
         slot: h.item.sender.slot,
         game: h.item.sender.game
       },
-      type: (h.item.progression ? 'Progression' : 
-              h.item.useful ? 'Useful' : 
-              h.item.filler ? 'Filler' :
-              h.item.trap ? 'Trap' : 'Unknown'
+      type: (h.item.progression ? 'Progression' :
+        h.item.useful ? 'Useful' :
+          h.item.filler ? 'Filler' :
+            h.item.trap ? 'Trap' : 'Unknown'
       ),
       flags: h.item.flags,
       found: h.found
-    }))
+    }));
   }
 
-  
-  // Items
+  // Items (kept for backward compat, but components should prefer the refs)
   getReceivedItems() {
-    this.items.all = this.client.items.received.map(i => i.name);
-    return this.items.all;
+    return this.itemsAllRef.value;
   }
   getUniqueReceivedItems() {
-    this.items.unique = [...new Set(this.getReceivedItems())];
-    return this.items.unique;
+    return this.itemsUniqueRef.value;
   }
 
   // Locations
-  // getAllLocations() {
-  //   // this.locations.all = this.client.package.shapez.reverseLocationTable;
-  //   return this.locations.all;
-  // }
   getSentLocations() {
-    const sentLocations = this.client.room.checkedLocations;
-    sentLocations.forEach(loc => {
-      this.locations[loc] = this.client.package.lookupLocationName("shapez", loc);
-    });
-    return this.locations;
+    return this.locationsRef.value;
   }
 
   isLocationSentByName(location) {
-    const sentLocations = this.getSentLocations();
-    return Object.values(sentLocations).includes(location);
+    return Object.values(this.locationsRef.value).includes(location);
   }
 
   isHintedByLocationName(location) {
-    return this.hints.find(h => h.item.locationName == location) || null;
+    return this.hintsRef.value.find(h => h.item.locationName == location) || null;
   }
 
   // Shapesanity
@@ -141,87 +261,102 @@ class ArchipelagoService {
     return this.slotData;
   }
   getShapesanityRaw() {
-    if (this.shapesanity?.raw) return this.shapesanity.raw;
+    if (this.shapesanityCache?.raw) return this.shapesanityCache.raw;
     const shapesanityRaw = this.slotData?.shapesanity;
-    this.shapesanity.raw = shapesanityRaw;
+    this.shapesanityCache.raw = shapesanityRaw;
     return shapesanityRaw;
   }
   getShapesanityCodes() {
-    if (this.shapesanity?.codes) return this.shapesanity.codes;
+    if (this.shapesanityCache?.codes) return this.shapesanityCache.codes;
     const raw = this.getShapesanityRaw();
     if (!raw) return null;
 
     const codes = shapesanityArrayToCodes(raw);
-    this.shapesanity.codes = codes;
+    this.shapesanityCache.codes = codes;
     return codes;
   }
-  getShapesanityParsed() {
-    if (this.shapesanity?.parsed) return this.shapesanity.parsed;
+
+  /**
+   * Builds the full shapesanity array once (images are expensive).
+   * After this, _refreshShapesanityHintsAndLocations() cheaply
+   * updates hint/found/logic on each entry.
+   */
+  _buildShapesanity() {
     const raw = this.getShapesanityRaw();
     const codes = this.getShapesanityCodes();
     if (!codes || !raw) return null;
-    
+
     let parsed = [];
     raw.forEach((name, index) => {
+      const shapeCode = codes[name];
+      const shape = fromShortKey(shapeCode);
       parsed.push({
-        code: codes[name],
+        code: shapeCode,
         name,
         location: `Shapesanity ${index + 1}`,
-        shape: fromShortKey(codes[name]),
-        image: renderShape(codes[name]),
-        hint: this.isHintedByLocationName(`Shapesanity ${index + 1}`), // Hint id, "-1" is no hint
+        shape,
+        image: renderShape(shapeCode),
+        hint: this.isHintedByLocationName(`Shapesanity ${index + 1}`),
         found: this.isLocationSentByName(`Shapesanity ${index + 1}`),
-        logic: assignShapeLogic(fromShortKey(codes[name]), name),
+        logic: assignShapeLogic(shape, name),
       });
     });
-    this.shapesanity.parsed = parsed;
-    return this.shapesanity.parsed;
+    this.shapesanityRef.value = parsed;
+    return parsed;
+  }
+
+  getShapesanityParsed() {
+    return this.shapesanityRef.value;
   }
   // Shapesanity Alias
-  getShapesanity () { return this.getShapesanityParsed(); }
+  getShapesanity() { return this.getShapesanityParsed(); }
 }
 
 export const apService = new ArchipelagoService()
+
+// Exported reactive refs for typed components
+export const itemsAllRef = apService.itemsAllRef;
+export const itemsUniqueRef = apService.itemsUniqueRef;
+export const hintsRef = apService.hintsRef;
+export const locationsRef = apService.locationsRef;
+export const shapesanityRef = apService.shapesanityRef;
+export const messagesRef = apService.messagesRef;
 
 // backport function, will be replaced
 export function isBuildingAvailable(name) {
   if (!name) return true; // if no name provided, assume available
   if (!apService.getSlotData()) return true; // if not connected, assume all are available
 
-  
-  
-  const items = apService.getReceivedItems();
-  // console.log("Is building available: ", name, items.includes(name));
+  const items = apService.itemsAllRef.value;
   return items.includes(name);
-  
 }
 
 class Logic {
   constructor() {
-    this.items = apService.items.unique;
+    this.items = apService.itemsUniqueRef.value;
   }
 
   static count(item) {
-    return apService.items.all.filter(i => i === item).length;
+    return apService.itemsAllRef.value.filter(i => i === item).length;
   }
 
   static has(item) {
-    return apService.items.unique.includes(item);
+    return apService.itemsUniqueRef.value.includes(item);
   }
-  
+
   static hasAny(items) {
-    return items.some(item => apService.items.unique.includes(item));
+    return items.some(item => apService.itemsUniqueRef.value.includes(item));
   }
 
   static hasAll(items) {
-    return items.every(item => apService.items.unique.includes(item));
+    return items.every(item => apService.itemsUniqueRef.value.includes(item));
   }
 
   static canCutHalf() {
     return this.has('Cutter');
   }
 
-  static canRotate90(){
+  static canRotate90() {
     return this.hasAny(['Rotator', 'Rotator (CCW)']);
   }
 
@@ -253,13 +388,13 @@ class Logic {
     return this.hasAll(['Quad Painter', 'Wire']) && this.hasAny(['Switch', 'Constant Signal']);
   }
 
-  static canMakeStitchedShape(floating: boolean){
+  static canMakeStitchedShape(floating) {
     return this.canStack() && ((this.has('Quad Cutter') && !floating) || (this.canCutHalf() && this.canRotate90()));
   }
 
-  static canBuildMAM(floating: Boolean) {
-    return this.canMakeStitchedShape(floating) && this.canPaint() && 
-          this.canMixColors() && this.hasBalancer() && this.hasTunnel();
+  static canBuildMAM(floating) {
+    return this.canMakeStitchedShape(floating) && this.canPaint() &&
+      this.canMixColors() && this.hasBalancer() && this.hasTunnel();
   }
 
   static canMakeEastWindmill() {
@@ -272,12 +407,12 @@ class Logic {
     return this.canStack() && this.hasAny(['Quad Cutter', 'Cutter']);
   }
 
-  static canMakeHalfShape(){
+  static canMakeHalfShape() {
     // Only used for shapesanity => single layers
     return this.canCutHalf() || this.hasAll(['Quad Cutter', 'Stacker']);
   }
 
-  static hasXbeltMultiplier(needed: number) {
+  static hasXbeltMultiplier(needed) {
     let mult = 1;
   }
 
@@ -288,10 +423,10 @@ class Logic {
 
     for (let layer = 0; layer < layers; layer++) {
       for (let corner = 0; corner < corners; corner++) {
-        
+
         // If current corner is absent
         if (shape[layer][corner] === null) {
-          
+
           // Check all higher layers at same corner index
           for (let higherLayer = layer + 1; higherLayer < layers; higherLayer++) {
             if (shape[higherLayer][corner] !== null) {
@@ -317,19 +452,18 @@ const regionsLogic = {
 
 export function assignShapeLogic(shape, name) {
   if (!shape) return false; // if no shape provided, assume available
-  
+
   let logic = [];
-  const items = apService.items.unique;
 
   let floating = Logic.hasFloatingCorner(shape);
-  
+
   // Check for Color Logic
   if (shape.some(layer => layer.some(corner => corner && corner.color != 'uncolored'))) {
     logic.push("canPaint");
   }
 
   // Check for Mixed Colors Logic
-  const mixedColors= ["cyan", "magenta", "yellow", "white"];
+  const mixedColors = ["cyan", "magenta", "yellow", "white"];
   if (shape.some(layer => layer.some(corner => corner && mixedColors.includes(corner.color)))) {
     logic.push("canMixColors");
   }

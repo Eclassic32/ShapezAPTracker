@@ -44,8 +44,6 @@ import type { Building, Wire, Entity, GridConfig } from '../../types/tile';
 import { getAllSavedMaps, loadTileMap } from '../../utils/storage';
 import type { SavedTileMap } from '../../utils/storage';
 
-const props = defineProps<{ apService: object }>();
-
 // Grid configuration
 const gridConfig = ref<GridConfig>({
     tileSize: 48,

@@ -1,14 +1,8 @@
 <script setup>
-import AchievementTab from '@/pages/tabs/AchievementTab.vue';
-import ConnectionTab from '@/pages/tabs/ConnectionTab.vue';
-import SettingsTab from '@/pages/tabs/SettingsTab.vue';
-import ShapesanityTab from '@/pages/tabs/ShapesanityTab.vue';
-import TemplatesTab from '@/pages/tabs/TemplatesTab.vue';
-import TextClientTab from '@/pages/tabs/TextClientTab.vue';
 import TopBar from '@/components/TopBar.vue';
 import router from '@/router/router';
 import { apService } from '@/utils/archipelago-helper';
-import { markRaw, ref, provide, toRaw, onBeforeUnmount } from 'vue'
+import { ref, provide, onBeforeUnmount } from 'vue'
 import { RouterView } from 'vue-router';
 
 router.push('/');
@@ -18,10 +12,6 @@ const isConnected = ref(false);
 const address = ref(localStorage.getItem('ap-address') || '');
 const slotName = ref(localStorage.getItem('ap-slotName') || '');
 const password = ref(localStorage.getItem('ap-password') || '');
-const player = ref(null);
-const hints = ref([]);
-const items = ref([]);
-const locations = ref([]);
 
 provide('isConnected', isConnected);
 
@@ -44,15 +34,11 @@ async function connectToServer({ address: addr, slotName: slot, password: pass }
     localStorage.setItem('ap-slotName', slotName.value);
     localStorage.setItem('ap-password', password.value);
   
-    player.value = apService.getThisPlayer();
-    hints.value = apService.getHints();
-    // items.value = apService.getItems();
-    // locations.value = apService.getLocations();
     isConnected.value = true;
   
     console.log("Slot Data: ", apService.slotData);
     
-  
+
     router.push('/templates');
   } catch (error) {
     console.error('Connection failed:', error);
@@ -72,7 +58,7 @@ onBeforeUnmount(() => {
   <div class="main-page">
     
     <TopBar v-if="isConnected" :isConnected="isConnected" :slotName="slotName" />
-    <RouterView @connect="connectToServer" :apService="apService" />
+    <RouterView @connect="connectToServer" />
 
   </div>
 </template>
