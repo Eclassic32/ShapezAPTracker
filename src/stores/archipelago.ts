@@ -47,6 +47,11 @@ import {
   type ColorMessageNode,
   type DataChangeCallback,
 } from "archipelago.js";
+import {
+  buildShapesanity,
+  refreshShapesanityHintsAndLocations,
+  shapesanityRef,
+} from "@/utils/shapesanity-logic";
 
 /* ==========================================================================
    TEMPLATE CONFIGURATION
@@ -61,7 +66,7 @@ import {
    ========================================================================== */
 
 /** The game this tracker is built for. Set to "" for TextOnly mode. */
-export const GAME_NAME = "";
+export const GAME_NAME = "shapez";
 
 /* ==========================================================================
    Serialized Types
@@ -313,6 +318,15 @@ export const hintPoints = ref(0);
 
 /** Cost in hint points to request a new hint. */
 export const hintCost = ref(0);
+
+/**
+ * Raw slot data returned by the server after login.
+ *
+ * For shapez, this includes `shapesanity` (string[]) which lists all
+ * shapesanity location names for the connected slot. Game-specific modules
+ * (like shapesanity-logic.ts) read this to build their derived state.
+ */
+export const slotData = ref<Record<string, unknown> | null>(null);
 
 /**
  * The raw archipelago.js Client instance.
@@ -582,11 +596,13 @@ export async function connect(address: string, slot: string, password: string) {
     // -- Item events --
     c.items.on("itemsReceived", () => {
       refreshReceivedItems(c);
+      refreshShapesanityHintsAndLocations();
     });
 
     // -- Location events --
     c.room.on("locationsChecked", () => {
       refreshLocations(c);
+      refreshShapesanityHintsAndLocations();
     });
 
     // -- Hint point events --
@@ -612,7 +628,8 @@ export async function connect(address: string, slot: string, password: string) {
     });
 
     // -- Perform login --
-    await c.login(url, slot.trim(), game, {
+    // client.login() returns the slot data directly (not available on c.room).
+    const loginResult = await c.login(url, slot.trim(), game, {
       password: password || "",
       tags,
       items: itemsHandlingFlags.all,
@@ -626,6 +643,7 @@ export async function connect(address: string, slot: string, password: string) {
     gameName.value = c.game;
     teamNumber.value = c.players.self.team;
     selfSlot.value = c.players.self.slot;
+    slotData.value = (loginResult ?? null) as Record<string, unknown> | null;
 
     // Persist connection fields for auto-fill on next visit
     localStorage.setItem("serverAddress", address);
@@ -638,6 +656,9 @@ export async function connect(address: string, slot: string, password: string) {
     refreshHintPoints(c);
     loadItemNames(c);
 
+    // -- Build shapesanity grid from slot data --
+    buildShapesanity();
+
     // -- Subscribe to hint data storage --
     // We subscribe directly to the AP data storage key rather than using
     // the ItemsManager's hint events, which provides a complete snapshot
@@ -647,6 +668,7 @@ export async function connect(address: string, slot: string, password: string) {
       const networkHints = value as API.NetworkHint[];
       if (Array.isArray(networkHints)) {
         refreshHintsFromNetwork(c, networkHints);
+        refreshShapesanityHintsAndLocations();
       }
     };
     c.storage.notify([hintKey], hintCallback).then((data) => {
@@ -655,6 +677,7 @@ export async function connect(address: string, slot: string, password: string) {
         | undefined;
       if (Array.isArray(networkHints)) {
         refreshHintsFromNetwork(c, networkHints);
+        refreshShapesanityHintsAndLocations();
       }
     });
   } catch (err: unknown) {
@@ -681,6 +704,7 @@ export function disconnect() {
   isConnected.value = false;
   slotName.value = "";
   gameName.value = "";
+  slotData.value = null;
   messages.length = 0;
   hints.length = 0;
   receivedItems.length = 0;
@@ -691,6 +715,7 @@ export function disconnect() {
   hintPoints.value = 0;
   hintCost.value = 0;
   cachedNetworkHints = [];
+  shapesanityRef.value = [];
 }
 
 /** Send a chat message or command (e.g. "!hint ItemName") to the server. */
