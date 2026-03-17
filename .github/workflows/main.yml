@@ -1,0 +1,36 @@
+name: Build and Deploy to Page Branch
+
+on:
+  push:
+    branches:
+      - rewrite  # Change this to your default branch if different
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'  # Adjust to your Node.js version
+          cache: 'npm'  # Change to 'yarn' or 'pnpm' if you use those
+      
+      - name: Install dependencies
+        run: npm ci  # Use 'yarn install --frozen-lockfile' or 'pnpm install --frozen-lockfile' if needed
+      
+      - name: Build site
+        run: npm run build  # Adjust if your build command is different
+      
+      - name: Deploy to page branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist  # Default Vite output directory
+          publish_branch: page
