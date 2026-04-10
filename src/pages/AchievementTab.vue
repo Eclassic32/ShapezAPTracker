@@ -24,7 +24,7 @@
           <img
             v-if="isChecked(achievement.name)"
             class="achievement-check"
-            src="/assets/check.png"
+            :src="checkIconUrl"
             alt="Collected"
             loading="lazy"
           />
@@ -78,6 +78,8 @@ interface AchievementsFile {
 
 const IMAGE_BASE =
   "https://shared.fastly.steamstatic.com/community_assets/images/apps/1318690/";
+const LOCAL_ASSET_BASE = `${import.meta.env.BASE_URL}assets/`;
+const checkIconUrl = `${LOCAL_ASSET_BASE}check.png`;
 
 let cachedAchievements: AchievementEntry[] | null = null;
 let achievementsLoadPromise: Promise<AchievementEntry[]> | null = null;
@@ -300,7 +302,7 @@ async function loadAchievementsOnce(): Promise<AchievementEntry[]> {
   if (cachedAchievements) return cachedAchievements;
   if (achievementsLoadPromise) return achievementsLoadPromise;
 
-  achievementsLoadPromise = fetch("/assets/Achievements.json")
+  achievementsLoadPromise = fetch(`${LOCAL_ASSET_BASE}Achievements.json`)
     .then(async (response) => {
       if (!response.ok) return [];
       const contentType = response.headers.get("content-type") ?? "";
