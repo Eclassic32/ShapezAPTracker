@@ -104,6 +104,10 @@ class Logic {
     return this.has("Cutter");
   }
 
+  static canRotateCW(): boolean {
+    return this.has("Rotator");
+  }
+
   static canRotate90(): boolean {
     return this.hasAny(["Rotator", "Rotator (CCW)"]);
   }
