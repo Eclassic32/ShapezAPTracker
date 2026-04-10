@@ -11,6 +11,7 @@ import MainPage from "@/pages/Main.vue";
 import SettingsPage from "@/pages/SettingsPage.vue";
 import ShapesanityTab from "@/pages/ShapesanityTab.vue";
 import TileMapsTab from "@/pages/TileMapsTab.vue";
+import AchievementTab from "@/pages/AchievementTab.vue";
 
 const routes = [
   {
@@ -37,6 +38,11 @@ const routes = [
     name: "Settings",
     component: SettingsPage,
   },
+  {
+    path: "/achievements",
+    name: "Achievements",
+    component: AchievementTab,
+  }
 ];
 
 const router = createRouter({

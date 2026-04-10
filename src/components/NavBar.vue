@@ -39,6 +39,7 @@ const router = useRouter();
 const tabs = [
   { path: "/tilemaps", label: "Tile Maps" },
   { path: "/shapesanity", label: "Shapesanity" },
+  { path: "/achievements", label: "Achievements" },
   { path: "/text-client", label: "Text Client" },
   { path: "/settings", label: "Settings" },
 ];

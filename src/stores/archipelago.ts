@@ -344,6 +344,11 @@ export const slotData = ref<Record<string, unknown> | null>(null);
  */
 export const client = shallowRef<Client | null>(null);
 
+if (import.meta.env.DEV) {
+  // Expose the client to the global scope for debugging in development mode.
+  (window as any).apClient = client;
+}
+
 /* ==========================================================================
    Serialization Helpers (internal)
    ==========================================================================
