@@ -12,8 +12,8 @@
           :key="achievement.id"
           class="achievement-icon-btn"
           type="button"
-          @mouseenter="handleEnter($event, achievement)"
-          @mouseleave="handleLeave"
+          @mouseenter="handleMouseEnter($event, achievement)"
+          @mouseleave="handleMouseLeave"
         >
           <img
             class="achievement-icon"
@@ -23,12 +23,17 @@
             :alt="achievement.name"
             loading="lazy"
           />
-          <img
-            v-if="isChecked(achievement.name)"
-            class="achievement-check"
-            :src="checkIconUrl"
-            alt="Collected"
+          <!-- <img
+            class="achievement-border-base"
+            :src="whiteBorderUrl"
+            alt=""
+            aria-hidden="true"
             loading="lazy"
+          /> -->
+          <span
+            v-if="getOverlayState(achievement)"
+            class="achievement-border-tint"
+            :style="`background-color: var(--color-${getOverlayState(achievement)})`"
           />
         </button>
       </div>
@@ -56,13 +61,7 @@
 import { computed, onMounted, ref } from "vue";
 import { flip, offset, shift, useFloating } from "@floating-ui/vue";
 import { settings } from "@/stores/settings";
-import {
-  checkedLocations,
-  client,
-  gameName,
-  receivedItems,
-  missingLocations,
-} from "@/stores/archipelago";
+import { checkedLocations, client, gameName, hints, receivedItems, missingLocations } from "@/stores/archipelago";
 
 interface AchievementEntry {
   id: string;
@@ -79,10 +78,9 @@ interface AchievementsFile {
   achievements: AchievementEntry[];
 }
 
-const IMAGE_BASE =
-  "https://shared.fastly.steamstatic.com/community_assets/images/apps/1318690/";
+const IMAGE_BASE = "https://shared.fastly.steamstatic.com/community_assets/images/apps/1318690/";
 const LOCAL_ASSET_BASE = `${import.meta.env.BASE_URL}assets/`;
-const checkIconUrl = `${LOCAL_ASSET_BASE}check.png`;
+const borderMaskImage = `url(${LOCAL_ASSET_BASE}AchievementBorder.png)`;
 
 let cachedAchievements: AchievementEntry[] | null = null;
 let achievementsLoadPromise: Promise<AchievementEntry[]> | null = null;
@@ -301,7 +299,7 @@ function isAchievementInLogic(achievement: AchievementEntry): boolean {
   return logic.every((entry) => evaluateLogicExpression(entry));
 }
 
-async function loadAchievementsOnce(): Promise<AchievementEntry[]> {
+async function loadAchievements(): Promise<AchievementEntry[]> {
   if (cachedAchievements) return cachedAchievements;
   if (achievementsLoadPromise) return achievementsLoadPromise;
 
@@ -330,12 +328,23 @@ function isChecked(locationName: string) {
   return checkedLocationNames.value.has(locationName);
 }
 
-function handleEnter(event: MouseEvent, achievement: AchievementEntry) {
+function isHinted(locationName: string) {
+  return hints.some((hint) => hint.location === locationName);
+}
+
+function getOverlayState(achievement: AchievementEntry): "found" | "out-of-logic" | "hinted" | "" {
+  if (isChecked(achievement.name)) return "found";
+  if (!isAchievementInLogic(achievement)) return "out-of-logic";
+  if (isHinted(achievement.name)) return "hinted";
+  return "";
+}
+
+function handleMouseEnter(event: MouseEvent, achievement: AchievementEntry) {
   reference.value = event.currentTarget as HTMLElement;
   openAchievement.value = achievement;
 }
 
-function handleLeave() {
+function handleMouseLeave() {
   openAchievement.value = null;
 }
 
@@ -345,7 +354,7 @@ function formatType(type: string) {
 }
 
 onMounted(async () => {
-  achievements.value = await loadAchievementsOnce();
+  achievements.value = await loadAchievements();
 });
 </script>
 
@@ -383,9 +392,9 @@ onMounted(async () => {
 }
 
 .achievement-icon-btn {
-  border: 1px solid transparent;
+  border: 2px solid transparent;
   padding: 0;
-  border-radius: 6px;
+  border-radius: 16%;
   background: transparent;
   line-height: 0;
   flex: 0 0 auto;
@@ -404,13 +413,30 @@ onMounted(async () => {
   display: block;
 }
 
-.achievement-check {
+.achievement-border-base {
   position: absolute;
   inset: 0;
   width: 48px;
   height: 48px;
   border-radius: 6px;
   pointer-events: none;
+}
+
+.achievement-border-tint {
+  position: absolute;
+  inset: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  pointer-events: none;
+  mask-image: v-bind(borderMaskImage);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-image: v-bind(borderMaskImage);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
 }
 
 .achievement-tooltip {
