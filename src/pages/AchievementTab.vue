@@ -17,7 +17,9 @@
         >
           <img
             class="achievement-icon"
-            :src="iconUrl(isAchievementInLogic(achievement) ? achievement.icon : achievement.icon_gray)"
+            :src="iconUrl(isAchievementInLogic(achievement) 
+                          || settings.achievements.allwaysUseColoredIcons 
+                          ? achievement.icon : achievement.icon_gray)"
             :alt="achievement.name"
             loading="lazy"
           />
@@ -53,6 +55,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { flip, offset, shift, useFloating } from "@floating-ui/vue";
+import { settings } from "@/stores/settings";
 import {
   checkedLocations,
   client,

@@ -32,6 +32,9 @@ export type MessageFilters = Record<MessageType, boolean>;
 
 /** Complete settings state shape. */
 export interface SettingsState {
+  achievements: {
+    allwaysUseColoredIcons: boolean;
+  };
   theme: "dark" | "light";
   colors: APColors;
   messageFilters: MessageFilters;
@@ -69,6 +72,9 @@ function loadSettings(): SettingsState {
     if (raw) {
       const parsed = JSON.parse(raw);
       return {
+        achievements: {
+          allwaysUseColoredIcons: parsed.achievements?.allwaysUseColoredIcons ?? false,
+        },
         theme: parsed.theme ?? "dark",
         colors: { ...DEFAULT_COLORS, ...(parsed.colors ?? {}) },
         messageFilters: { ...defaultMessageFilters(), ...(parsed.messageFilters ?? {}) },
@@ -78,6 +84,9 @@ function loadSettings(): SettingsState {
     /* corrupted data — use defaults */
   }
   return {
+    achievements: {
+      allwaysUseColoredIcons: false,
+    },
     theme: "dark",
     colors: { ...DEFAULT_COLORS },
     messageFilters: defaultMessageFilters(),

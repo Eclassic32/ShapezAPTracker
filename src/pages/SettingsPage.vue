@@ -28,6 +28,20 @@
       </div>
     </section>
 
+    <section class="settings-section">
+      <h3>Achievement Options</h3>
+      <div class="achievement-options">
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            :checked="settings.achievements.allwaysUseColoredIcons"
+            @change="settings.achievements.allwaysUseColoredIcons = ($event.target as HTMLInputElement).checked"
+          />
+          Always use colored icons for achievements
+        </label>
+      </div>
+    </section>
+
     <!-- === Template Options === -->
     <!-- Theme -->
     <section class="settings-section">
