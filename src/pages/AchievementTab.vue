@@ -188,10 +188,11 @@ async function loadAchievements(): Promise<AchievementEntry[]> {
   return achievementsLoadPromise;
 }
 
-function getAchievementState(achievement: AchievementEntry): "found" | "out-of-logic" | "hinted" | "" {
+function getAchievementState(achievement: AchievementEntry): "found" | "out-of-logic" | "hinted" | "in-logic" | ''{
   if (checkedLocationNames.value.has(achievement.name)) return "found";
   if (!isAchievementInLogic(achievement.logic)) return "out-of-logic";
   if (hints.some((hint) => hint.location === (achievement.name))) return "hinted";
+  if (isAchievementInLogic(achievement.logic) && settings.colors.inLogic !== "none") return "in-logic";
   return "";
 }
 

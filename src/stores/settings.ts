@@ -10,6 +10,7 @@
  */
 import { reactive, watch } from "vue";
 import { ALL_MESSAGE_TYPES, type MessageType } from "@/stores/archipelago";
+import { isInLogic } from "@/utils/shapesanity-logic";
 
 /** Color values for all AP-specific color categories. */
 export interface APColors {
@@ -21,6 +22,7 @@ export interface APColors {
   playerSelf: string;
   location: string;
   entrance: string;
+  inLogic: string;
   found: string;
   hinted: string;
   hardLogic: string;
@@ -50,6 +52,7 @@ const DEFAULT_COLORS: APColors = {
   playerSelf: "#eebb00",
   location: "#00ff7f",
   entrance: "#5599ff",
+  inLogic: "none",
   found: "#22aa22",
   hinted: "#ffaa00",
   hardLogic: "#cc88ff",
@@ -115,6 +118,7 @@ function applySettings() {
     playerSelf: "--color-player-self",
     location: "--color-location",
     entrance: "--color-entrance",
+    inLogic: "--color-in-logic",
     found: "--color-found",
     hinted: "--color-hinted",
     hardLogic: "--color-hard-logic",

@@ -27,6 +27,7 @@
 import { computed, ref } from 'vue'
 import { useFloating, offset, flip, shift } from '@floating-ui/vue'
 import { shapesanityRef, isInLogic, type ShapesanityEntry } from '@/utils/shapesanity-logic'
+import { settings } from '@/stores/settings'
 
 const openShape = ref<ShapesanityEntry | null>(null)
 const reference = ref<HTMLElement | null>(null)
@@ -43,8 +44,9 @@ const shapesanity = computed(() => shapesanityRef.value)
 
 function cardClass(shape: ShapesanityEntry) {
     if (shape.found) return 'found'
-    if (!isInLogic(shape.logic)) return 'unavailable'
+    if (!isInLogic(shape.logic)) return 'out-of-logic'
     if (shape.hint) return 'hinted'
+    if (isInLogic(shape.logic) && settings.colors.inLogic !== "none") return 'in-logic'
     return ''
 }
 
@@ -76,11 +78,14 @@ function handleLeave() {
     transition: width 0.2s ease;
 }
 
-.card.unavailable {
+.card.out-of-logic {
     background: color-mix(in srgb, var(--color-out-of-logic) 25%, transparent);
 }
 .card.hinted {
     background: color-mix(in srgb, var(--color-hinted) 25%, transparent);
+}
+.card.in-logic {
+    background: color-mix(in srgb, var(--color-in-logic) 25%, transparent);
 }
 .card.found {
     background: color-mix(in srgb, var(--color-found) 25%, transparent);
@@ -106,7 +111,7 @@ function handleLeave() {
     z-index: 10;
 }
 
-.card.unavailable .shape-info {
+.card.out-of-logic .shape-info {
     background: color-mix(in srgb, var(--color-out-of-logic) 25%, transparent);
 }
 
