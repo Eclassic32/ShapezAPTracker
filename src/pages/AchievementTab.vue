@@ -80,7 +80,7 @@ interface AchievementsFile {
   achievements: AchievementEntry[];
 }
 
-const borderMaskImage = `url(${import.meta.env.BASE_URL}assets/AchievementBorder.png)`;
+const borderMaskImage = `url(${import.meta.env.BASE_URL}AchievementBorder.png)`;
 
 let cachedAchievements: AchievementEntry[] | null = null;
 let achievementsLoadPromise: Promise<AchievementEntry[]> | null = null;
