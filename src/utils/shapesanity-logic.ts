@@ -104,6 +104,10 @@ class Logic {
     return this.has("Cutter");
   }
 
+  static canCutQuarter(): boolean {
+    return this.has("Quad Cutter") || (this.canCutHalf() && this.canRotate90());
+  }
+
   static canRotateCW(): boolean {
     return this.has("Rotator");
   }
@@ -216,7 +220,7 @@ const regionsLogic: Record<string, string[]> = {
   east_wind: ["canMakeEastWindmill"],
   half_half: ["canMakeHalfHalfShape"],
   half: ["canMakeHalfShape"],
-  piece: ["canCutHalf"],
+  piece: ["canCutQuarter"],
   stitched: ["canMakeStitchedShape"],
 };
 

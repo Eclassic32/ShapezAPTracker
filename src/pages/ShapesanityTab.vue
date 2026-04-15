@@ -4,6 +4,7 @@
             :key="shape.name"
             class="card"
             :class="cardClass(shape)"
+            :data-logic="shape.logic"
             @mouseenter="handleEnter($event, shape)"
             @mouseleave="handleLeave"
         >
