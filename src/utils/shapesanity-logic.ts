@@ -335,7 +335,8 @@ export function isInLogic(logic: string[] | false | null, floating: boolean = fa
  * Check if a building's item has been received.
  * Returns true if name is falsy or if not connected (assume available).
  */
-export function isBuildingAvailable(name: string): boolean {
+export function isBuildingAvailable(name: string | false | undefined ): boolean {
+  if (!name) return true;
   if (!slotData.value) return true;
 
   return getItemsAll().includes(name);
