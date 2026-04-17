@@ -48,6 +48,9 @@ export interface ShapesanityEntry {
   found: boolean;
   /** Array of logic condition names required for this shape. */
   logic: string[] | false;
+  /** Whether this shape has floating piece (used by logic) */
+  floating: boolean;
+  region: string;
 }
 
 /* ==========================================================================
@@ -189,6 +192,22 @@ class Logic {
     return this.canCutHalf() || this.hasAll(["Quad Cutter", "Stacker"]);
   }
 
+  static canMakeColFull(floating: boolean): boolean {
+    return this.canMakeStitchedShape(floating) || this.canUseQuadPainter();
+  }
+
+  static canMakeColEastWindmill(floating: boolean): boolean {
+    return this.canMakeStitchedShape(floating) || (this.canUseQuadPainter() && this.canMakeEastWindmill());
+  }
+
+  static canMakeColHalfHalf(floating: boolean): boolean {
+    return this.canMakeStitchedShape(floating) || (this.canUseQuadPainter() && this.canMakeHalfHalfShape());
+  }
+
+  static canMakeColHalf(floating: boolean): boolean {
+    return this.canMakeStitchedShape(floating) || (this.canUseQuadPainter() && this.canMakeHalfShape());
+  }
+
   static hasFloatingCorner(
     shape: Array<Array<{ color: string } | null>>,
   ): boolean {
@@ -221,11 +240,15 @@ class Logic {
 
 const regionsLogic: Record<string, string[]> = {
   full: [],
-  east_wind: ["canMakeEastWindmill"],
-  half_half: ["canMakeHalfHalfShape"],
   half: ["canMakeHalfShape"],
   piece: ["canCutQuarter"],
+  half_half: ["canMakeHalfHalfShape"],
   stitched: ["canMakeStitchedShape"],
+  east_wind: ["canMakeEastWindmill"],
+  col_full: ["canMakeColFull"],
+  col_east_wind: ["canMakeColEastWindmill"],
+  col_half_half: ["canMakeColHalfHalf"],
+  col_half: ["canMakeColHalf"],
 };
 
 /* ==========================================================================
@@ -293,7 +316,7 @@ export function assignShapeLogic(
  * Check whether all logic conditions in the array are currently met.
  * Returns true if no conditions (empty/null/false).
  */
-export function isInLogic(logic: string[] | false | null): boolean {
+export function isInLogic(logic: string[] | false | null, floating: boolean = false ): boolean {
   if (!logic) return true;
 
   const logicObj = Logic as unknown as Record<string, (...args: unknown[]) => boolean>;
@@ -312,8 +335,7 @@ export function isInLogic(logic: string[] | false | null): boolean {
  * Check if a building's item has been received.
  * Returns true if name is falsy or if not connected (assume available).
  */
-export function isBuildingAvailable(name: string | undefined | null): boolean {
-  if (!name) return true;
+export function isBuildingAvailable(name: string): boolean {
   if (!slotData.value) return true;
 
   return getItemsAll().includes(name);
@@ -380,6 +402,8 @@ export function buildShapesanity(): ShapesanityEntry[] | null {
       hint: findHintByLocationName(`Shapesanity ${index + 1}`),
       found: isLocationCheckedByName(`Shapesanity ${index + 1}`),
       logic: assignShapeLogic(shape, name),
+      floating: Logic.hasFloatingCorner(shape),
+      region: shapesanityRegion(name),
     });
   });
 

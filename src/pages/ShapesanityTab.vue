@@ -5,6 +5,7 @@
             class="card"
             :class="cardClass(shape)"
             :data-logic="shape.logic"
+            :data-region="shape.region"
             @mouseenter="handleEnter($event, shape)"
             @mouseleave="handleLeave"
         >
