@@ -62,6 +62,10 @@ export interface ShapesanityEntry {
  * replaced atomically on every update).
  */
 export const shapesanityRef = shallowRef<ShapesanityEntry[]>([]);
+if (import.meta.env.DEV) {
+  // @ts-expect-error — attach to window for dev debugging
+  window.__shapesanityRef = shapesanityRef;
+}
 
 /* ==========================================================================
    Derived item helpers (read from template store)
@@ -258,7 +262,7 @@ export function assignShapeLogic(
   }
 
   // Check for Mixed Colors Logic
-  const mixedColors = ["cyan", "magenta", "yellow", "white"];
+  const mixedColors = ["cyan", "purple", "yellow", "white"];
   if (
     shape.some((layer: unknown[]) =>
       layer.some(
