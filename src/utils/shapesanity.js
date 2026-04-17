@@ -298,8 +298,8 @@ export function shapesanityRegion(name) {
     }
     const fourLetterColorMatch = name.match(patterns.fourLetterColor);
     if (fourLetterColorMatch) {
-        if (fourLetterColorMatch[2] === "Windmill") return "east_wind";
-        else return "full";
+        if (fourLetterColorMatch[2] === "Windmill") return "col_east_wind";
+        else return "col_full";
     }
     const colorShapeLetterMatch = name.match(patterns.colorShapeLetters);
     if (colorShapeLetterMatch) {
@@ -315,11 +315,11 @@ export function shapesanityRegion(name) {
         
         const match = threeOneMatch || halfHalfMatch || checkeredMatch;
         if (match[1] == match[3]){
-            if (match[1] === "W") return "east_wind";
+            if (match[1] === "W") return "col_east_wind";
             else return "col_full";
         };
         if (halfHalfMatch){
-            return "half_half";
+            return "col_half_half";
         } else return "stitched";
     }
 
@@ -346,10 +346,10 @@ export function shapesanityRegion(name) {
         const [, shape1, , shape2, , shape3] = adjacent211Match;
         if (shape2 !== shape3) return "stitched";
         if (shape1 === shape2) {
-            if (shape1 === "W") return "east_wind";
-            else return "full";
+            if (shape1 === "W") return "col_east_wind";
+            else return "col_full";
         }
-        return "half_half";
+        return "col_half_half";
     }
 
     const cornered211Match = name.match(patterns.cornered211);
@@ -357,8 +357,8 @@ export function shapesanityRegion(name) {
         const [, shape1, , shape2, , shape3] = cornered211Match;
         if (shape2 !== shape3) return "stitched";
         if (shape1 === shape2) {
-            if (shape1 === "W") return "east_wind";
-            else return "full";
+            if (shape1 === "W") return "col_east_wind";
+            else return "col_full";
         }
         return "stitched";
     }
@@ -370,7 +370,7 @@ export function shapesanityRegion(name) {
         const shapeCounts = {};
         for (const s of shapes) shapeCounts[s] = (shapeCounts[s] || 0) + 1;
         const counts = Object.values(shapeCounts);
-        if (counts.length === 2 && counts.every(c => c === 2)) return "half_half";
+        if (counts.length === 2 && counts.every(c => c === 2)) return "col_half_half";
         else return "stitched";
     }
 
