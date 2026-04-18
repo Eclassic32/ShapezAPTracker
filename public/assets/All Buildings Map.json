@@ -1152,7 +1152,7 @@
     },
     {
       "id": "wire-1771564045148-0.5647203732349464",
-      "type": "Wire",
+      "type": "Wires",
       "position": {
         "x": 8,
         "y": 4
@@ -1162,12 +1162,12 @@
       "config": {
         "name": "Green_wire_top",
         "sprite": "Green_wire_top.png",
-        "item": "Wire"
+        "item": "Wires"
       }
     },
     {
       "id": "wire-1771564047245-0.3022985659269939",
-      "type": "Wire",
+      "type": "Wires",
       "position": {
         "x": 9,
         "y": 4
@@ -1177,12 +1177,12 @@
       "config": {
         "name": "Green_wire_corner",
         "sprite": "Green_wire_corner.png",
-        "item": "Wire"
+        "item": "Wires"
       }
     },
     {
       "id": "wire-1771564048301-0.32720055925668423",
-      "type": "Wire",
+      "type": "Wires",
       "position": {
         "x": 10,
         "y": 4
@@ -1192,12 +1192,12 @@
       "config": {
         "name": "Green_wire_cross",
         "sprite": "Green_wire_cross.png",
-        "item": "Wire"
+        "item": "Wires"
       }
     },
     {
       "id": "wire-1771564049637-0.2625995838143944",
-      "type": "Wire",
+      "type": "Wires",
       "position": {
         "x": 11,
         "y": 4
@@ -1207,12 +1207,12 @@
       "config": {
         "name": "Green_wire_T",
         "sprite": "Green_wire_T.png",
-        "item": "Wire"
+        "item": "Wires"
       }
     },
     {
       "id": "wire-1771564051053-0.2118335325348749",
-      "type": "Wire",
+      "type": "Wires",
       "position": {
         "x": 8,
         "y": 5
@@ -1222,12 +1222,12 @@
       "config": {
         "name": "Blue_wire_top",
         "sprite": "Blue_wire_top.png",
-        "item": "Wire"
+        "item": "Wires"
       }
     },
     {
       "id": "wire-1771564052318-0.9207823866415942",
-      "type": "Wire",
+      "type": "Wires",
       "position": {
         "x": 9,
         "y": 5
@@ -1237,12 +1237,12 @@
       "config": {
         "name": "Blue_wire_corner",
         "sprite": "Blue_wire_corner.png",
-        "item": "Wire"
+        "item": "Wires"
       }
     },
     {
       "id": "wire-1771564053502-0.23888781149334448",
-      "type": "Wire",
+      "type": "Wires",
       "position": {
         "x": 10,
         "y": 5
@@ -1252,12 +1252,12 @@
       "config": {
         "name": "Blue_wire_cross",
         "sprite": "Blue_wire_cross.png",
-        "item": "Wire"
+        "item": "Wires"
       }
     },
     {
       "id": "wire-1771564055030-0.8106009168645317",
-      "type": "Wire",
+      "type": "Wires",
       "position": {
         "x": 11,
         "y": 5
@@ -1267,12 +1267,12 @@
       "config": {
         "name": "Blue_wire_T",
         "sprite": "Blue_wire_T.png",
-        "item": "Wire"
+        "item": "Wires"
       }
     },
     {
       "id": "wire-1771564061198-0.7352866774333803",
-      "type": "Wire",
+      "type": "Wires",
       "position": {
         "x": 8,
         "y": 7
@@ -1282,7 +1282,7 @@
       "config": {
         "name": "Wire_tunnel",
         "sprite": "Wire_tunnel.webp",
-        "item": "Wire"
+        "item": "Wires"
       }
     },
     {
