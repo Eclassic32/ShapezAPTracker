@@ -21,6 +21,8 @@
             <div class="shape-location">{{ openShape.location }}</div>
             <div class="shape-name">{{ openShape.name }}</div>
             <div class="shape-code">{{ openShape.code }}</div>
+            <div v-if="settings.debug" class="shape-logic">Logic: {{ openShape.logic }}</div>
+            <div v-if="settings.debug">Region: {{ openShape.region }}</div>
         </div>
     </div>
 </template>

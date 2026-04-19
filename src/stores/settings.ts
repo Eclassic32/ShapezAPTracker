@@ -10,7 +10,6 @@
  */
 import { reactive, watch } from "vue";
 import { ALL_MESSAGE_TYPES, type MessageType } from "@/stores/archipelago";
-import { isInLogic } from "@/utils/shapesanity-logic";
 
 /** Color values for all AP-specific color categories. */
 export interface APColors {
@@ -37,6 +36,7 @@ export interface SettingsState {
   achievements: {
     allwaysUseColoredIcons: boolean;
   };
+  debug: boolean;
   theme: "dark" | "light";
   colors: APColors;
   messageFilters: MessageFilters;
@@ -78,6 +78,7 @@ function loadSettings(): SettingsState {
         achievements: {
           allwaysUseColoredIcons: parsed.achievements?.allwaysUseColoredIcons ?? false,
         },
+        debug: window.location.search.includes("debug") ?? false,
         theme: parsed.theme ?? "dark",
         colors: { ...DEFAULT_COLORS, ...(parsed.colors ?? {}) },
         messageFilters: { ...defaultMessageFilters(), ...(parsed.messageFilters ?? {}) },
@@ -90,6 +91,7 @@ function loadSettings(): SettingsState {
     achievements: {
       allwaysUseColoredIcons: false,
     },
+    debug: false,
     theme: "dark",
     colors: { ...DEFAULT_COLORS },
     messageFilters: defaultMessageFilters(),
