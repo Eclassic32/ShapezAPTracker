@@ -154,8 +154,10 @@ class Logic {
 
   static canUseQuadPainter(): boolean {
     return (
-      this.hasAll(["Quad Painter", "Wire"]) &&
-      this.hasAny(["Switch", "Constant Signal"])
+      this.has("Quad Painter") && (
+        this.hasAll(["Wire", "Switch"]) ||
+        this.has("Constant Signal")
+      )
     );
   }
 
