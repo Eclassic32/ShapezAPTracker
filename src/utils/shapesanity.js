@@ -310,9 +310,7 @@ export function shapesanityRegion(name) {
     const threeOneMatch = name.match(patterns.threeOne);
     const halfHalfMatch = name.match(patterns.halfHalf);
     const checkeredMatch = name.match(patterns.checkered);
-    if (threeOneMatch || halfHalfMatch || checkeredMatch) {
-        console.log(name, threeOneMatch);
-        
+    if (threeOneMatch || halfHalfMatch || checkeredMatch) {        
         const match = threeOneMatch || halfHalfMatch || checkeredMatch;
         if (match[1] == match[3]){
             if (match[1] === "W") return "col_east_wind";
