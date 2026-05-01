@@ -29,6 +29,54 @@
     </section>
 
     <!-- Shapesanity Options -->
+    <section class="settings-section">
+      <h2>Shapesanity Options</h2>
+      <div class="shapesanity-options">
+        <div class="filter-column">
+          <p>Filter out Shapesanity:</p>
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              :checked="settings.shapesanity.filter.inLogic"
+              @change="settings.shapesanity.filter.inLogic = ($event.target as HTMLInputElement).checked"
+            />
+            In Logic
+          </label>
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              :checked="settings.shapesanity.filter.outOfLogic"
+              @change="settings.shapesanity.filter.outOfLogic = ($event.target as HTMLInputElement).checked"
+            />
+            Out of Logic
+          </label>
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              :checked="settings.shapesanity.filter.found"
+              @change="settings.shapesanity.filter.found = ($event.target as HTMLInputElement).checked"
+            />
+            Found
+          </label>
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              :checked="settings.shapesanity.filter.hinted"
+              @change="settings.shapesanity.filter.hinted = ($event.target as HTMLInputElement).checked"
+            />
+            Hinted
+          </label>
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              :checked="settings.shapesanity.filter.hardLogic"
+              @change="settings.shapesanity.filter.hardLogic = ($event.target as HTMLInputElement).checked"
+            />
+            Hard Logic
+          </label>
+        </div>
+      </div>
+    </section>
 
     <!-- Achievement Options -->
     <section class="settings-section">
@@ -194,6 +242,11 @@ h1 {
   font-size: 0.85rem;
   color: var(--text-secondary);
   margin-bottom: 12px;
+}
+
+.filter-column {
+  display: flex;
+  flex-direction: column;
 }
 
 .filter-grid {

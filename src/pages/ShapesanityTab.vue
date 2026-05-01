@@ -1,6 +1,7 @@
 <template>
     <div class="shapesanity-tab">
         <div v-for="shape in shapesanity"
+            v-show="isFiltered(shape)"
             :key="shape.name"
             class="card"
             :class="cardClass(shape)"
@@ -45,6 +46,15 @@ const { floatingStyles } = useFloating(reference, floating, {
 // Directly use the reactive shallowRef from shapesanity-logic.
 // This updates automatically when items/hints/locations change.
 const shapesanity = computed(() => shapesanityRef.value)
+
+function isFiltered(shape: ShapesanityEntry) {
+    if (shape.found && !settings.shapesanity.filter.found) return false
+    if (shape.hint && !settings.shapesanity.filter.hinted) return false
+    if (!isInLogic(shape.logic) && !settings.shapesanity.filter.outOfLogic) return false
+    if (isInLogic(shape.logic) && !settings.shapesanity.filter.inLogic) return false
+    // if ( <HARD LOGIC HERE> && !settings.shapesanity.filter.hardLogic) return false
+    return true
+}
 
 function cardClass(shape: ShapesanityEntry) {
     if (shape.found) return 'found'

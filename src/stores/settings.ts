@@ -33,6 +33,24 @@ export type MessageFilters = Record<MessageType, boolean>;
 
 /** Complete settings state shape. */
 export interface SettingsState {
+  shapesanity: {
+    filter: {
+      inLogic: boolean;
+      outOfLogic: boolean;
+      found: boolean;
+      hinted: boolean;
+      hardLogic: boolean;
+    }
+    sort: "default" | "state";
+    sortDirection: "asc" | "desc";
+    sortState: {
+      inLogic: number;
+      outOfLogic: number;
+      found: number;
+      hinted: number;
+      hardLogic: number;
+    }
+  }
   achievements: {
     allwaysUseColoredIcons: boolean;
   };
@@ -52,7 +70,7 @@ const DEFAULT_COLORS: APColors = {
   playerSelf: "#eebb00",
   location: "#00ff7f",
   entrance: "#5599ff",
-  inLogic: "none",
+  inLogic: "",
   found: "#22aa22",
   hinted: "#ffaa00",
   hardLogic: "#cc88ff",
@@ -78,6 +96,24 @@ function loadSettings(): SettingsState {
         achievements: {
           allwaysUseColoredIcons: parsed.achievements?.allwaysUseColoredIcons ?? false,
         },
+        shapesanity: {
+          filter: {
+            inLogic: parsed.shapesanity?.filter?.inLogic ?? false,
+            outOfLogic: parsed.shapesanity?.filter?.outOfLogic ?? false,
+            found: parsed.shapesanity?.filter?.found ?? false,
+            hinted: parsed.shapesanity?.filter?.hinted ?? false,
+            hardLogic: parsed.shapesanity?.filter?.hardLogic ?? false,
+          },
+          sort: parsed.shapesanity?.sort ?? "default",
+          sortDirection: parsed.shapesanity?.sortDirection ?? "asc",
+          sortState: {
+            inLogic: parsed.shapesanity?.sortState?.inLogic ?? 1,
+            outOfLogic: parsed.shapesanity?.sortState?.outOfLogic ?? 3,
+            found: parsed.shapesanity?.sortState?.found ?? 4,
+            hinted: parsed.shapesanity?.sortState?.hinted ?? 0,
+            hardLogic: parsed.shapesanity?.sortState?.hardLogic ?? 2,
+          }
+        },
         debug: window.location.search.includes("debug") ?? false,
         theme: parsed.theme ?? "dark",
         colors: { ...DEFAULT_COLORS, ...(parsed.colors ?? {}) },
@@ -90,6 +126,24 @@ function loadSettings(): SettingsState {
   return {
     achievements: {
       allwaysUseColoredIcons: false,
+    },
+    shapesanity: {
+      filter: {
+        inLogic: false,
+        outOfLogic: false,
+        found: false,
+        hinted: false,
+        hardLogic: false,
+      },
+      sort: "default",
+      sortDirection: "asc",
+      sortState: {
+        inLogic: 1,
+        outOfLogic: 3,
+        found: 4,
+        hinted: 0,
+        hardLogic: 2,
+      }
     },
     debug: false,
     theme: "dark",
@@ -147,6 +201,29 @@ export function resetAllSettings() {
   settings.theme = "dark";
   resetColors();
   resetMessageFilters();
+  resetShapesanitySettings();
+}
+
+/** Reset shapesanity-specific settings. */
+export function resetShapesanitySettings() {
+  settings.shapesanity = {
+    filter: {
+      inLogic: true,
+      outOfLogic: true,
+      found: true,
+      hinted: true,
+      hardLogic: true,
+    },
+    sort: "default",
+    sortDirection: "asc",
+    sortState: {
+      inLogic: 1,
+      outOfLogic: 3,
+      found: 4,
+      hinted: 0,
+      hardLogic: 2,
+    }
+  };
 }
 
 /** Re-enable all message type filters. */
