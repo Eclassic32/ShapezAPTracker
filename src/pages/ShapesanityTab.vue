@@ -48,11 +48,11 @@ const { floatingStyles } = useFloating(reference, floating, {
 const shapesanity = computed(() => shapesanityRef.value)
 
 function isFiltered(shape: ShapesanityEntry) {
-    if (shape.found && !settings.shapesanity.filter.found) return false
-    if (shape.hint && !settings.shapesanity.filter.hinted) return false
-    if (!isInLogic(shape.logic) && !settings.shapesanity.filter.outOfLogic) return false
-    if (isInLogic(shape.logic) && !settings.shapesanity.filter.inLogic) return false
-    // if ( <HARD LOGIC HERE> && !settings.shapesanity.filter.hardLogic) return false
+    if (shape.found && settings.shapesanity.filter.found) return false
+    if (shape.hint && settings.shapesanity.filter.hinted) return false
+    if (!isInLogic(shape.logic) && settings.shapesanity.filter.outOfLogic) return false
+    if (isInLogic(shape.logic) && settings.shapesanity.filter.inLogic) return false
+    // if ( <HARD LOGIC HERE> && settings.shapesanity.filter.hardLogic) return false
     return true
 }
 
