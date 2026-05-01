@@ -50,7 +50,7 @@
         </form>
       </div>
 
-      <div class="tilemaps">
+      <div class="links-container">
         <a href="viewer.html" target="_blank" class="tilemap-link">
           <div class="tilemap-card">
             <h3>Tile Viewer</h3>
@@ -63,6 +63,9 @@
             <p>Create and edit tile maps</p>
           </div>
         </a>
+        <div class="flex-h socials">
+          <a v-for="link in socials" :href="link.url" target="_blank" class="social-link">{{ link.name }}</a>
+        </div>
       </div>
     </div>
   </div>
@@ -80,6 +83,12 @@
  */
 import { ref } from "vue";
 import { connect, isConnecting, connectionError } from "@/stores/archipelago";
+
+const socials = [
+  { name: "GitHub", url: "https://github.com/Eclassic32/ShapezAPTracker" },
+  { name: "Discord", url: "https://discord.gg/archipelago" },
+  { name: "Ko-fi", url: "https://ko-fi.com/eclassic32" },
+];
 
 const address = ref(localStorage.getItem("serverAddress") || "archipelago.gg:38281");
 const slot = ref(localStorage.getItem("slotName") || "");
@@ -163,7 +172,7 @@ async function handleConnect() {
 }
 
 /* Tilemap links */
-.tilemaps {
+.links-container {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -200,4 +209,27 @@ async function handleConnect() {
   font-size: 0.85rem;
   color: var(--text-secondary);
 }
+
+.flex-h {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
+
+.social-link {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 5px 8px;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+  text-align: center;
+}
+
+.social-link:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
 </style>
