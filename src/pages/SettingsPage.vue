@@ -7,11 +7,11 @@
 -->
 <template>
   <div class="settings-page">
-    <h2>Settings</h2>
+    <h1>Settings</h1>
 
     <!-- Tile Map Tools -->
     <section class="settings-section">
-      <h3>Tile Map Tools</h3>
+      <h2>Tile Map Tools</h2>
       <div class="tilemap-links">
         <a href="viewer.html" target="_blank" class="tilemap-link">
           <div class="tilemap-card">
@@ -28,8 +28,11 @@
       </div>
     </section>
 
+    <!-- Shapesanity Options -->
+
+    <!-- Achievement Options -->
     <section class="settings-section">
-      <h3>Achievement Options</h3>
+      <h2>Achievement Options</h2>
       <div class="achievement-options">
         <label class="checkbox-label">
           <input
@@ -45,7 +48,7 @@
     <!-- === Template Options === -->
     <!-- Theme -->
     <section class="settings-section">
-      <h3>Theme</h3>
+      <h2>Theme</h2>
       <div class="theme-toggle">
         <button
           :class="{ active: settings.theme === 'dark' }"
@@ -64,7 +67,7 @@
 
     <!-- Color Customization -->
     <section class="settings-section">
-      <h3>Item Colors</h3>
+      <h2>Item Colors</h2>
       <div class="color-grid">
         <ColorPicker label="Progression" v-model="settings.colors.progression" />
         <ColorPicker label="Useful" v-model="settings.colors.useful" />
@@ -74,7 +77,7 @@
     </section>
 
     <section class="settings-section">
-      <h3>Player & Location Colors</h3>
+      <h2>Player & Location Colors</h2>
       <div class="color-grid">
         <ColorPicker label="Other Player" v-model="settings.colors.player" />
         <ColorPicker label="Current Player" v-model="settings.colors.playerSelf" />
@@ -84,7 +87,7 @@
     </section>
 
     <section class="settings-section">
-      <h3>Tracker Colors</h3>
+      <h2>Tracker Colors</h2>
       <div class="color-grid">
         <ColorPicker label="In Logic" v-model="settings.colors.inLogic" />
         <ColorPicker label="Found" v-model="settings.colors.found" />
@@ -96,7 +99,7 @@
 
     <!-- Message Filters -->
     <section class="settings-section">
-      <h3>Message Filters</h3>
+      <h2>Message Filters</h2>
       <p class="filter-description">Choose which message types appear in the Text Client.</p>
       <div class="filter-grid">
         <label
@@ -139,7 +142,7 @@ import ColorPicker from "@/components/ColorPicker.vue";
   padding: 24px;
 }
 
-h2 {
+h1 {
   font-size: 1.3rem;
   margin-bottom: 20px;
 }
@@ -148,7 +151,7 @@ h2 {
   margin-bottom: 28px;
 }
 
-.settings-section h3 {
+.settings-section h2 {
   font-size: 1rem;
   color: var(--text-secondary);
   margin-bottom: 12px;
