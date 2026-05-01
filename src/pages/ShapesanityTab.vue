@@ -24,6 +24,7 @@
             <div class="shape-code">{{ openShape.code }}</div>
             <div v-if="settings.debug" class="shape-logic">Logic: {{ openShape.logic }}</div>
             <div v-if="settings.debug">Region: {{ openShape.region }}</div>
+            <div v-if="settings.debug">Status: {{ determineShapeStatus(openShape) }}</div>
         </div>
     </div>
 </template>
@@ -43,25 +44,34 @@ const { floatingStyles } = useFloating(reference, floating, {
     middleware: [offset(8), flip(), shift({ padding: 8 })],
 })
 
-// Directly use the reactive shallowRef from shapesanity-logic.
-// This updates automatically when items/hints/locations change.
 const shapesanity = computed(() => shapesanityRef.value)
 
-function isFiltered(shape: ShapesanityEntry) {
-    if (shape.found && settings.shapesanity.filter.found) return false
-    if (shape.hint && settings.shapesanity.filter.hinted) return false
-    if (!isInLogic(shape.logic) && settings.shapesanity.filter.outOfLogic) return false
-    if (isInLogic(shape.logic) && settings.shapesanity.filter.inLogic) return false
-    // if ( <HARD LOGIC HERE> && settings.shapesanity.filter.hardLogic) return false
-    return true
-}
+const dashToCamel = {
+    'found': 'found',
+    'hinted': 'hinted',
+    'in-logic': 'inLogic',
+    'out-of-logic': 'outOfLogic',
+    'hard-logic': 'hardLogic',
+} as const
 
-function cardClass(shape: ShapesanityEntry) {
+function determineShapeStatus(shape: ShapesanityEntry): 
+        'found' | 'hinted' | 'in-logic' | 'out-of-logic' | 'hard-logic' {
     if (shape.found) return 'found'
     if (!isInLogic(shape.logic)) return 'out-of-logic'
     if (shape.hint) return 'hinted'
-    if (isInLogic(shape.logic) && settings.colors.inLogic !== "none") return 'in-logic'
-    return ''
+    if (isInLogic(shape.logic)) return 'in-logic'
+    return 'hard-logic'
+    // After implementing hard logic make `in-logic` default
+}
+
+function isFiltered(shape: ShapesanityEntry) {
+    const status = determineShapeStatus(shape);
+    return !settings.shapesanity.filter[dashToCamel[status]]
+}
+
+function cardClass(shape: ShapesanityEntry) {
+    const status = determineShapeStatus(shape);
+    return (settings.colors[ dashToCamel[status] ] !== "none") ? status : ''
 }
 
 function handleEnter(event: MouseEvent, shape: ShapesanityEntry) {
