@@ -218,11 +218,11 @@ export function resetShapesanitySettings() {
     useHardLogic: false,
     // useHardLogic: true, // FIX: change this after hard logic fully implemented
     filter: {
-      inLogic: true,
-      outOfLogic: true,
-      found: true,
-      hinted: true,
-      hardLogic: true,
+      inLogic: false,
+      outOfLogic: false,
+      found: false,
+      hinted: false,
+      hardLogic: false,
     },
     sort: "default",
     sortDirection: "asc",
