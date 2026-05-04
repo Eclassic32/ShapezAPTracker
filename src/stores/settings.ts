@@ -34,6 +34,7 @@ export type MessageFilters = Record<MessageType, boolean>;
 /** Complete settings state shape. */
 export interface SettingsState {
   shapesanity: {
+    useHardLogic: boolean;
     filter: {
       inLogic: boolean;
       outOfLogic: boolean;
@@ -99,6 +100,8 @@ function loadSettings(): SettingsState {
           useHardLogic: parsed.achievements?.useHardLogic ?? true,
         },
         shapesanity: {
+          useHardLogic: false,
+          // useHardLogic: parsed.shapesanity?.useHardLogic ?? true, // FIX: change this after hard logic fully implemented
           filter: {
             inLogic: parsed.shapesanity?.filter?.inLogic ?? false,
             outOfLogic: parsed.shapesanity?.filter?.outOfLogic ?? false,
@@ -131,6 +134,8 @@ function loadSettings(): SettingsState {
       useHardLogic: true,
     },
     shapesanity: {
+      useHardLogic: false,
+      // useHardLogic: true, // FIX: change this after hard logic fully implemented
       filter: {
         inLogic: false,
         outOfLogic: false,
@@ -210,6 +215,8 @@ export function resetAllSettings() {
 /** Reset shapesanity-specific settings. */
 export function resetShapesanitySettings() {
   settings.shapesanity = {
+    useHardLogic: false,
+    // useHardLogic: true, // FIX: change this after hard logic fully implemented
     filter: {
       inLogic: true,
       outOfLogic: true,

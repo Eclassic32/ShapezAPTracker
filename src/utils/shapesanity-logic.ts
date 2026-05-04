@@ -48,6 +48,7 @@ export interface ShapesanityEntry {
   found: boolean;
   /** Array of logic condition names required for this shape. */
   logic: string[] | false;
+  hardLogic?: string[] | false;
   /** Whether this shape has floating piece (used by logic) */
   floating: boolean;
   region: string;
@@ -271,6 +272,44 @@ export function assignShapeLogic(
     shape as Array<Array<{ color: string } | null>>,
   );
 
+  logic.push(...assignSharedShapeLogic(shape));  
+
+  // Region Logic
+  const region = shapesanityRegion(name);
+  if (region && regionsLogic[region]) {
+    logic.push(...regionsLogic[region]);
+  }
+
+  return logic;
+}
+
+export function assignHardShapeLogic(
+  shape: ReturnType<typeof fromShortKey>,
+  name: string,
+): string[] | false {
+  if (!shape) return false;
+
+  const logic: string[] = [];
+
+  const floating = Logic.hasFloatingCorner(
+    shape as Array<Array<{ color: string } | null>>,
+  );
+
+  logic.push(...assignSharedShapeLogic(shape));  
+
+  // !!! FIX: implement actual logic here !!!
+
+  // Region Logic
+  // const region = shapesanityRegion(name);
+  // if (region && regionsLogic[region]) {
+  //   logic.push(...regionsLogic[region]);
+  // }
+
+  return logic;
+}
+
+function assignSharedShapeLogic(shape:ReturnType<typeof fromShortKey>) {
+  const logic: string[] = [];
   // Check for Color Logic
   if (
     shape.some((layer: unknown[]) =>
@@ -303,12 +342,6 @@ export function assignShapeLogic(
     logic.push("canStack");
   }
 
-  // Region Logic
-  const region = shapesanityRegion(name);
-  if (region && regionsLogic[region]) {
-    logic.push(...regionsLogic[region]);
-  }
-
   return logic;
 }
 
@@ -318,6 +351,21 @@ export function assignShapeLogic(
  */
 export function isInLogic(logic: string[] | false | null, floating: boolean = false ): boolean {
   if (!logic) return true;
+
+  const logicObj = Logic as unknown as Record<string, (...args: unknown[]) => boolean>;
+  let result = true;
+  logic.forEach((condition) => {
+    const fn = logicObj[condition];
+    if (typeof fn === "function") {
+      result = result && fn.call(Logic);
+    }
+  });
+
+  return result;
+}
+
+export function isInHardLogic(logic: string[] | false | undefined, floating: boolean = false ): boolean {
+  if (!logic) return false;
 
   const logicObj = Logic as unknown as Record<string, (...args: unknown[]) => boolean>;
   let result = true;
@@ -403,6 +451,7 @@ export function buildShapesanity(): ShapesanityEntry[] | null {
       hint: findHintByLocationName(`Shapesanity ${index + 1}`),
       found: isLocationCheckedByName(`Shapesanity ${index + 1}`),
       logic: assignShapeLogic(shape, name),
+      hardLogic: assignHardShapeLogic(shape, name),
       floating: Logic.hasFloatingCorner(shape),
       region: shapesanityRegion(name),
     });
@@ -426,6 +475,7 @@ export function refreshShapesanityHintsAndLocations(): void {
     hint: findHintByLocationName(entry.location),
     found: isLocationCheckedByName(entry.location),
     logic: assignShapeLogic(entry.shape, entry.name),
+    hardLogic: assignHardShapeLogic(entry.shape, entry.name),
   }));
 
   shapesanityRef.value = updated;

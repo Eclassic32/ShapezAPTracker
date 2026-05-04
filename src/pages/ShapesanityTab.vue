@@ -23,6 +23,7 @@
             <div class="shape-name">{{ openShape.name }}</div>
             <div class="shape-code">{{ openShape.code }}</div>
             <div v-if="settings.debug" class="shape-logic">Logic: {{ openShape.logic }}</div>
+            <div v-if="settings.debug" class="shape-logic">Hard Logic: {{ openShape.hardLogic }}</div>
             <div v-if="settings.debug">Region: {{ openShape.region }}</div>
             <div v-if="settings.debug">Status: {{ determineShapeStatus(openShape) }}</div>
         </div>
@@ -32,7 +33,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useFloating, offset, flip, shift } from '@floating-ui/vue'
-import { shapesanityRef, isInLogic, type ShapesanityEntry } from '@/utils/shapesanity-logic'
+import { shapesanityRef, isInLogic, isInHardLogic, type ShapesanityEntry } from '@/utils/shapesanity-logic'
 import { settings } from '@/stores/settings'
 
 const openShape = ref<ShapesanityEntry | null>(null)
@@ -56,12 +57,11 @@ const dashToCamel = {
 
 function determineShapeStatus(shape: ShapesanityEntry): 
         'found' | 'hinted' | 'in-logic' | 'out-of-logic' | 'hard-logic' {
-    if (shape.found) return 'found'
-    if (!isInLogic(shape.logic)) return 'out-of-logic'
-    if (shape.hint) return 'hinted'
-    if (isInLogic(shape.logic)) return 'in-logic'
-    return 'hard-logic'
-    // After implementing hard logic make `in-logic` default
+    if (shape.found) return 'found';
+    if (settings.shapesanity.useHardLogic && isInHardLogic(shape.hardLogic) && !isInLogic(shape.logic)) return 'hard-logic'; // dont forget to enable in settings
+    if (!isInLogic(shape.logic)) return 'out-of-logic';
+    if (shape.hint) return 'hinted';
+    return 'in-logic';
 }
 
 function isFiltered(shape: ShapesanityEntry) {
@@ -69,9 +69,11 @@ function isFiltered(shape: ShapesanityEntry) {
     return !settings.shapesanity.filter[dashToCamel[status]]
 }
 
+const colorDisableTexts = ['none', 'transparent', 'rgba(0, 0, 0, 0)', '', '#00000000'] as string[];
+
 function cardClass(shape: ShapesanityEntry) {
     const status = determineShapeStatus(shape);
-    return (settings.colors[ dashToCamel[status] ] !== "none") ? status : ''
+    return (!colorDisableTexts.includes(settings.colors[ dashToCamel[status] ])) ? status : ''
 }
 
 function handleEnter(event: MouseEvent, shape: ShapesanityEntry) {
@@ -113,6 +115,9 @@ function handleLeave() {
 }
 .card.found {
     background: color-mix(in srgb, var(--color-found) 25%, transparent);
+}
+.card.hard-logic {
+    background: color-mix(in srgb, var(--color-hard-logic) 25%, transparent);
 }
 
 .card img {
