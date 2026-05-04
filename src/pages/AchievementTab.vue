@@ -49,6 +49,7 @@
       <div class="tooltip-name">{{ openAchievement.name }}</div>
       <div class="tooltip-desc">{{ openAchievement.desc }}</div>
       <div v-if="settings.debug" class="tooltip-logic">Logic: {{ openAchievement.logic }}</div>
+      <div v-if="settings.debug" class="tooltip-logic">Hard Logic: {{ openAchievement.hardLogic }}</div>
       <div v-if="settings.debug" class="tooltip-type">Type: {{ openAchievement.type }}</div>
       <div v-if="settings.debug" class="tooltip-restriction">Restriction: {{ openAchievement.restriction }}</div>
     </div>
@@ -65,7 +66,7 @@
 import { computed, onMounted, ref } from "vue";
 import { flip, offset, shift, useFloating } from "@floating-ui/vue";
 import { settings } from "@/stores/settings";
-import { isAchievementInLogic} from "@/utils/achievements-logic";
+import { isAchievementInLogic, isAchievementInHardLogic } from "@/utils/achievements-logic";
 import { checkedLocations, client, gameName, hints, missingLocations } from "@/stores/archipelago";
 
 interface AchievementEntry {
@@ -77,6 +78,7 @@ interface AchievementEntry {
   type: string;
   restriction: string;
   logic?: string[];
+  hardLogic?: string[];
 }
 
 interface AchievementsFile {
@@ -191,12 +193,12 @@ async function loadAchievements(): Promise<AchievementEntry[]> {
   return achievementsLoadPromise;
 }
 
-function getAchievementState(achievement: AchievementEntry): "found" | "out-of-logic" | "hinted" | "in-logic" | ''{
+function getAchievementState(achievement: AchievementEntry): "found" | "out-of-logic" | "hinted" | "in-logic" | 'hard-logic'{
   if (checkedLocationNames.value.has(achievement.name)) return "found";
+  if (isAchievementInHardLogic(achievement.hardLogic) && settings.achievements.useHardLogic) return "hard-logic";
   if (!isAchievementInLogic(achievement.logic)) return "out-of-logic";
   if (hints.some((hint) => hint.location === (achievement.name))) return "hinted";
-  if (isAchievementInLogic(achievement.logic) && settings.colors.inLogic !== "none") return "in-logic";
-  return "";
+  return "in-logic";
 }
 
 function handleMouseEnter(event: MouseEvent, achievement: AchievementEntry) {

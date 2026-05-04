@@ -114,6 +114,11 @@ function parseLogicArgs(rawArgs: string): unknown[] {
   });
 }
 
+const logicObject = AchievementLogic as unknown as Record<
+  string,
+  (...args: unknown[]) => boolean
+>;
+
 function evaluateLogicExpression(expression: string): boolean {
   const trimmed = expression.trim();
   if (!trimmed) return true;
@@ -122,10 +127,6 @@ function evaluateLogicExpression(expression: string): boolean {
   if (!match) return true;
 
   const [, methodName, rawArgs] = match;
-  const logicObject = AchievementLogic as unknown as Record<
-    string,
-    (...args: unknown[]) => boolean
-  >;
   const method = logicObject[methodName];
   if (typeof method !== "function") return true;
 
@@ -135,5 +136,10 @@ function evaluateLogicExpression(expression: string): boolean {
 
 export function isAchievementInLogic(logic?: string[]): boolean {
   if (!logic || logic.length === 0) return true;
+  return logic.every((entry) => evaluateLogicExpression(entry));
+}
+
+export function isAchievementInHardLogic(logic?: string[]): boolean {
+  if (!logic || logic.length === 0) return false;
   return logic.every((entry) => evaluateLogicExpression(entry));
 }
