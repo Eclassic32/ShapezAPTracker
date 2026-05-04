@@ -19,7 +19,7 @@
             class="achievement-icon"
             :src="'https://shared.fastly.steamstatic.com/community_assets/images/apps/1318690/'
                         + (isAchievementInLogic(achievement.logic) 
-                          || settings.achievements.allwaysUseColoredIcons 
+                          || settings.achievements.alwaysUseColoredIcons 
                            ? achievement.icon : achievement.icon_gray)"
             :alt="achievement.name"
             loading="lazy"

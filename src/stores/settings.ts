@@ -53,7 +53,7 @@ export interface SettingsState {
     }
   }
   achievements: {
-    allwaysUseColoredIcons: boolean;
+    alwaysUseColoredIcons: boolean;
     useHardLogic: boolean;
   };
   debug: boolean;
@@ -96,7 +96,7 @@ function loadSettings(): SettingsState {
       const parsed = JSON.parse(raw);
       return {
         achievements: {
-          allwaysUseColoredIcons: parsed.achievements?.allwaysUseColoredIcons ?? false,
+          alwaysUseColoredIcons: parsed.achievements?.alwaysUseColoredIcons ?? false,
           useHardLogic: parsed.achievements?.useHardLogic ?? true,
         },
         shapesanity: {
@@ -130,7 +130,7 @@ function loadSettings(): SettingsState {
   }
   return {
     achievements: {
-      allwaysUseColoredIcons: false,
+      alwaysUseColoredIcons: false,
       useHardLogic: true,
     },
     shapesanity: {

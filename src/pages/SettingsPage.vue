@@ -34,46 +34,21 @@
       <div class="shapesanity-options">
         <div class="filter-column">
           <p>Filter out Shapesanity:</p>
-          <label class="checkbox-label">
-            <input
-              type="checkbox"
-              :checked="settings.shapesanity.filter.inLogic"
-              @change="settings.shapesanity.filter.inLogic = ($event.target as HTMLInputElement).checked"
-            />
-            In Logic
-          </label>
-          <label class="checkbox-label">
-            <input
-              type="checkbox"
-              :checked="settings.shapesanity.filter.outOfLogic"
-              @change="settings.shapesanity.filter.outOfLogic = ($event.target as HTMLInputElement).checked"
-            />
-            Out of Logic
-          </label>
-          <label class="checkbox-label">
-            <input
-              type="checkbox"
-              :checked="settings.shapesanity.filter.found"
-              @change="settings.shapesanity.filter.found = ($event.target as HTMLInputElement).checked"
-            />
-            Found
-          </label>
-          <label class="checkbox-label">
-            <input
-              type="checkbox"
-              :checked="settings.shapesanity.filter.hinted"
-              @change="settings.shapesanity.filter.hinted = ($event.target as HTMLInputElement).checked"
-            />
-            Hinted
-          </label>
-          <label class="checkbox-label">
-            <input
-              type="checkbox"
-              :checked="settings.shapesanity.filter.hardLogic"
-              @change="settings.shapesanity.filter.hardLogic = ($event.target as HTMLInputElement).checked"
-            />
-            Hard Logic
-          </label>
+          <SettingsCheckbox
+            label="In Logic"
+            v-model="settings.shapesanity.filter.inLogic" />
+          <SettingsCheckbox
+            label="Out of Logic"
+            v-model="settings.shapesanity.filter.outOfLogic" />
+          <SettingsCheckbox
+            label="Found"
+            v-model="settings.shapesanity.filter.found" />
+          <SettingsCheckbox
+            label="Hinted"
+            v-model="settings.shapesanity.filter.hinted" />
+          <SettingsCheckbox
+            label="Hard Logic"
+            v-model="settings.shapesanity.filter.hardLogic" />
         </div>
       </div>
     </section>
@@ -82,14 +57,9 @@
     <section class="settings-section">
       <h2>Achievement Options</h2>
       <div class="achievement-options">
-        <label class="checkbox-label">
-          <input
-            type="checkbox"
-            :checked="settings.achievements.allwaysUseColoredIcons"
-            @change="settings.achievements.allwaysUseColoredIcons = ($event.target as HTMLInputElement).checked"
-          />
-          Always use colored icons for achievements
-        </label>
+        <SettingsCheckbox
+          label="Always use colored icons for achievements"
+          v-model="settings.achievements.alwaysUseColoredIcons" />
       </div>
     </section>
 
@@ -100,14 +70,12 @@
       <div class="theme-toggle">
         <button
           :class="{ active: settings.theme === 'dark' }"
-          @click="settings.theme = 'dark'"
-        >
+          @click="settings.theme = 'dark'">
           Dark
         </button>
         <button
           :class="{ active: settings.theme === 'light' }"
-          @click="settings.theme = 'light'"
-        >
+          @click="settings.theme = 'light'">
           Light
         </button>
       </div>
@@ -117,7 +85,9 @@
     <section class="settings-section">
       <h2>Item Colors</h2>
       <div class="color-grid">
-        <ColorPicker label="Progression" v-model="settings.colors.progression" />
+        <ColorPicker
+          label="Progression"
+          v-model="settings.colors.progression" />
         <ColorPicker label="Useful" v-model="settings.colors.useful" />
         <ColorPicker label="Filler / Normal" v-model="settings.colors.filler" />
         <ColorPicker label="Trap" v-model="settings.colors.trap" />
@@ -128,7 +98,9 @@
       <h2>Player & Location Colors</h2>
       <div class="color-grid">
         <ColorPicker label="Other Player" v-model="settings.colors.player" />
-        <ColorPicker label="Current Player" v-model="settings.colors.playerSelf" />
+        <ColorPicker
+          label="Current Player"
+          v-model="settings.colors.playerSelf" />
         <ColorPicker label="Location" v-model="settings.colors.location" />
         <ColorPicker label="Entrance" v-model="settings.colors.entrance" />
       </div>
@@ -141,46 +113,52 @@
         <ColorPicker label="Found" v-model="settings.colors.found" />
         <ColorPicker label="Hinted" v-model="settings.colors.hinted" />
         <ColorPicker label="Hard Logic" v-model="settings.colors.hardLogic" />
-        <ColorPicker label="Out of Logic" v-model="settings.colors.outOfLogic" />
+        <ColorPicker
+          label="Out of Logic"
+          v-model="settings.colors.outOfLogic" />
       </div>
     </section>
 
     <!-- Message Filters -->
     <section class="settings-section">
       <h2>Message Filters</h2>
-      <p class="filter-description">Choose which message types appear in the Text Client.</p>
+      <p class="filter-description">
+        Choose which message types appear in the Text Client.
+      </p>
       <div class="filter-grid">
-        <label
+        <SettingsCheckbox
           v-for="msgType in ALL_MESSAGE_TYPES"
           :key="msgType"
-          class="filter-label"
-        >
-          <input
-            type="checkbox"
-            :checked="settings.messageFilters[msgType]"
-            @change="settings.messageFilters[msgType] = ($event.target as HTMLInputElement).checked"
-          />
-          {{ MESSAGE_TYPE_LABELS[msgType] }}
-        </label>
-      </div>
-    </section>
-    
-    <section class="settings-section">
-      <div class="reset-buttons">
-        <button class="filter-reset" @click="resetMessageFilters">Reset Filters</button>
-        <button @click="resetColors">Reset Colors</button>
-        <button class="danger" @click="resetAllSettings">Reset All Settings</button>
+          class="filler-label"
+          :label="MESSAGE_TYPE_LABELS[msgType]"
+          v-model="settings.messageFilters[msgType]" />
       </div>
     </section>
 
-    
+    <section class="settings-section">
+      <div class="reset-buttons">
+        <button class="filter-reset" @click="resetMessageFilters">
+          Reset Filters
+        </button>
+        <button @click="resetColors">Reset Colors</button>
+        <button class="danger" @click="resetAllSettings">
+          Reset All Settings
+        </button>
+      </div>
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { settings, resetColors, resetAllSettings, resetMessageFilters } from "@/stores/settings";
+import {
+  settings,
+  resetColors,
+  resetAllSettings,
+  resetMessageFilters,
+} from "@/stores/settings";
 import { ALL_MESSAGE_TYPES, MESSAGE_TYPE_LABELS } from "@/stores/archipelago";
 import ColorPicker from "@/components/ColorPicker.vue";
+import SettingsCheckbox from "@/components/SettingsCheckbox.vue";
 </script>
 
 <style scoped>
@@ -292,7 +270,10 @@ h1 {
   border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 16px 24px;
-  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .tilemap-card:hover {
