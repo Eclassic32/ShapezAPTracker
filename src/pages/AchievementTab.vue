@@ -49,7 +49,7 @@
       <div class="tooltip-name">{{ openAchievement.name }}</div>
       <div class="tooltip-desc">{{ openAchievement.desc }}</div>
       <div v-if="settings.debug" class="tooltip-logic">Logic: {{ openAchievement.logic }}</div>
-      <div v-if="settings.debug" class="tooltip-logic">Hard Logic: {{ openAchievement.hardLogic }}</div>
+      <div v-if="settings.debug && openAchievement.hardLogic" class="tooltip-logic">Hard Logic: {{ openAchievement.hardLogic }}</div>
       <div v-if="settings.debug" class="tooltip-type">Type: {{ openAchievement.type }}</div>
       <div v-if="settings.debug" class="tooltip-restriction">Restriction: {{ openAchievement.restriction }}</div>
     </div>
