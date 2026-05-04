@@ -131,12 +131,23 @@
             "restriction": "all"
         },
         {
+            "id": "place_bp_1000",
+            "name": "Copy-Pasta",
+            "desc": "Place a blueprint with 1000 or more buildings",
+            "icon": "20037434e06aba164c15564bfdcdf2ed54e9bce7.jpg",
+            "icon_gray": "eb101d8c8c1b870cef4b139993bc3a4d0978e6b1.jpg",
+            "logic": ["has('Blueprint')"],
+            "type": "blueprint",
+            "restriction": "all"
+        },
+        {
             "id": "blueprint_100k",
             "name": "It's piling up",
             "desc": "Have 100k blueprint shapes stored in your hub",
             "icon": "a9dc7a8defa6ff6226e80bd28719d962853e43b3.jpg",
             "icon_gray": "870c951a69b471d0420d24353d6e31e90ba62e97.jpg",
-            "logic": ["has('Blueprint')"],
+            "logic": ["canMakeStitchedShape(false)", "canPaint", "canMixColors"],
+            "hardLogic" : ["canStack", "canPaint", "canMixColors"],
             "type": "blueprint",
             "restriction": "all"
         },
@@ -146,7 +157,8 @@
             "desc": "Have 1 million blueprint shapes stored in your hub",
             "icon": "a0731c6ac75729bf1430a0c2a97789ff60fe444a.jpg",
             "icon_gray": "6888a24cd6517afa4e863add89310644618b2600.jpg",
-            "logic": ["has('Blueprint')"],
+            "logic": ["canMakeStitchedShape(false)", "canPaint", "canMixColors"],
+            "hardLogic" : ["canStack", "canPaint", "canMixColors"],
             "type": "blueprint",
             "restriction": "all"
         },
@@ -156,7 +168,8 @@
             "desc": "Deliver 25 blueprints shapes / second to your hub",
             "icon": "dcd6539db83b5a56ad30668d1436e5861108716b.jpg",
             "icon_gray": "4312566d09c94dad7dca41db11d6b1451002deaf.jpg",
-            "logic": ["has('Blueprint')"],
+            "logic": ["canMakeStitchedShape(false)", "canPaint", "canMixColors"],
+            "hardLogic" : ["canStack", "canPaint", "canMixColors"],
             "type": "blueprint",
             "restriction": "all"
         },
@@ -166,17 +179,8 @@
             "desc": "Deliver 50 blueprints shapes / second to your hub",
             "icon": "42842ebf472c225afbe819d3279a28b8bae646c0.jpg",
             "icon_gray": "87c3e270b78bc6efdfd9c60cb1f5eb088a9fe8cf.jpg",
-            "logic": ["has('Blueprint')"],
-            "type": "blueprint",
-            "restriction": "all"
-        },
-        {
-            "id": "place_bp_1000",
-            "name": "Copy-Pasta",
-            "desc": "Place a blueprint with 1000 or more buildings",
-            "icon": "20037434e06aba164c15564bfdcdf2ed54e9bce7.jpg",
-            "icon_gray": "eb101d8c8c1b870cef4b139993bc3a4d0978e6b1.jpg",
-            "logic": ["has('Blueprint')"],
+            "logic": ["canMakeStitchedShape(false)", "canPaint", "canMixColors"],
+            "hardLogic" : ["canStack", "canPaint", "canMixColors"],
             "type": "blueprint",
             "restriction": "all"
         },
