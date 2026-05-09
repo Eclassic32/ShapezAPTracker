@@ -6,7 +6,7 @@
             "desc": "Cut a shape",
             "icon": "1c484ff8a7b9e1d653f224bc80aae18d1ed186d4.jpg",
             "icon_gray": "ae6b38260039bf8ec40890c5bd69010858417ba5.jpg",
-            "logic": ["canCutHalf"],
+            "logic": ["canStartGame", "canCutHalf"],
             "type": "progression",
             "restriction": "all"
         },
@@ -16,7 +16,7 @@
             "desc": "Rotate a shape",
             "icon": "a00e14dac175fc6b8105891551fdaa0cf7a266ec.jpg",
             "icon_gray": "b10f47679c73e34ccdafc5a3e5b7f04d04597a20.jpg",
-            "logic": ["canRotateCW"],
+            "logic": ["canStartGame", "canRotateCW"],
             "type": "progression",
             "restriction": "all"
         },
@@ -26,7 +26,7 @@
             "desc": "Paint a shape",
             "icon": "5bfeacb11c3956d4a487c472c4a196d6117d8e17.jpg",
             "icon_gray": "1c10f4f56f8068f42db7460613535beab90563c7.jpg",
-            "logic": ["canPaint"],
+            "logic": ["canStartGame", "canPaint"],
             "type": "progression",
             "restriction": "all"
         },
@@ -36,7 +36,7 @@
             "desc": "Stack a shape",
             "icon": "7426e2c69bd8b1940d2092be1b976623d7f780a5.jpg",
             "icon_gray": "56a8bcb8267a19919610899e6301fcbedef34373.jpg",
-            "logic": ["canStack"],
+            "logic": ["canStartGame", "canStack"],
             "type": "progression",
             "restriction": "all"
         },
@@ -46,7 +46,7 @@
             "desc": "Produce a shape with 4 layers",
             "icon": "59ea53a1db5c040f342caf37c02db7154468bb15.jpg",
             "icon_gray": "27b01c542f25c15a047ef13234925611e71f4947.jpg",
-            "logic": ["canStack"],
+            "logic": ["canStartGame", "canStack"],
             "type": "progression",
             "restriction": "all"
         },
@@ -56,7 +56,7 @@
             "desc": "Store a shape in the storage",
             "icon": "be4b6647f6f385cc91bc117cffe35b79b3351fd8.jpg",
             "icon_gray": "230a632e10a07091d1f0c0b33da9314c14bf35ce.jpg",
-            "logic": ["has('Storage')"],
+            "logic": ["canStartGame", "has('Storage')"],
             "type": "progression",
             "restriction": "all"
         },
@@ -76,7 +76,7 @@
             "desc": "Complete level 20, unlocking the wires layer",
             "icon": "f26f0a4a810c12e3660b76c624f103e0d29904b6.jpg",
             "icon_gray": "8f9a49f5c5726ae5c723ba8cb3da557550a9165a.jpg",
-            "logic": [],
+            "logic": ["canStartGame"],
             "type": "progression",
             "restriction": "all"
         },
@@ -86,7 +86,7 @@
             "desc": "Complete level 26, unlocking the free play mode",
             "icon": "9631bb674822a499ce64f8358133512f02e25bb6.jpg",
             "icon_gray": "474bea8edc3c2b04b222835870a680c3137c4d0f.jpg",
-            "logic": [],
+            "logic": ["canStartGame"],
             "type": "progression",
             "restriction": "all"
         },
@@ -96,7 +96,7 @@
             "desc": "Reach level 50",
             "icon": "65571d33343b977ad16d1595ca3772139263d0d8.jpg",
             "icon_gray": "fb2580bec4dc94994f8fa62632a311f2e894e75d.jpg",
-            "logic": [],
+            "logic": ["canStartGame"],
             "type": "progression",
             "restriction": "all"
         },
@@ -106,7 +106,7 @@
             "desc": "Reach level 100",
             "icon": "59d30136321637409363e3e25b5d44577a6459ee.jpg",
             "icon_gray": "066250ebdbeda391067b740f575679c5496c9c5e.jpg",
-            "logic": [],
+            "logic": ["canStartGame"],
             "type": "progression",
             "restriction": "all"
         },
@@ -116,7 +116,7 @@
             "desc": "Complete any level (after level 26) without modifying your factory",
             "icon": "780cedcff6351219e7316f27e39d6b4ad485be09.jpg",
             "icon_gray": "e25a34af644ed1a106a610f33b77d85ba9240529.jpg",
-            "logic": ["canBuildMAM"],
+            "logic": ["canStartGame", "canBuildMAM"],
             "type": "progression",
             "restriction": "all"
         },
@@ -146,8 +146,8 @@
             "desc": "Have 100k blueprint shapes stored in your hub",
             "icon": "a9dc7a8defa6ff6226e80bd28719d962853e43b3.jpg",
             "icon_gray": "870c951a69b471d0420d24353d6e31e90ba62e97.jpg",
-            "logic": ["canMakeStitchedShape(false)", "canPaint", "canMixColors"],
-            "hardLogic" : ["canStack", "canPaint", "canMixColors"],
+            "logic": ["canMakeStitchedShape(false)", "canStartGame", "canPaint", "canMixColors"],
+            "hardLogic" : ["canStack", "canStartGame", "canPaint", "canMixColors"],
             "type": "blueprint",
             "restriction": "all"
         },
@@ -157,8 +157,8 @@
             "desc": "Have 1 million blueprint shapes stored in your hub",
             "icon": "a0731c6ac75729bf1430a0c2a97789ff60fe444a.jpg",
             "icon_gray": "6888a24cd6517afa4e863add89310644618b2600.jpg",
-            "logic": ["canMakeStitchedShape(false)", "canPaint", "canMixColors"],
-            "hardLogic" : ["canStack", "canPaint", "canMixColors"],
+            "logic": ["canMakeStitchedShape(false)", "canStartGame", "canPaint", "canMixColors"],
+            "hardLogic" : ["canStack", "canStartGame", "canPaint", "canMixColors"],
             "type": "blueprint",
             "restriction": "all"
         },
@@ -168,8 +168,8 @@
             "desc": "Deliver 25 blueprints shapes / second to your hub",
             "icon": "dcd6539db83b5a56ad30668d1436e5861108716b.jpg",
             "icon_gray": "4312566d09c94dad7dca41db11d6b1451002deaf.jpg",
-            "logic": ["canMakeStitchedShape(false)", "canPaint", "canMixColors"],
-            "hardLogic" : ["canStack", "canPaint", "canMixColors"],
+            "logic": ["canMakeStitchedShape(false)", "canStartGame", "canPaint", "canMixColors"],
+            "hardLogic" : ["canStack", "canStartGame", "canPaint", "canMixColors"],
             "type": "blueprint",
             "restriction": "all"
         },
@@ -179,8 +179,8 @@
             "desc": "Deliver 50 blueprints shapes / second to your hub",
             "icon": "42842ebf472c225afbe819d3279a28b8bae646c0.jpg",
             "icon_gray": "87c3e270b78bc6efdfd9c60cb1f5eb088a9fe8cf.jpg",
-            "logic": ["canMakeStitchedShape(false)", "canPaint", "canMixColors"],
-            "hardLogic" : ["canStack", "canPaint", "canMixColors"],
+            "logic": ["canMakeStitchedShape(false)", "canStartGame", "canPaint", "canMixColors"],
+            "hardLogic" : ["canStack", "canStartGame", "canPaint", "canMixColors"],
             "type": "blueprint",
             "restriction": "all"
         },
@@ -190,7 +190,7 @@
             "desc": "Produce the shapez.io logo",
             "icon": "c1d3293964648714e21df60a62e15682cdacd7ba.jpg",
             "icon_gray": "9190c5528826866c63fda95c5a63a5fa5f8ad99a.jpg",
-            "logic": ["canMakeStitchedShape(true)", "canPaint", "canMixColors"],
+            "logic": ["canMakeStitchedShape(true)", "canStartGame", "canPaint", "canMixColors"],
             "type": "logo",
             "restriction": "all"
         },
@@ -200,7 +200,7 @@
             "desc": "Deliver 25 logo shapes / second to your hub",
             "icon": "18f0192afc16ab346e607b720d70082ec604e54f.jpg",
             "icon_gray": "d0b86f9a7fb2d0c9c7f028e5d0ea3f5cc104da1f.jpg",
-            "logic": ["canMakeStitchedShape(true)", "canPaint", "canMixColors"],
+            "logic": ["canMakeStitchedShape(true)", "canStartGame", "canPaint", "canMixColors"],
             "type": "logo",
             "restriction": "all"
         },
@@ -210,7 +210,7 @@
             "desc": "Deliver 50 logo shapes / second to your hub",
             "icon": "68416f1f6c601466f9cdb4f2d30098c5037b03d4.jpg",
             "icon_gray": "973fce6d9d9941ef6ca9b25d888f8c3b891211f8.jpg",
-            "logic": ["canMakeStitchedShape(true)", "canPaint", "canMixColors"],
+            "logic": ["canMakeStitchedShape(true)", "canStartGame", "canPaint", "canMixColors"],
             "type": "logo",
             "restriction": "all"
         },
@@ -220,7 +220,7 @@
             "desc": "Produce the rocket shape",
             "icon": "f9fedecd84b966ad8a0905e7b995f0462551f823.jpg",
             "icon_gray": "420832c1b7a04ca090e8460b2591686d8a296053.jpg",
-            "logic": ["canMakeStitchedShape(true)", "canPaint", "canMixColors"],
+            "logic": ["canMakeStitchedShape(true)", "canStartGame", "canPaint", "canMixColors"],
             "type": "rocket",
             "restriction": "all"
         },
@@ -231,7 +231,7 @@
             "desc": "Deliver 10 rocket shapes / second to your hub",
             "icon": "4380317fe9a86f97e8017a1a4db27ce8138d3cc0.jpg",
             "icon_gray": "4c2e8db9d63f2df69cb54616bd1f1216626d0266.jpg",
-            "logic": ["canMakeStitchedShape(true)", "canPaint", "canMixColors"],
+            "logic": ["canMakeStitchedShape(true)", "canStartGame", "canPaint", "canMixColors"],
             "type": "rocket",
             "restriction": "all"
         },
@@ -241,7 +241,7 @@
             "desc": "Deliver 20 rocket shapes / second to your hub",
             "icon": "d0917eee1664b3ea80700e0836a46effe2923478.jpg",
             "icon_gray": "1dc1f631e3499c32137c8539dff8109c36932149.jpg",
-            "logic": ["canMakeStitchedShape(true)", "canPaint", "canMixColors"],
+            "logic": ["canMakeStitchedShape(true)", "canStartGame", "canPaint", "canMixColors"],
             "type": "rocket",
             "restriction": "all"
         },
@@ -271,7 +271,7 @@
             "desc": "Destroy more than 1000 objects at once",
             "icon": "a75c846484a53bbc231c0421e179e3598ca2261c.jpg",
             "icon_gray": "a02fd0b8180a67541abd28a2e989a6e67c2b2798.jpg",
-            "logic": [],
+            "logic": ["hasAnyBuilding"],
             "type": "large",
             "restriction": "all"
         },
@@ -291,7 +291,7 @@
             "desc": "Reach & complete level 12 in under 30 minutes",
             "icon": "97cd1c29b08f630ea1773a62ccf7a97f0fa23325.jpg",
             "icon_gray": "e1801aa6203903130cfe4d24adc8e3503fc767af.jpg",
-            "logic": [],
+            "logic": ["canStartGame"],
             "type": "softlock",
             "restriction": "softlock"
         },
@@ -301,7 +301,7 @@
             "desc": "Reach & complete level 12 in under 60 minutes",
             "icon": "2f6fafd7203f95e4bc77c1353e26e8269ae73f84.jpg",
             "icon_gray": "b93a5d31c9e35ce47744bcce5f1e1aa56ce9f440.jpg",
-            "logic": [],
+            "logic": ["canStartGame"],
             "type": "softlock",
             "restriction": "softlock"
         },
@@ -311,7 +311,7 @@
             "desc": "Reach & complete level 12 in under 120 minutes",
             "icon": "d04613510603120c9281c506ddffb0da387cfe32.jpg",
             "icon_gray": "9186cc6d17dde38c4ce52272aa84112adb78ca20.jpg",
-            "logic": [],
+            "logic": ["canStartGame"],
             "type": "softlock",
             "restriction": "softlock"
         },
@@ -331,7 +331,7 @@
             "desc": "Reach & Complete level 12 without upgrading your belts",
             "icon": "7c6779c34a9dc04afaca751b320ff40ee4ebee8e.jpg",
             "icon_gray": "18800db667acdb782ce984d1d6bed4cbb29aef9b.jpg",
-            "logic": [],
+            "logic": ["canStartGame"],
             "type": "softlock",
             "restriction": "softlock"
         },
@@ -341,7 +341,7 @@
             "desc": "Create the logo shape before level 18",
             "icon": "ae6c6c5496d2c929779e3630eba6f83969354343.jpg",
             "icon_gray": "eb101d8c8c1b870cef4b139993bc3a4d0978e6b1.jpg",
-            "logic": ["canMakeStitchedShape(true)", "canPaint", "canMixColors"],
+            "logic": ["canMakeStitchedShape(true)", "canStartGame", "canPaint", "canMixColors"],
             "type": "softlock",
             "restriction": "softlock"
         },
@@ -351,7 +351,7 @@
             "desc": "Produce RgRyRbRr",
             "icon": "9631b377173760eb89e7fb09b606b7af11e7709e.jpg",
             "icon_gray": "eb101d8c8c1b870cef4b139993bc3a4d0978e6b1.jpg",
-            "logic": ["canMakeStitchedShape(false)", "canPaint", "canMixColors"],
+            "logic": ["canMakeStitchedShape(false)", "canStartGame", "canPaint", "canMixColors"],
             "type": "other",
             "restriction": "all"
         },
@@ -361,7 +361,7 @@
             "desc": "Produce the old level 17 shape",
             "icon": "4d197f46f8e87082d80b7e9d68dc148b11fe5609.jpg",
             "icon_gray": "eb101d8c8c1b870cef4b139993bc3a4d0978e6b1.jpg",
-            "logic": ["canMakeStitchedShape(false)", "canPaint", "canMixColors"],
+            "logic": ["canMakeStitchedShape(false)", "canStartGame", "canPaint", "canMixColors"],
             "type": "other",
             "restriction": "all"
         },
@@ -371,7 +371,7 @@
             "desc": "Deliver a shape which is not the goal, nor relevant for any upgrade to the hub",
             "icon": "7cfe8da7ce2f8a0bd13f0554aaef25a4a99c4e1a.jpg",
             "icon_gray": "5cfe2487bbb7ee2d8faf461512295f866738cd68.jpg",
-            "logic": [],
+            "logic": ["canStartGame"],
             "type": "other",
             "restriction": "all"
         },
@@ -381,7 +381,7 @@
             "desc": "Have 100 different shapes stored in your hub",
             "icon": "6b7af769b3a1b808d20ea8273c7ff27d14f8c338.jpg",
             "icon_gray": "67f3fb56dc4f5d3d41c2bef38c2699ffd1e15b10.jpg",
-            "logic": [],
+            "logic": ["canStartGame"],
             "type": "other",
             "restriction": "all"
         },
@@ -411,7 +411,7 @@
             "desc": "Have all upgrades on tier 5 or higher",
             "icon": "55a522578c782c5a1cf2fb61d6b43f068217d2c9.jpg",
             "icon_gray": "d6219f2d11a47d94a02c7a19350c90592a133d5d.jpg",
-            "logic": [],
+            "logic": ["canStartGame"],
             "type": "other",
             "restriction": "all"
         },
@@ -421,7 +421,7 @@
             "desc": "Have all upgrades on tier 8 or higher",
             "icon": "1801a98929dae63f283ea9d7f891f85ea963aded.jpg",
             "icon_gray": "bf77a22945f33b6cad968c2b7076edd5d8b705e3.jpg",
-            "logic": [],
+            "logic": ["canStartGame"],
             "type": "other",
             "restriction": "all"
         },
