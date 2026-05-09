@@ -92,7 +92,11 @@ class AchievementLogic {
       this.hasTunnel()
     );
   }
-}
+
+  static canStartGame(): boolean {
+    return this.hasAll(["Belt", "Extractor"]);
+  }
+};
 
 function parseLogicArgs(rawArgs: string): unknown[] {
   const trimmed = rawArgs.trim();

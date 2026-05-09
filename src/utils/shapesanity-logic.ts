@@ -209,6 +209,10 @@ class Logic {
     return this.canMakeStitchedShape(floating) || (this.canUseQuadPainter() && this.canMakeHalfShape());
   }
 
+  static canStartGame(): boolean {
+    return this.hasAll(["Belt", "Extractor"]);
+  }
+
   static hasFloatingCorner(
     shape: Array<Array<{ color: string } | null>>,
   ): boolean {
@@ -353,6 +357,9 @@ export function isInLogic(logic: string[] | false | null, floating: boolean = fa
   if (!logic) return true;
 
   const logicObj = Logic as unknown as Record<string, (...args: unknown[]) => boolean>;
+
+  if (!logicObj.canStartGame()) { return false;}
+
   let result = true;
   logic.forEach((condition) => {
     const fn = logicObj[condition];
