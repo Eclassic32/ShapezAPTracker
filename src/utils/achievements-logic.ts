@@ -9,6 +9,15 @@ function getItemsUnique(): string[] {
 }
 
 class AchievementLogic {
+  static allBuildings = [ "Belt", "Extractor", "Chaining Extractor", "Trash",
+    "Rotator", "Rotator (CCW)", "Rotator (180°)", "Tunnel", "Tunnel Tier II",
+    "Balancer", "Compact Merger", "Compact Splitter",
+    "Display", "Item Filter", "Belt Reader", "Switch",
+    "Cutter", "Quad Cutter", "Stacker",
+    "Painter", "Double Painter", "Quad Painter", "Color Mixer",
+    "Wire", "Constant Signal", "Logic Gates", "Virtual Processing"
+  ];
+
   static count(item: string): number {
     return getItemsAll().filter((i) => i === item).length;
   }
@@ -20,6 +29,10 @@ class AchievementLogic {
   static hasAny(items: string[]): boolean {
     const unique = getItemsUnique();
     return items.some((item) => unique.includes(item));
+  }
+
+  static hasAnyBuilding(): boolean {
+    return this.hasAny(this.allBuildings);
   }
 
   static hasAll(items: string[]): boolean {
@@ -96,6 +109,8 @@ class AchievementLogic {
   static canStartGame(): boolean {
     return this.hasAll(["Belt", "Extractor"]);
   }
+
+  
 };
 
 function parseLogicArgs(rawArgs: string): unknown[] {
