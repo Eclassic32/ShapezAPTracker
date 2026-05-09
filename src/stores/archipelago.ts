@@ -327,7 +327,10 @@ export const hintCost = ref(0);
  * (like shapesanity-logic.ts) read this to build their derived state.
  */
 export const slotData = ref<Record<string, unknown> | null>(null);
-
+if (import.meta.env.DEV) {
+  // Expose slotData to the global scope for debugging in development mode.
+  (window as any).slotData = slotData;
+}
 /**
  * The raw archipelago.js Client instance.
  *
