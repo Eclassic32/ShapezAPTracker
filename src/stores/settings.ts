@@ -31,26 +31,30 @@ export interface APColors {
 /** Per-message-type visibility toggles for the text client. */
 export type MessageFilters = Record<MessageType, boolean>;
 
+export type LogicFilter = {
+  inLogic: boolean;
+  found: boolean;
+  hinted: boolean;
+  outOfLogic: boolean;
+  hardLogic: boolean;
+}
+
+export type LogicSort = {
+  inLogic: number;
+  found: number;
+  hinted: number;
+  outOfLogic: number;
+  hardLogic: number;
+}
+
 /** Complete settings state shape. */
 export interface SettingsState {
   shapesanity: {
     useHardLogic: boolean;
-    filter: {
-      inLogic: boolean;
-      outOfLogic: boolean;
-      found: boolean;
-      hinted: boolean;
-      hardLogic: boolean;
-    }
+    filter: LogicFilter;
     sort: "default" | "state";
     sortDirection: "asc" | "desc";
-    sortState: {
-      inLogic: number;
-      outOfLogic: number;
-      found: number;
-      hinted: number;
-      hardLogic: number;
-    }
+    sortState: LogicSort;
   }
   achievements: {
     alwaysUseColoredIcons: boolean;
