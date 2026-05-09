@@ -24,11 +24,11 @@ This is a tracker for shapez Archipelago Multiworld. It has:
 - While `Hub` and `Logic Gates (NOT)` always sends `TRUE` signal, world logic doesn't use it. Therefore not used in logic.
 
 ## Screenshots
-<img width="400" alt="Screenshot of Tile Maps Page" src="screenshots/tilemaps.png">
-<img width="400" alt="Screenshot of Shapesanity Page" src="screenshots/shapesanity.png">
-<img width="400" alt="Screenshot of Achievements Page" src="screenshots/achievements.png">
-<img width="400" alt="Screenshot of Text Client Page" src="screenshots/textclient.png">
-<img width="400" alt="Screenshot of Settings Page" src="screenshots/settings.png">
+<img  alt="Screenshot of Tile Maps Page" src="screenshots/tilemaps.png">
+<img  alt="Screenshot of Shapesanity Page" src="screenshots/shapesanity.png">
+<img  alt="Screenshot of Achievements Page" src="screenshots/achievements.png">
+<img  alt="Screenshot of Text Client Page" src="screenshots/textclient.png">
+<img  alt="Screenshot of Settings Page" src="screenshots/settings.png">
 
 ## Usage
 1. Go to https://shapezap.ec32.tech
