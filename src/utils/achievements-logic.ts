@@ -106,10 +106,25 @@ class AchievementLogic {
     );
   }
 
-  static canStartGame(): boolean {
-    return this.hasAll(["Belt", "Extractor"]);
+  static canMove(): boolean {
+    return this.hasAny(["Belt", "Compact Merger", "Compact Splitter"]);
   }
 
+  static canMoveHard(): boolean {
+    return this.hasAny(["Belt", "Balancer", "Compact Merger", "Compact Splitter"]);
+  }
+
+  static canMine(): boolean {
+    return this.hasAny(["Extractor", "Chaining Extractor"]);
+  }
+
+  static canStartGame(): boolean {
+    return this.canMine() && this.canMove();
+  }
+
+  static canStartGameHard(): boolean {
+    return this.canMine() && this.canMoveHard();
+  }
   
 };
 
