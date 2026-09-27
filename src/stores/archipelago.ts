@@ -202,6 +202,37 @@ export interface SerializedItem {
   locationId: number;
 }
 
+export interface RawSlotData {
+  [levelBuildingKey: `Level building ${number}`]: string;
+  [upgradeBuildingKey: `Upgrade building ${number}`]: string;
+  [phaseLengthKey: `Phase ${number} length`]: number | string;
+  
+  allow_floating_layers?: boolean | number | null;
+  "belt category buildings amount": number | string;
+  complexity_growth_gradient?: number | string | null;
+  
+  finaltier: number | string;
+  goal: "vanilla" | "mam" | "even_fasterer" | "efficiency_iii";
+  maxlevel: number | string;
+
+  "miner category buildings amount": number | string;
+  "processors category buildings amount": number | string;
+  "painting category buildings amount": number | string;
+  
+  randomize_level_logic: string;
+  randomize_level_requirements: boolean | number;
+  randomize_upgrade_logic: string;
+  randomize_upgrade_requirements: boolean | number;
+  
+  required_shapes_multiplier: number | string;
+  same_late_upgrade_requirements: boolean | number;
+  seed: number | string;
+  shapesanity: string[];
+  throughput_levels_ratio: number | string;
+  toolbar_shuffling: boolean | number;
+}
+
+
 /* ==========================================================================
    Reactive State
    ==========================================================================
@@ -326,7 +357,7 @@ export const hintCost = ref(0);
  * shapesanity location names for the connected slot. Game-specific modules
  * (like shapesanity-logic.ts) read this to build their derived state.
  */
-export const slotData = ref<Record<string, unknown> | null>(null);
+export const slotData = ref<RawSlotData | null>(null);
 if (import.meta.env.DEV) {
   // Expose slotData to the global scope for debugging in development mode.
   (window as any).slotData = slotData;
@@ -651,7 +682,7 @@ export async function connect(address: string, slot: string, password: string) {
     gameName.value = c.game;
     teamNumber.value = c.players.self.team;
     selfSlot.value = c.players.self.slot;
-    slotData.value = (loginResult ?? null) as Record<string, unknown> | null;
+    slotData.value = ((loginResult ?? null) as unknown) as RawSlotData | null;
 
     // Persist connection fields for auto-fill on next visit
     localStorage.setItem("serverAddress", address);
