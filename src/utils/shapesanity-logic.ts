@@ -17,7 +17,7 @@ import { shallowRef } from "vue";
 import {
   receivedItems,
   hints,
-  checkedLocations,
+  checkedLocationIds,
   slotData,
   client,
   type SerializedItem,
@@ -412,7 +412,7 @@ function isLocationCheckedByName(location: string): boolean {
   if (!c) return false;
 
   // checkedLocations contains numeric IDs; we need to resolve names
-  for (const locId of checkedLocations) {
+  for (const locId of checkedLocationIds) {
     try {
       const name = c.package.lookupLocationName("shapez", locId, true);
       if (name === location) return true;

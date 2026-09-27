@@ -13,6 +13,7 @@
         :key="tab.path"
         :to="tab.path"
         class="nav-tab"
+        :class="{ 'nav-tab--hidden': !tab.requirement }"
         active-class="nav-tab--active"
       >
         {{ tab.label }}
@@ -32,21 +33,31 @@
 <script setup lang="ts">
 import { slotName, disconnect } from "@/stores/archipelago";
 import { useRouter } from "vue-router";
+import { slotData, LocationNameToId } from "@/stores/archipelago";
 
 const router = useRouter();
 
 /** Add new page tabs here. Each entry needs a matching route in router/index.ts. */
 const tabs = [
-  { path: "/tilemaps", label: "Tile Maps" },
-  { path: "/shapesanity", label: "Shapesanity" },
-  { path: "/achievements", label: "Achievements" },
-  { path: "/text-client", label: "Text Client" },
-  { path: "/settings", label: "Settings" },
+  { path: "/tilemaps", label: "Tile Maps", requirement: true },
+  { path: "/shapesanity", label: "Shapesanity", requirement: doShapesanityExist() },
+  { path: "/achievements", label: "Achievements", requirement: doAchievementsExist() },
+  { path: "/text-client", label: "Text Client", requirement: true },
+  { path: "/settings", label: "Settings", requirement: true },
 ];
 
 function handleDisconnect() {
   disconnect();
   router.push("/");
+}
+
+function doShapesanityExist(): boolean {
+  let shapesanity : string[] | undefined = slotData.value?.shapesanity;
+  return shapesanity !== undefined && shapesanity !== null && shapesanity.length > 0;
+}
+
+function doAchievementsExist(): boolean {
+  return LocationNameToId.value && LocationNameToId.value.has("Oops");
 }
 </script>
 
@@ -88,6 +99,10 @@ function handleDisconnect() {
 .nav-tab--active {
   color: var(--text-primary);
   border-bottom-color: var(--accent);
+}
+
+.nav-tab--hidden {
+  display: none;
 }
 
 .nav-info {

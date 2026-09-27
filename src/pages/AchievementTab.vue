@@ -48,6 +48,7 @@
     >
       <div class="tooltip-name">{{ openAchievement.name }}</div>
       <div class="tooltip-desc">{{ openAchievement.desc }}</div>
+      <div v-if="settings.debug" class="tooltip-logic">Location ID: {{ LocationNameToId.get(openAchievement.name) }}</div>
       <div v-if="settings.debug" class="tooltip-logic">Logic: {{ openAchievement.logic }}</div>
       <div v-if="settings.debug && openAchievement.hardLogic" class="tooltip-logic">Hard Logic: {{ openAchievement.hardLogic }}</div>
       <div v-if="settings.debug" class="tooltip-type">Type: {{ openAchievement.type }}</div>
@@ -67,7 +68,7 @@ import { computed, onMounted, ref } from "vue";
 import { flip, offset, shift, useFloating } from "@floating-ui/vue";
 import { settings } from "@/stores/settings";
 import { isAchievementInLogic, isAchievementInHardLogic } from "@/utils/achievements-logic";
-import { checkedLocations, client, gameName, hints, missingLocations } from "@/stores/archipelago";
+import { checkedLocationIds, client, gameName, hints, missingLocationIds, LocationNameToId } from "@/stores/archipelago";
 
 interface AchievementEntry {
   id: string;
@@ -105,7 +106,7 @@ const checkedLocationNames = computed(() => {
   const c = client.value;
   if (!c || !gameName.value) return names;
 
-  for (const locationId of checkedLocations) {
+  for (const locationId of checkedLocationIds) {
     names.add(c.package.lookupLocationName(gameName.value, locationId, true));
   }
 
@@ -113,18 +114,7 @@ const checkedLocationNames = computed(() => {
 });
 
 const allLocationNames = computed(() => {
-  const names = new Set<string>();
-  const c = client.value;
-  if (!c || !gameName.value) return names;
-
-  for (const locationId of checkedLocations) {
-    names.add(c.package.lookupLocationName(gameName.value, locationId, true));
-  }
-  for (const locationId of missingLocations) {
-    names.add(c.package.lookupLocationName(gameName.value, locationId, true));
-  }
-
-  return names;
+  return LocationNameToId.value ? new Set(Object.keys(LocationNameToId.value)) : new Set<string>();
 });
 
 const restrictedGroupAllowed = computed(() => {

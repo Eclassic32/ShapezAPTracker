@@ -34,7 +34,7 @@
  * and they will update automatically when the server pushes new data.
  */
 
-import { reactive, ref, shallowRef } from "vue";
+import { computed, reactive, ref, shallowRef } from "vue";
 import {
   Client,
   itemsHandlingFlags,
@@ -320,7 +320,7 @@ export const receivedItems = reactive<SerializedItem[]>([]);
  * const totalChecked = computed(() => checkedLocations.length);
  * ```
  */
-export const checkedLocations = reactive<number[]>([]);
+export const checkedLocationIds = reactive<number[]>([]);
 
 /**
  * Location IDs that the connected player has NOT yet checked.
@@ -336,7 +336,26 @@ export const checkedLocations = reactive<number[]>([]);
  * );
  * ```
  */
-export const missingLocations = reactive<number[]>([]);
+export const missingLocationIds = reactive<number[]>([]);
+
+export const allLocationIds = computed(() => [...checkedLocationIds, ...missingLocationIds]);
+
+export function LocationIdToName(id: number) :string {
+  const c = client.value;
+  if (!c) return "Unknown";
+  return c.package.lookupLocationName(gameName.value, id, true) || "Unknown";
+};
+
+export const LocationNameToId = computed(() => {
+  const map = new Map<string, number>();
+  for (const locId of allLocationIds.value) {
+    const locName = LocationIdToName(locId);
+    if (locName) {
+      map.set(locName, locId);
+    }
+  }
+  return map;
+});
 
 /** Sorted list of all item names from the connected game's data package. */
 export const allItemNames = ref<string[]>([]);
@@ -518,10 +537,10 @@ function refreshReceivedItems(c: Client) {
 function refreshLocations(c: Client) {
   const checked = c.room.checkedLocations;
   const missing = c.room.missingLocations;
-  checkedLocations.length = 0;
-  checkedLocations.push(...checked);
-  missingLocations.length = 0;
-  missingLocations.push(...missing);
+  checkedLocationIds.length = 0;
+  checkedLocationIds.push(...checked);
+  missingLocationIds.length = 0;
+  missingLocationIds.push(...missing);
 }
 
 /** Update hint point counters from the server. */
@@ -747,8 +766,8 @@ export function disconnect() {
   messages.length = 0;
   hints.length = 0;
   receivedItems.length = 0;
-  checkedLocations.length = 0;
-  missingLocations.length = 0;
+  checkedLocationIds.length = 0;
+  missingLocationIds.length = 0;
   allItemNames.value = [];
   hintableItemNames.value = [];
   hintPoints.value = 0;
