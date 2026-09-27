@@ -8,7 +8,7 @@ This is a tracker for shapez Archipelago Multiworld. It has:
 - **Settings** page, where you can manage Tile Maps, change theme, change colors used in tracker and filter messages in Text Client by type.
 
 ## Notes
-- ⚠ If you find logic bugs, please go to https://shapezap.ec32.tech/?debug and send me screenshot from there
+- ⚠ If you find logic bugs, please go to https://eclassic32.github.io/ShapezAPTracker/?debug and send me screenshot from there
 - Currently some achievements do not have logic, therefore always shown as in logic. Specifically: 
   - Wires
   - Freedom
@@ -30,7 +30,7 @@ This is a tracker for shapez Archipelago Multiworld. It has:
 <img  alt="Screenshot of Settings Page" src="screenshots/settings.png">
 
 ## Usage
-1. Go to https://shapezap.ec32.tech
+1. Go to https://eclassic32.github.io/ShapezAPTracker/
 2. Enter your server address and port, slotname, password.
 3. (optional) Go to `Settings` and change them for your comfort
 
