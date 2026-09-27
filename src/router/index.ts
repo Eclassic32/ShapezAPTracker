@@ -12,6 +12,7 @@ import SettingsPage from "@/pages/SettingsPage.vue";
 import ShapesanityTab from "@/pages/ShapesanityTab.vue";
 import TileMapsTab from "@/pages/TileMapsTab.vue";
 import AchievementTab from "@/pages/AchievementTab.vue";
+import LevelUpgradeTab from "@/pages/LevelUpgradeTab.vue";
 
 const routes = [
   {
@@ -42,6 +43,11 @@ const routes = [
     path: "/achievements",
     name: "Achievements",
     component: AchievementTab,
+  },
+  {
+    path: "/level-upgrade",
+    name: "LevelUpgrade",
+    component: LevelUpgradeTab,
   }
 ];
 
