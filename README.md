@@ -1,5 +1,4 @@
 # Shapez AP Tracker
-> Currently hosted at https://shapezap.ec32.tech
 
 This is a tracker for shapez Archipelago Multiworld. It has:
 - **Tile Maps** (or **Factory Templates**) Tracker. You can create your own factory template and see, if buildings used in it available or not.
