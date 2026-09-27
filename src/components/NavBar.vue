@@ -10,10 +10,10 @@
     <div class="nav-tabs">
       <router-link
         v-for="tab in tabs"
+        v-show="tab.requirement"
         :key="tab.path"
         :to="tab.path"
         class="nav-tab"
-        :class="{ 'nav-tab--hidden': !tab.requirement }"
         active-class="nav-tab--active"
       >
         {{ tab.label }}
@@ -40,6 +40,7 @@ const router = useRouter();
 /** Add new page tabs here. Each entry needs a matching route in router/index.ts. */
 const tabs = [
   { path: "/tilemaps", label: "Tile Maps", requirement: true },
+  { path: "/level-upgrade", label: "Levels & Upgrades", requirement: true },
   { path: "/shapesanity", label: "Shapesanity", requirement: doShapesanityExist() },
   { path: "/achievements", label: "Achievements", requirement: doAchievementsExist() },
   { path: "/text-client", label: "Text Client", requirement: true },
@@ -99,10 +100,6 @@ function doAchievementsExist(): boolean {
 .nav-tab--active {
   color: var(--text-primary);
   border-bottom-color: var(--accent);
-}
-
-.nav-tab--hidden {
-  display: none;
 }
 
 .nav-info {
