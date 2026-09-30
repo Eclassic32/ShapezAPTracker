@@ -5,7 +5,7 @@
 
             </div>
             <div id="all-levels">
-                <div v-for="shape in shapesanity"
+                <div v-for="shape, idx in shapesanity"
                     v-show="isFiltered(shape)"
                     :key="shape.name"
                     class="card"
@@ -16,6 +16,7 @@
                     @mouseleave="handleLeave"
                 >
                     <img :src="shape.image" :alt="shape.code" />
+                    <div class="shape-amount">{{ idx + 1 }}</div>
                 </div>
 
                 <div
@@ -25,7 +26,6 @@
                     class="shape-info"
                 >
                     <div class="shape-location">{{ openShape.location }}</div>
-                    <div class="shape-name">{{ openShape.name }}</div>
                     <div class="shape-code">{{ openShape.code }}</div>
                     <div v-if="settings.debug" class="shape-logic">Logic: {{ openShape.logic }}</div>
                     <div v-if="settings.debug" class="shape-logic">Hard Logic: {{ openShape.hardLogic }}</div>
@@ -49,6 +49,7 @@ import { settings } from '@/stores/settings'
 const openShape = ref<ShapesanityEntry | null>(null)
 const reference = ref<HTMLElement | null>(null)
 const floating = ref<HTMLElement | null>(null)
+const currentLevel = ref<number>(1)
 
 const { floatingStyles } = useFloating(reference, floating, {
     placement: 'right',
@@ -105,7 +106,17 @@ function handleLeave() {
   padding: 12px;
 }
 
+#levels, #upgrades {
+    width: 100%;
+    min-width: 300px;
+}
 
+#all-levels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px;
+}
 
 .card {
     background: var(--container-bg, var(--bg-secondary));
