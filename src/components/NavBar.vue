@@ -40,7 +40,7 @@ const router = useRouter();
 /** Add new page tabs here. Each entry needs a matching route in router/index.ts. */
 const tabs = [
   { path: "/tilemaps", label: "Tile Maps", requirement: true },
-  { path: "/level-upgrade", label: "Levels & Upgrades", requirement: true },
+  { path: "/level-upgrade", label: "Levels & Upgrades", requirement: import.meta.env.DEV },
   { path: "/shapesanity", label: "Shapesanity", requirement: doShapesanityExist() },
   { path: "/achievements", label: "Achievements", requirement: doAchievementsExist() },
   { path: "/text-client", label: "Text Client", requirement: true },
