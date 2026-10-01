@@ -1,15 +1,33 @@
 <template>
     <div class="level-upgrade-tab">
         <div id="levels">
-            <div id="current-level">
-
+            <div id="current"
+                :class="classByStatus(currentShape)"
+            >
+                <div id="current-image">
+                    <img :src="currentShape.image" :alt="currentShape.code"/>
+                    <div class="shape-amount">{{ currentLevel }}</div>
+                </div>
+                <div id="current-info1">
+                    <div id="current-title" class="title">Level {{ currentLevel }}</div>
+                    <div id="current-code">{{ currentShape.code }}</div>
+                    
+                    <div v-if="settings.debug" class="shape-logic">Logic: {{ currentShape.logic }}</div>
+                    <div v-if="settings.debug" class="shape-logic">Hard Logic: {{ currentShape.hardLogic }}</div>
+                </div>
+                <div id="current-info2">
+                    <div id="current-status">Status: <span>{{ determineShapeStatus(currentShape) }}</span></div>
+                    <!-- FIX: current amount -->
+                    <div id="current-amount">Amount Required: {{ currentLevel }}</div>
+                    <div v-if="settings.debug">Region: {{ currentShape.region }}</div>
+                </div>
             </div>
             <div id="all-levels">
                 <div v-for="shape, idx in shapesanity"
                     v-show="isFiltered(shape)"
                     :key="shape.name"
                     class="card"
-                    :class="cardClass(shape)"
+                    :class="classByStatus(shape)"
                     :data-logic="shape.logic"
                     :data-region="shape.region"
                     @mouseenter="handleEnter($event, shape)"
@@ -27,6 +45,7 @@
                 >
                     <div class="shape-location">{{ openShape.location }}</div>
                     <div class="shape-code">{{ openShape.code }}</div>
+                    <div>Amount required: {{ currentLevel }}</div>
                     <div v-if="settings.debug" class="shape-logic">Logic: {{ openShape.logic }}</div>
                     <div v-if="settings.debug" class="shape-logic">Hard Logic: {{ openShape.hardLogic }}</div>
                     <div v-if="settings.debug">Region: {{ openShape.region }}</div>
@@ -41,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ComputedRef, ref } from 'vue'
 import { useFloating, offset, flip, shift } from '@floating-ui/vue'
 import { shapesanityRef, isInLogic, isInHardLogic, type ShapesanityEntry } from '@/utils/shapesanity-logic'
 import { settings } from '@/stores/settings'
@@ -49,14 +68,15 @@ import { settings } from '@/stores/settings'
 const openShape = ref<ShapesanityEntry | null>(null)
 const reference = ref<HTMLElement | null>(null)
 const floating = ref<HTMLElement | null>(null)
-const currentLevel = ref<number>(1)
-
-const { floatingStyles } = useFloating(reference, floating, {
-    placement: 'right',
-    middleware: [offset(8), flip(), shift({ padding: 8 })],
-})
-
+    
+    const { floatingStyles } = useFloating(reference, floating, {
+        placement: 'right',
+        middleware: [offset(8), flip(), shift({ padding: 8 })],
+    })
+    
 const shapesanity = computed(() => shapesanityRef.value)
+const currentLevel = ref<number>(4)
+const currentShape = computed(() => shapesanity.value[currentLevel.value]) 
 
 const dashToCamel = {
     'found': 'found',
@@ -82,7 +102,7 @@ function isFiltered(shape: ShapesanityEntry) {
 
 const colorDisableTexts = ['none', 'transparent', 'rgba(0, 0, 0, 0)', '', '#00000000'] as string[];
 
-function cardClass(shape: ShapesanityEntry) {
+function classByStatus(shape: ShapesanityEntry) {
     const status = determineShapeStatus(shape);
     return (!colorDisableTexts.includes(settings.colors[ dashToCamel[status] ])) ? status : ''
 }
@@ -111,11 +131,75 @@ function handleLeave() {
     min-width: 300px;
 }
 
+
+#current.out-of-logic {
+    border-color: var(--color-out-of-logic);
+    background: color-mix(in srgb, var(--color-out-of-logic) 8%, transparent);
+}
+
+#current.out-of-logic {
+    border-color: var(--color-out-of-logic);
+    background: color-mix(in srgb, var(--color-out-of-logic) 8%, transparent);
+
+    & #current-status span {
+        color: var(--color-out-of-logic);
+    }
+}
+#current.hard-logic {
+    border-color: var(--color-hard-logic);
+    background: color-mix(in srgb, var(--color-hard-logic) 8%, transparent);
+
+    & #current-status span {
+        color: var(--color-hard-logic);
+    }
+}
+#current.hinted {
+    border-color: var(--color-hinted);
+    background: color-mix(in srgb, var(--color-hinted) 8%, transparent);
+
+    & #current-status span {
+        color: var(--color-hinted);
+    }
+}
+#current.found {
+    border-color: var(--color-found);
+    background: color-mix(in srgb, var(--color-found) 8%, transparent);
+
+    & #current-status span {
+        color: var(--color-found);
+    }
+}
+#current.in-logic {
+    border-color: var(--color-in-logic);
+    background: color-mix(in srgb, var(--color-in-logic) 8%, transparent);
+
+    & #current-status span {
+        color: var(--color-in-logic);
+    }
+}
+
+#current {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    align-items: center;
+}
+
+#current-info1, #current-info2 {
+    flex: 1;
+}
+
 #all-levels {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
-    padding: 16px;
+    padding: 16px 0;
+    justify-content: space-evenly;
+
 }
 
 .card {
@@ -182,14 +266,20 @@ function handleLeave() {
 }
 
 
-.shape-location,
-.shape-name,
-.shape-code {
+.shape-location, .shape-name, .shape-code {
     font-size: 0.9rem;
     text-align: left;
 }
 
-.shape-location {
+#current-title {
+    font-size: 1.5rem;
+} 
+#current-code, #current-status, #current-amount {
+    font-size: 1.2rem;
+    text-align: left;
+}
+
+.shape-location, #current-title {
     font-weight: bold;
     color: var(--text-primary, #fff);
 }
@@ -201,6 +291,11 @@ function handleLeave() {
 .shape-code {
     font-family: monospace;
     font-size: 0.8rem;
+    color: var(--text-muted, #999);
+}
+#current-code {
+    font-family: monospace;
+    font-size: 1rem;
     color: var(--text-muted, #999);
 }
 
