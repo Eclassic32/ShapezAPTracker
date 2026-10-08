@@ -2,28 +2,28 @@
     <div class="level-upgrade-tab">
         <div id="levels">
             <div id="current"
-                :class="classByStatus(currentShape)"
+                :class="classByStatus(currentLevelShape)"
             >
                 <div id="current-image">
-                    <img :src="currentShape.image" :alt="currentShape.code"/>
+                    <img :src="currentLevelShape.image" :alt="currentLevelShape.code"/>
                     <div class="shape-amount">{{ currentLevel }}</div>
                 </div>
                 <div id="current-info1">
                     <div id="current-title" class="title">Level {{ currentLevel }}</div>
-                    <div id="current-code">{{ currentShape.code }}</div>
+                    <div id="current-code">{{ currentLevelShape.code }}</div>
                     
-                    <div v-if="settings.debug" class="shape-logic">Logic: {{ currentShape.logic }}</div>
-                    <div v-if="settings.debug" class="shape-logic">Hard Logic: {{ currentShape.hardLogic }}</div>
+                    <div v-if="settings.debug" class="shape-logic">Logic: {{ currentLevelShape.logic }}</div>
+                    <div v-if="settings.debug" class="shape-logic">Hard Logic: {{ currentLevelShape.hardLogic }}</div>
                 </div>
                 <div id="current-info2">
-                    <div id="current-status">Status: <span>{{ determineShapeStatus(currentShape) }}</span></div>
+                    <div id="current-status">Status: <span>{{ determineShapeStatus(currentLevelShape) }}</span></div>
                     <!-- FIX: current amount -->
                     <div id="current-amount">Amount Required: {{ currentLevel }}</div>
-                    <div v-if="settings.debug">Region: {{ currentShape.region }}</div>
+                    <div v-if="settings.debug">Region: {{ currentLevelShape.region }}</div>
                 </div>
             </div>
             <div id="all-levels">
-                <div v-for="shape, idx in shapesanity"
+                <div v-for="shape, idx in allLevels"
                     v-show="isFiltered(shape)"
                     :key="shape.name"
                     class="card"
@@ -64,19 +64,21 @@ import { computed, ComputedRef, ref } from 'vue'
 import { useFloating, offset, flip, shift } from '@floating-ui/vue'
 import { shapesanityRef, isInLogic, isInHardLogic, type ShapesanityEntry } from '@/utils/shapesanity-logic'
 import { settings } from '@/stores/settings'
+import { compileRegularLevels, type LevelShapeEntry } from '@/utils/levels-upgrades'
 
-const openShape = ref<ShapesanityEntry | null>(null)
+
+const openShape = ref<LevelShapeEntry | null>(null)
 const reference = ref<HTMLElement | null>(null)
 const floating = ref<HTMLElement | null>(null)
     
-    const { floatingStyles } = useFloating(reference, floating, {
-        placement: 'right',
-        middleware: [offset(8), flip(), shift({ padding: 8 })],
-    })
+const { floatingStyles } = useFloating(reference, floating, {
+    placement: 'right',
+    middleware: [offset(8), flip(), shift({ padding: 8 })],
+})
     
-const shapesanity = computed(() => shapesanityRef.value)
+const allLevels :LevelShapeEntry[] = compileRegularLevels();
 const currentLevel = ref<number>(4)
-const currentShape = computed(() => shapesanity.value[currentLevel.value]) 
+const currentLevelShape = computed(() => { return allLevels[currentLevel.value - 1] })
 
 const dashToCamel = {
     'found': 'found',
@@ -95,19 +97,19 @@ function determineShapeStatus(shape: ShapesanityEntry):
     return 'in-logic';
 }
 
-function isFiltered(shape: ShapesanityEntry) {
+function isFiltered(shape: LevelShapeEntry) {
     const status = determineShapeStatus(shape);
     return !settings.shapesanity.filter[dashToCamel[status]]
 }
 
 const colorDisableTexts = ['none', 'transparent', 'rgba(0, 0, 0, 0)', '', '#00000000'] as string[];
 
-function classByStatus(shape: ShapesanityEntry) {
+function classByStatus(shape: LevelShapeEntry) {
     const status = determineShapeStatus(shape);
     return (!colorDisableTexts.includes(settings.colors[ dashToCamel[status] ])) ? status : ''
 }
 
-function handleEnter(event: MouseEvent, shape: ShapesanityEntry) {
+function handleEnter(event: MouseEvent, shape: LevelShapeEntry) {
     reference.value = event.currentTarget as HTMLElement
     openShape.value = shape
 }
